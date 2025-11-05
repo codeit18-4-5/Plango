@@ -60,8 +60,7 @@ export const Palette: Story = {
               width: "100%",
               height: "60px",
               borderRadius: "8px",
-              background: color === "gradient" ? `var(--${color})` : `var(--${color})`,
-              backgroundColor: color === "gradient" ? undefined : `var(--${color})`,
+              background: `var(--${color})`,
               border: "1px solid var(--gray-700)",
             }}
           />
