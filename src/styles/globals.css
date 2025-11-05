@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 기본변수 */
+:root {
+  /* color */
+  --gray-100: #e2e8f0;
+  --gray-200: #f6f6f6;
+  --gray-300: #f8fafc;
+  --gray-400: #cbd5e1;
+  --gray-500: #94a3b8;
+  --gray-600: #64748b;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+
+  --pink-50: #fdedef;
+  --pink-100: #fbd5da;
+  --pink-200: #f8b0bb;
+  --pink-300: #f68c9e;
+  --pink-400: #f46482;
+  --pink-500: #e13f6d;
+  --pink-600: #bd335a;
+  --pink-700: #8d2442;
+  --pink-800: #5a1428;
+  --pink-900: #27040d;
+
+  --red-400: #dc2626;
+
+  --rose-400: #f43f5e;
+
+  --orange-400: #f97316;
+
+  --yellow-400: #eab308;
+
+  --green-400: #10b981;
+
+  --blue-300: #06b6d4;
+  --blue-400: #3b82f6;
+
+  --purple-400: #a855f7;
+
+  --black: var(--gray-900);
+  --white: #ffffff;
+
+  --background: var(--black);
+
+  --modal-frame: var(--gray-800);
+  --modal-dimmed: rgba(0, 0, 0, 0.5);
+
+  /* font size */
+  /* Caption */
+  --fs-caption: 0.875rem; /* 14px */
+  --lh-caption: 1.214; /* 17px/14px = 121.4% */
+
+  /* Body */
+  --fs-body-xs: 0.75rem; /* 12px */
+  --lh-body-xs: 1.571; /* 22/14 = 157.1% */
+
+  --fs-body-s: 0.875rem; /* 14px */
+  --lh-body-s: 1.214; /* 17/14 = 121.4% */
+
+  --fs-body-m: 1rem; /* 16px */
+  --lh-body-m: 1.625; /* 26/16 = 162.5% */
+
+  --fs-body-l: 1.125rem; /* 18px */
+  --lh-body-l: 1.556; /* 28/18 = 155.6% */
+
+  /* Modal */
+  --fs-heading-modal: 1rem; /* 16px */
+  --lh-heading-modal: 1.188; /* 19/16 = 118.8% */
+
+  /* Headings */
+  --fs-heading-s: 1.25rem; /* 20px */
+  --lh-heading-s: 1.2; /* 24/20 = 120% */
+
+  --fs-heading-m: 1.5rem; /* 24px */
+  --lh-heading-m: 1.167; /* 28/24 = 116.7% */
+
+  --fs-heading-l: 2.5rem; /* 40px */
+  --lh-heading-l: 1.2; /* 48/40 = 120% */
+}
+/* 라이트 모드 */
+.light {
+  /* Gray scale (역상) */
+  --gray-100: #0f172a;
+  --gray-200: #1e293b;
+  --gray-300: #334155;
+  --gray-400: #64748b;
+  --gray-500: #94a3b8;
+  --gray-600: #cbd5e1;
+  --gray-700: #f8fafc;
+  --gray-800: #f6f6f6;
+  --gray-900: #e2e8f0;
+
+  --pink-50: #27040d;
+  --pink-100: #5a1428;
+  --pink-200: #8d2442;
+  --pink-300: #bd335a;
+  --pink-400: #e13f6d;
+  --pink-500: #f46482;
+  --pink-600: #f68c9e;
+  --pink-700: #f8b0bb;
+  --pink-800: #fbd5da;
+  --pink-900: #fdedef;
+
+  --blue-300: #3b82f6;
+  --blue-400: #06b6d4;
+
+  /* Base colors */
+  --black: #ffffff;
+}
+
+/* 태블릿 대응 */
+@media (max-width: 1027px) {
+  :root {
+    /* Headings */
+    --fs-heading-l: 1.5rem; /* 24px */
+    --lh-heading-l: 1.167; /* 28/24 = 116.7% */
+  }
+}
+
+/* 모바일 대응 */
+@media (max-width: 640px) {
+  :root {
+    /* Body */
+    --fs-body-m: 0.875rem; /* 14px */
+    --lh-body-m: 1.714; /* 24/14 = 171.4% */
+
+    --fs-body-l: 0.875rem; /* 14px */
+    --lh-body-l: 1.714; /* 24/14 = 171.4% */
+
+    /* Headings */
+    --fs-heading-s: 1rem; /* 16px */
+    --lh-heading-s: 1.188; /* 19/16 = 118.8% */
+
+    --fs-heading-m: 1.125rem; /* 18px */
+    --lh-heading-m: 1.167; /* 21/18 = 116.7% */
+  }
+}
+
+/* 글로벌 스타일 정의 */
+* {
+  color: var(--white);
+  font-family: "Pretendard", "ui-sans-serif", "system-ui", sans-serif;
+}
+html,
+body {
+  background-color: var(--background);
+}
+
+.ic {
+  display: inline-block;
+  line-height: 0;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+
+.scroll-bar {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-300) transparent;
+  scroll-behavior: smooth;
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background: transparent;
+  }
+  &::-webkit-scrollbar-track {
+    margin: 4px 0;
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 40px;
+    background-color: var(--gray-300);
+  }
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+.none-scroll-bar {
+  overflow: auto;
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
+  &:-webkit-scrollbar {
+    display: none;
+  }
+}
+.icon-btn {
+  line-height: 0;
+}
