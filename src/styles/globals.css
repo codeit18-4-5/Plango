@@ -49,6 +49,8 @@
   --modal-frame: var(--gray-800);
   --modal-dimmed: rgba(0, 0, 0, 0.5);
 
+  --gradient: linear-gradient(90deg, #97193d 0%, #f68c9e 100%);
+
   /* font size */
   /* Caption */
   --fs-caption: 0.875rem; /* 14px */
