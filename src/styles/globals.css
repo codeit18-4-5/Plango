@@ -5,12 +5,12 @@
 /* 기본변수 */
 :root {
   /* color */
-  --gray-100: #e2e8f0;
-  --gray-200: #f6f6f6;
-  --gray-300: #f8fafc;
-  --gray-400: #cbd5e1;
-  --gray-500: #94a3b8;
-  --gray-600: #64748b;
+  --gray-100: #f8fafc;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #343e4e;
   --gray-700: #334155;
   --gray-800: #1e293b;
   --gray-900: #0f172a;
@@ -87,12 +87,12 @@
   --gray-100: #0f172a;
   --gray-200: #1e293b;
   --gray-300: #334155;
-  --gray-400: #64748b;
-  --gray-500: #94a3b8;
-  --gray-600: #cbd5e1;
-  --gray-700: #f8fafc;
-  --gray-800: #f6f6f6;
-  --gray-900: #e2e8f0;
+  --gray-400: #343e4e;
+  --gray-500: #64748b;
+  --gray-600: #94a3b8;
+  --gray-700: #cbd5e1;
+  --gray-800: #e2e8f0;
+  --gray-900: #f8fafc;
 
   --pink-50: #27040d;
   --pink-100: #5a1428;
@@ -110,6 +110,7 @@
 
   /* Base colors */
   --black: #ffffff;
+  --white: var(--gray-100);
 }
 
 /* 태블릿 대응 */
