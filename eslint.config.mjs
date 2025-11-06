@@ -30,10 +30,6 @@ export default [
   {
     files: ["**/*.stories.@(js|jsx|ts|tsx)"],
     plugins: { storybook },
-    rules: {
-      "storybook/no-deprecated": "warn",
-      "storybook/no-empty-story": "error",
-    },
   },
   prettierConfig,
   {
