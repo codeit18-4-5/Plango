@@ -6,6 +6,23 @@ const meta: Meta<typeof FloatingWrapper> = {
   title: "UI/Floating",
   component: FloatingWrapper,
   tags: ["autodocs"],
+  parameters: {
+    docs: {
+      description: {
+        component: "플로팅 컨텐츠 컴포넌트",
+      },
+    },
+  },
+  argTypes: {
+    className: {
+      control: "text",
+      description: "추가 클래스네임",
+    },
+    children: {
+      control: "text",
+      description: "내부 컨텐츠",
+    },
+  },
   decorators: [
     Story => (
       <div className="min-h-40">
