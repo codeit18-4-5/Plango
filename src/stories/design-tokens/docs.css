@@ -1,0 +1,8 @@
+html .sbdocs,
+html .sbdocs-wrapper,
+html .sbdocs-wrapper .docblock-argstable-head *,
+html .sbdocs-wrapper .docblock-argstable-body *,
+html [class^="css-"],
+html [class*=" css-"] {
+  color: #000 !important;
+}
