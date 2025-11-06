@@ -18,6 +18,7 @@ const buttonStyle = cva("flex items-center justify-center gap-1", {
       sm: "text-sm py-1.5 px-3 h-8",
       md: "text-sm py-2.5 px-[1.375rem] h-10",
       lg: "text-base py-3 px-6 h-12",
+      icon: "w-auto h-auto",
     },
     shape: {
       basic: "rounded-xl",
@@ -38,6 +39,18 @@ const buttonStyle = cva("flex items-center justify-center gap-1", {
       false: "pointer-events-auto",
     },
   },
-  defaultVariants: { size: "lg", shape: "basic", intent: "primary", full: false, disabled: false },
+  compoundVariants: [
+    {
+      size: "icon",
+      className: "rounded-full bg-transparent border-transparent",
+    },
+  ],
+  defaultVariants: {
+    size: "lg",
+    shape: "basic",
+    intent: "primary",
+    full: false,
+    disabled: false,
+  },
 });
 export default buttonStyle;

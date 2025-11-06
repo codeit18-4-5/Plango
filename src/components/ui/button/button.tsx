@@ -4,7 +4,7 @@ import buttonStyle from "./button.styles";
 
 type ButtonProps<T extends ElementType = "button"> = {
   as?: T;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "icon";
   shape?: "basic" | "round";
   intent?: "primary" | "secondary" | "tertiary" | "danger";
   full?: boolean;
@@ -31,7 +31,7 @@ export default function Button<T extends ElementType = "button">({
     <Component
       disabled={isButton ? disabled : undefined}
       aria-disabled={!isButton && disabled ? true : undefined}
-      className={cn(buttonStyle({ size, shape, intent, full, disabled }), className)}
+      className={cn(buttonStyle({ size, shape, intent, full, disabled }), "round-", className)}
       {...props}
     >
       {children}

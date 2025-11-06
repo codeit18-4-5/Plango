@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Button from "./button";
 import Link from "next/link";
-
 const meta: Meta<typeof Button> = {
   title: "UI/Button",
   component: Button,
@@ -12,6 +11,10 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: { children: "로그인 하기" },
+};
+
+export const Icon: Story = {
+  render: () => <Button size="icon">😀</Button>,
 };
 
 export const NextLink: Story = {
