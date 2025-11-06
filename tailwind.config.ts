@@ -62,6 +62,7 @@ const config: Config = {
         background: "var(--background)",
         "modal-frame": "var(--modal-frame)",
         "modal-dimmed": "var(--modal-dimmed)",
+        gradient: "var(--gradient)",
       },
       fontSize: {
         caption: ["var(--fs-caption)", { lineHeight: "var(--lh-caption)" }],

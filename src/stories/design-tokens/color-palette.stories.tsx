@@ -29,6 +29,7 @@ const colors = [
   "purple-400",
   "black",
   "white",
+  "gradient",
   "modal-frame",
   "modal-dimmed",
 ];
@@ -59,7 +60,7 @@ export const Palette: Story = {
               width: "100%",
               height: "60px",
               borderRadius: "8px",
-              backgroundColor: `var(--${color})`,
+              background: `var(--${color})`,
               border: "1px solid var(--gray-700)",
             }}
           />
