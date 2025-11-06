@@ -31,7 +31,7 @@ export default function Button<T extends ElementType = "button">({
     <Component
       disabled={isButton ? disabled : undefined}
       aria-disabled={!isButton && disabled ? true : undefined}
-      className={cn(buttonStyle({ size, shape, intent, full, disabled }), "round-", className)}
+      className={cn(buttonStyle({ size, shape, intent, full, disabled }), className)}
       {...props}
     >
       {children}
