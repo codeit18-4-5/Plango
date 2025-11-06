@@ -1,6 +1,6 @@
 import { cva } from "class-variance-authority";
 
-const backgroundButton = [
+export const backgroundButton = [
   "text-white bg-pink-400",
   "hover:bg-pink-500 active:bg-pink-600",
   "disabled:bg-gray-400 aria-disabled:bg-gray-400",
@@ -12,7 +12,7 @@ const outlineButtonBase = [
   "disabled:text-gray-400 disabled:border-gray-400 aria-disabled:text-gray-400 aria-disabled:border-gray-400",
 ].join(" ");
 
-const buttonStyle = cva("flex items-center justify-center gap-1", {
+const buttonStyle = cva("flex items-center justify-center gap-1 whitespace-nowrap", {
   variants: {
     size: {
       sm: "text-sm py-1.5 px-3 h-8",
