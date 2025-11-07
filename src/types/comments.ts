@@ -1,18 +1,16 @@
+import { UserSummary } from "@/types/user";
+
 /**
  * comments 관련 타입 정의
  * @author yeonsu
  */
 
-export interface User {
+export interface Comments {
   id: number;
-  image: string;
-  nickname: string;
-}
-
-export interface Comment {
-  id: number;
-  user: User;
   content: string;
+  userId: number;
+  taskId: number;
   createdAt: string;
   updatedAt: string;
+  user: UserSummary;
 }
