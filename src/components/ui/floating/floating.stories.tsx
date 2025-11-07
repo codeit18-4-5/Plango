@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import Button from "../button/button";
 import FloatingWrapper from "./floating-wrapper";
-import FloatingButton from "./floating-button";
+import CircleButton from "../button/circle-button";
 const meta: Meta<typeof FloatingWrapper> = {
   title: "UI/Floating",
   component: FloatingWrapper,
@@ -48,15 +48,15 @@ export const Multiple: Story = {
   render: () => (
     <div className="relative h-[300px]">
       <FloatingWrapper>
-        <FloatingButton>
+        <CircleButton>
           <span className="text-2xl">✎</span>
-        </FloatingButton>
-        <FloatingButton>
+        </CircleButton>
+        <CircleButton>
           <span className="text-2xl">↑</span>
-        </FloatingButton>
-        <FloatingButton>
+        </CircleButton>
+        <CircleButton>
           <span className="text-2xl">+</span>
-        </FloatingButton>
+        </CircleButton>
       </FloatingWrapper>
     </div>
   ),
