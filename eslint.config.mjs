@@ -1,4 +1,5 @@
 import js from "@eslint/js";
+import globals from "globals";
 import tsparser from "@typescript-eslint/parser";
 import tsplugin from "@typescript-eslint/eslint-plugin";
 import storybook from "eslint-plugin-storybook";
@@ -8,10 +9,6 @@ export default [
   js.configs.recommended,
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
-    env: {
-      browser: true,
-      node: true,
-    },
     languageOptions: {
       parser: tsparser,
       parserOptions: {
@@ -20,6 +17,8 @@ export default [
         ecmaFeatures: { jsx: true },
       },
       globals: {
+        ...globals.browser,
+        ...globals.node,
         React: "readonly",
         __dirname: "readonly",
         module: "readonly",
