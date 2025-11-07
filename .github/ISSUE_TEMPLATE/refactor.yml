@@ -10,7 +10,7 @@ body:
       description: "상위 작업의 Ticket Number를 기입해주세요"
       placeholder: "SPFE18-00"
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: description
