@@ -10,7 +10,7 @@ export default function FloatingWrapper({ children }: FloatingWrapperProps) {
   return (
     <div
       className={cn(
-        "flex flex-col items-end gap-4",
+        "floating-wrapper flex flex-col items-end gap-4",
         "fixed bottom-6 right-6 tablet:bottom-10 tablet:right-10",
       )}
     >

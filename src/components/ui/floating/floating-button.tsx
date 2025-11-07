@@ -11,7 +11,7 @@ export default function FloatingButton({ children }: FloatingButtonProps) {
   return (
     <button
       type="button"
-      className={cn(backgroundButton, "h-10 w-10 rounded-full", "tablet:h-12 tablet:w-12")}
+      className={cn(backgroundButton, "h-14 w-14 rounded-full")}
       aria-label="floating menu"
     >
       {children}

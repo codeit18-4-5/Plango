@@ -48,12 +48,15 @@ export const Multiple: Story = {
   render: () => (
     <div className="relative h-[300px]">
       <FloatingWrapper>
-        <Button shape="round">↑TOP</Button>
-        <Button shape="round">✎ 글쓰기</Button>
-        <Button shape="round" intent="secondary">
-          ✓ 완료하기
-        </Button>
-        <FloatingButton>+</FloatingButton>
+        <FloatingButton>
+          <span className="text-2xl">✎</span>
+        </FloatingButton>
+        <FloatingButton>
+          <span className="text-2xl">↑</span>
+        </FloatingButton>
+        <FloatingButton>
+          <span className="text-2xl">+</span>
+        </FloatingButton>
       </FloatingWrapper>
     </div>
   ),

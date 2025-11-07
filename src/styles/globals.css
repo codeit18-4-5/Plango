@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .floating-wrapper > * {
+    @apply shadow-floating;
+  }
+}
+
 /* 기본변수 */
 :root {
   /* color */
@@ -163,7 +169,6 @@ body {
   -webkit-mask-position: center;
   -webkit-mask-size: contain;
 }
-
 .scroll-bar {
   overflow: auto;
   scrollbar-width: thin;

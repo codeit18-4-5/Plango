@@ -85,6 +85,7 @@ const config: Config = {
       },
       boxShadow: {
         xl: "0 25px 50px 0 rgba(0,0,0,0.25)",
+        floating: "0 5px 5px 0 rgba(0,0,0,0.25)",
       },
     },
   },
