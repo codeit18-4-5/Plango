@@ -2,6 +2,7 @@ import { withThemeByClassName } from "@storybook/addon-themes";
 import type { Preview } from "@storybook/nextjs-vite";
 import "@/styles/globals.css";
 import "@/styles/fonts.css";
+import "@/stories/design-tokens/docs.css";
 
 const preview: Preview = {
   parameters: {
