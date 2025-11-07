@@ -23,6 +23,7 @@ export default [
         __dirname: "readonly",
         module: "readonly",
         process: "readonly",
+        SVGElement: "readonly",
       },
     },
     plugins: { "@typescript-eslint": tsplugin },
