@@ -22,22 +22,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Issue Parser
-        uses: stefanbuck/github-issue-praser@v3
-        id: issue-parser
-        with:
-            template-path: ${{ steps.detect_template.outputs.TEMPLATE }}
-      
-      - name: Check Parent Key
-        id: check_parent
-        run: |
-          if [ -z "${{ steps.issue-parser.outputs.issueparser_parentKey }}" ]; then
-            echo "부모키(parentKey)가 비어 있습니다. Jira 이슈 생성을 중단합니다."
-            exit 1
-          else
-            echo "✅ 부모키 확인됨: ${{ steps.issue-parser.outputs.issueparser_parentKey }}"
-          fi
-
       - name: Jira Issue Label Setting
         id: set_issue_type
         run: |
@@ -74,7 +58,21 @@ jobs:
 
           echo "TEMPLATE=$TEMPLATE" >> $GITHUB_OUTPUT
 
+      - name: Issue Parser
+        uses: stefanbuck/github-issue-praser@v3
+        id: issue-parser
+        with:
+            template-path: ${{ steps.detect_template.outputs.TEMPLATE }}
       
+      - name: Check Parent Key
+        id: check_parent
+        run: |
+          if [ -z "${{ steps.issue-parser.outputs.issueparser_parentKey }}" ]; then
+            echo "부모키(parentKey)가 비어 있습니다. Jira 이슈 생성을 중단합니다."
+            exit 1
+          else
+            echo "✅ 부모키 확인됨: ${{ steps.issue-parser.outputs.issueparser_parentKey }}"
+          fi
             
       - name: Convert markdown to Jira Syntax
         uses: peter-evans/jira2md@v1
