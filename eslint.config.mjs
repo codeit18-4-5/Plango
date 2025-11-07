@@ -8,6 +8,10 @@ export default [
   js.configs.recommended,
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
+    env: {
+      browser: true,
+      node: true,
+    },
     languageOptions: {
       parser: tsparser,
       parserOptions: {
