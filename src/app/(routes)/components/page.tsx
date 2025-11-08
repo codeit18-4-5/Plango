@@ -1,6 +1,8 @@
 "use client";
 
+import { Container } from "@/components/layout";
 import { Checkbox, Input } from "@/components/ui";
+import InputLabel from "@/components/ui/input/input-label";
 import { useState } from "react";
 
 function CheckboxControllerDemo() {
@@ -37,7 +39,7 @@ function CheckboxControllerDemo() {
         </div>
         <Checkbox checked readOnly label="읽기 전용" />
       </section>
-
+      <InputLabel />
       <Input id="password" errorMsg="">
         <Input.Label label="비밀번호" />
         <Input.Password />
@@ -53,8 +55,8 @@ function CheckboxControllerDemo() {
 
 export default function Components() {
   return (
-    <>
+    <Container>
       <CheckboxControllerDemo />
-    </>
+    </Container>
   );
 }
