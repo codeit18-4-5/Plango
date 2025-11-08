@@ -94,7 +94,7 @@ jobs:
             sohyun0)
               echo "ASSIGNEE_ID=712020:1f582e3a-77a7-4781-9960-678e3e199f15" >> $GITHUB_OUTPUT ;;
             suuuuya)
-              echo "ASSIGNEE_ID=712020:03f8aee6e-4ccb-4818-98cb-72f4eebb0877" >> $GITHUB_OUTPUT ;;
+              echo "ASSIGNEE_ID=712020:03f8ee6e-4ccb-4818-98cb-72f4eebb0877" >> $GITHUB_OUTPUT ;;
             nidor022)
               echo "ASSIGNEE_ID=712020:858202d1-c42d-4141-bfcd-f175de469263" >> $GITHUB_OUTPUT ;; 
           esac
