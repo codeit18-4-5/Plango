@@ -3,8 +3,8 @@ import { cva } from "class-variance-authority";
 export const replyWrapper = cva("relative text-body-s text-gray-100 grid", {
   variants: {
     variant: {
-      primary: ["bg-gray-800 p-4", "tablet:py-5 tablet:px-6"],
-      secondary: "pb-[16px] border-b border-gray-600",
+      primary: ["bg-gray-800 p-4 rounded-lg", "tablet:py-5 tablet:px-6"],
+      secondary: "pb-4 border-b border-gray-600",
     },
   },
   defaultVariants: {
@@ -15,8 +15,8 @@ export const replyWrapper = cva("relative text-body-s text-gray-100 grid", {
 export const replyInner = cva("relative grid", {
   variants: {
     variant: {
-      primary: "gap-y-[32px]",
-      secondary: "gap-y-[16px]",
+      primary: "gap-y-8",
+      secondary: "gap-y-4",
     },
   },
   defaultVariants: {

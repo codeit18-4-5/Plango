@@ -75,7 +75,7 @@ export default function Reply({ comment, variant = "primary" }: ReplyProps) {
           <>
             <p className={replyTextarea({ variant })}>{comment.content}</p>
             <div className={replyInfo({ variant })}>
-              <div className="flex items-center gap-x-[12px]">
+              <div className="flex items-center gap-x-3">
                 <Avatar image={comment.writer.image} className="h-8 w-8" />
                 <span>{comment.writer.nickname}</span>
               </div>

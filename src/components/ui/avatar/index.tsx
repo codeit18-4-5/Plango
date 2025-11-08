@@ -4,24 +4,33 @@ import cn from "@/lib/cn";
 import { useState } from "react";
 import Image from "next/image";
 import { isValidImageSrc } from "@/lib/utils";
-import DefaultAvatarImage from "@/assets/icons/ic-member-circle.svg";
+import { avatarStyles } from "./index.styles";
+import FallbackImageBasic from "@/assets/icons/ic-member-circle.svg";
+import FallbackImageSquare from "@/assets/icons/ic-img.svg";
 
 type AvatarProps = {
   image?: string | null;
   alt?: string;
   className?: string;
+  shape?: "basic" | "square";
 };
 
-export default function Avatar({ image, alt = "", className }: AvatarProps) {
+export default function Avatar({ image, alt = "", shape = "basic", className }: AvatarProps) {
   const [imageError, setImageError] = useState(false);
   const isValidImage = isValidImageSrc(image) && !imageError;
 
   return (
-    <span className={cn("relative inline-block", className)}>
+    <span className={cn(avatarStyles({ shape }), className)}>
       {isValidImage ? (
-        <Image src={image} alt={alt} fill onError={() => setImageError(true)} />
+        <Image
+          src={image}
+          alt={alt}
+          fill
+          className="object-cover"
+          onError={() => setImageError(true)}
+        />
       ) : (
-        <DefaultAvatarImage />
+        <>{shape === "basic" ? <FallbackImageBasic /> : <FallbackImageSquare />}</>
       )}
     </span>
   );
