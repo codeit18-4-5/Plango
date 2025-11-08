@@ -1,13 +1,12 @@
 "use client";
 
 import cn from "@/lib/cn";
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { ArticleComment } from "@/types/article-comment";
-import { useToggle, useClickOutside, useEditable, useAutoResizeTextarea } from "@/hooks";
+import { useEditable, useAutoResizeTextarea } from "@/hooks";
 import { replyWrapper, replyInner, replyTextarea, replyInfo, replyTimeStamp } from "./index.styles";
-import { Avatar, Button } from "@/components/ui";
+import { Avatar, Button, OverflowMenu } from "@/components/ui";
 import { getTimeAgo } from "@/lib/utils";
-import IcKebab from "@/assets/icons/ic-kebab.svg";
 
 type ReplyProps = {
   comment: ArticleComment;
@@ -24,12 +23,6 @@ export default function Reply({ comment, variant = "primary" }: ReplyProps) {
     isSaveDisabled,
     setEditedContent,
   } = useEditable(comment.content);
-
-  const menuWrapperRef = useRef<HTMLDivElement>(null);
-  const { isOn: isMenuOpen, toggle: toggleMenu, setOff: closeMenu } = useToggle(false);
-  useClickOutside(menuWrapperRef, closeMenu);
-
-  const hasActionMenu = true;
 
   const { textareaRef, onChange, resize } = useAutoResizeTextarea();
 
@@ -82,24 +75,7 @@ export default function Reply({ comment, variant = "primary" }: ReplyProps) {
               <span className={replyTimeStamp({ variant })}>{getTimeAgo(comment.createdAt)}</span>
             </div>
 
-            <div ref={menuWrapperRef} className="z-5 absolute right-0 top-0">
-              <Button
-                shape="basic"
-                intent="primary"
-                size="icon"
-                aria-label="액션 메뉴"
-                onClick={toggleMenu}
-              >
-                <IcKebab className="text-gray-500" />
-              </Button>
-              {isMenuOpen && hasActionMenu && (
-                <div onClick={closeMenu} className="absolute right-0 top-full">
-                  <Button onClick={startEditing} intent="tertiary">
-                    수정하기
-                  </Button>
-                </div>
-              )}
-            </div>
+            <OverflowMenu onEdit={startEditing} />
           </>
         )}
       </div>
