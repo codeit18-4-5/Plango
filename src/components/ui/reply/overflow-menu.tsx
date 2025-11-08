@@ -28,6 +28,7 @@ export default function OverflowMenu({ onEdit }: OverflowMenuProps) {
       </Button>
       {isMenuOpen && (
         <div onClick={closeMenu} className="absolute right-0 top-full">
+          {/* 추후 드롭다운 컴포넌트로 대체 */}
           <Button onClick={onEdit} intent="tertiary">
             수정하기
           </Button>

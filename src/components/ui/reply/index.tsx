@@ -48,7 +48,6 @@ export default function Reply({ comment, variant = "primary" }: ReplyProps) {
                 onChange(e);
               }}
             />
-            {/* 추후 드롭다운 컴포넌트로 대체 */}
             <div className="flex justify-end gap-2">
               <Button
                 onClick={cancelEditing}
