@@ -11,7 +11,7 @@ export default function Container({ as: Component = "div", className, children }
   return (
     <Component
       className={cn(
-        "mx-auto w-full max-w-[1200px] px-[16px] pt-[24px] desktop:px-0 desktop:pt-[40px]",
+        "mx-auto w-full max-w-[1248px] px-[16px] pt-[24px] tablet:px-[24px] desktop:pt-[40px]",
         className,
       )}
     >
