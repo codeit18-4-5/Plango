@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
 import type { ComponentProps } from "react";
-import Input from "../input";
-import InputField from "../input-field";
+import Input from "./input";
+import InputField from "./input-field";
 
 type Args = ComponentProps<typeof InputField> & {
   id: string;
