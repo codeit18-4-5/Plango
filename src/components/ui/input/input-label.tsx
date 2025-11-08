@@ -1,7 +1,7 @@
 "use client";
 
 import cn from "@/lib/cn";
-import { ReactNode, useContext } from "react";
+import { useContext } from "react";
 import { inputLabelStyle } from "./input.style";
 import { InputContext } from "./input.context";
 
@@ -11,7 +11,6 @@ type InputLabelProps = {
   hidden?: boolean;
   required?: boolean;
   className?: string;
-  children?: ReactNode;
 };
 
 export default function InputLabel({
