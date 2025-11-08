@@ -1,10 +1,11 @@
 "use client";
 
 //import cn from "@/lib/cn";
+import { useRef } from "react";
 import { ArticleComment } from "@/types/article-comment";
+import { useToggle, useClickOutside, useEditable } from "@/hooks";
 import { Avatar, Button } from "@/components/ui";
 import { getTimeAgo } from "@/lib/utils";
-import useEditable from "@/hooks/use-editable";
 import IcKebab from "@/assets/icons/ic-kebab.svg";
 
 type ReplyProps = {
@@ -21,6 +22,13 @@ export default function Reply({ comment }: ReplyProps) {
     isSaveDisabled,
     setEditedContent,
   } = useEditable(comment.content);
+
+  const menuWrapperRef = useRef<HTMLDivElement>(null);
+  const { isOn: isMenuOpen, toggle: toggleMenu, setOff: closeMenu } = useToggle(false);
+
+  useClickOutside(menuWrapperRef, closeMenu);
+
+  const hasActionMenu = true;
 
   return (
     <div>
@@ -42,12 +50,24 @@ export default function Reply({ comment }: ReplyProps) {
       ) : (
         <>
           <div>
-            <Button shape="basic" intent="primary" size="icon" aria-label="액션 메뉴">
-              <IcKebab />
-            </Button>
-            <Button onClick={startEditing} intent="tertiary">
-              수정
-            </Button>
+            <div ref={menuWrapperRef}>
+              <Button
+                shape="basic"
+                intent="primary"
+                size="icon"
+                aria-label="액션 메뉴"
+                onClick={toggleMenu}
+              >
+                <IcKebab />
+              </Button>
+              {isMenuOpen && hasActionMenu && (
+                <div onClick={closeMenu}>
+                  <Button onClick={startEditing} intent="tertiary">
+                    수정
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
           <p>{comment.content}</p>
           <div>
