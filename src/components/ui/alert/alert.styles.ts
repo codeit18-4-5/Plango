@@ -1,18 +1,20 @@
 import { cva } from "class-variance-authority";
 
-export const alertOverlayStyle = cva("fixed inset-0 z-[9999] flex items-center justify-center");
+export const alertOverlayStyle = cva(
+  "fixed inset-0 z-[9999] flex items-center justify-center bg-modal-dimmed",
+);
 
 export const alertContainerStyle = cva(
   [
-    "flex flex-col rounded-xl bg-gray-800 px-4 pb-8 pt-4 text-center items-center",
+    "flex flex-col bg-gray-800 px-4 pb-8 pt-4 text-center items-center rounded-t-xl h-auro",
     "p-0 tablet:px-4 tablet:pb-8 tablet:pt-4",
-    "absolute bottom-0 mobile:relative mobile:bottom-auto",
+    "absolute bottom-0 mobile:relative mobile:bottom-auto mobile:rounded-bl-0 mobile:rounded-b-xl",
   ],
   {
     variants: {
       size: {
-        md: "w-[375px]",
-        lg: "w-[384px]",
+        md: "max-w-[375px] w-[100%]",
+        lg: "max-w-[384px] w-[100%]",
       },
     },
     defaultVariants: {
@@ -23,12 +25,8 @@ export const alertContainerStyle = cva(
 
 export const alertIcon = cva("mt-[24px] w-[24px] h-[24px]");
 
-export const alertTextStyle = cva("", {
+export const textContainer = cva("max-h-[30vh] overflow-y-auto w-full", {
   variants: {
-    variant: {
-      title: "text-gray-100 text-body-m",
-      descriptionMessage: "text-gray-300 text-body-s mt-[8px]",
-    },
     spacing: {
       default: "mt-[32px]",
       leave: "mt-[16px]",
@@ -36,9 +34,19 @@ export const alertTextStyle = cva("", {
   },
 });
 
+export const alertTextStyle = cva("", {
+  variants: {
+    variant: {
+      title: "text-gray-100 text-modal break-words whitespace-pre-wrap w-full",
+      descriptionMessage:
+        "text-gray-300 text-body-s mt-[8px] break-words whitespace-pre-wrap w-full",
+    },
+  },
+});
+
 export const buttonContainerStyle = cva("mt-[24px] flex justify-center gap-[8px]");
 
-export const alertButtonStyle = cva("w-[136px]", {
+export const alertButtonStyle = cva("flex-none w-[134px]", {
   variants: {
     variant: {
       cancel: [

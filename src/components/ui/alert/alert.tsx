@@ -6,6 +6,7 @@ import {
   buttonContainerStyle,
   alertTextStyle,
   alertIcon,
+  textContainer,
 } from "./alert.styles";
 import AlertIcon from "@/assets/icons/ic-alert.svg";
 import { Button } from "..";
@@ -33,25 +34,28 @@ export default function Alert({
   if (!isOpen) return null;
 
   return (
-    <div className={alertOverlayStyle()}>
+    <div className={alertOverlayStyle()} onClick={onCancel}>
       <div className={alertContainerStyle()} onClick={e => e.stopPropagation()}>
         {type === ALERT_TYPE.Leave && <AlertIcon className={alertIcon()} alt="Alert Icon" />}
-        {title && (
-          <span
-            className={alertTextStyle({
-              variant: "title",
-              spacing: type === ALERT_TYPE.Leave ? "leave" : "default",
-            })}
-          >
-            {title}
-          </span>
-        )}
-        {descriptionMessage && (
-          <span
-            className={alertTextStyle({ variant: "descriptionMessage" })}
-            dangerouslySetInnerHTML={{ __html: descriptionMessage }}
-          />
-        )}
+        <div
+          className={textContainer({ spacing: type === ALERT_TYPE.Leave ? "leave" : "default" })}
+        >
+          {title && (
+            <p
+              className={alertTextStyle({
+                variant: "title",
+              })}
+            >
+              {title}
+            </p>
+          )}
+          {descriptionMessage && (
+            <p
+              className={alertTextStyle({ variant: "descriptionMessage" })}
+              dangerouslySetInnerHTML={{ __html: descriptionMessage }}
+            />
+          )}
+        </div>
         <div className={buttonContainerStyle()}>
           {type !== ALERT_TYPE.Confirm && (
             <Button
