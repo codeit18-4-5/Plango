@@ -1,6 +1,6 @@
 import { Reply } from "@/components/ui";
 const mockComment = {
-  user: {
+  writer: {
     image: "dd",
     nickname: "참깨",
     id: 0,

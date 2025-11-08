@@ -5,6 +5,7 @@ import { ArticleComment } from "@/types/article-comment";
 import { Avatar, Button } from "@/components/ui";
 import { getTimeAgo } from "@/lib/utils";
 import useEditable from "@/hooks/use-editable";
+import IcKebab from "@/assets/icons/ic-kebab.svg";
 
 type ReplyProps = {
   comment: ArticleComment;
@@ -42,7 +43,7 @@ export default function Reply({ comment }: ReplyProps) {
         <>
           <div>
             <Button shape="basic" intent="primary" size="icon" aria-label="액션 메뉴">
-              ...
+              <IcKebab />
             </Button>
             <Button onClick={startEditing} intent="tertiary">
               수정

@@ -15,7 +15,7 @@ type UseEditableReturn = {
  * @author yeonsu
  * @param initialValue 초기 작성글 값
  */
-export default function useEditable(initialValue: string): UseEditableReturn {
+const useEditable = (initialValue: string): UseEditableReturn => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(initialValue);
 
@@ -44,4 +44,6 @@ export default function useEditable(initialValue: string): UseEditableReturn {
     isSaveDisabled,
     setEditedContent,
   };
-}
+};
+
+export default useEditable;
