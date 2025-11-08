@@ -40,7 +40,8 @@ const mockComments: ArticleComment[] = [
 export default function Home() {
   return (
     <div className="grid gap-y-6">
-      <ReplyInput />
+      <ReplyInput comment={mockComments[0]} />
+      <ReplyInput comment={mockComments[0]} variant="secondary" />
       <ul className="grid gap-y-4">
         {mockComments.map(comment => (
           <li key={comment.id}>

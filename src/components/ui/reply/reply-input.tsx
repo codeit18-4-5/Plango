@@ -1,9 +1,12 @@
 "use client";
 
 import cn from "@/lib/cn";
+import { useId, useState } from "react";
 import { CreateArticleComment } from "@/types/article-comment";
-import { replyWrapper, replyTextarea } from "./index.styles";
+import { useAutoResizeTextarea } from "@/hooks";
+import { replyInputWrapper, replyInputTextarea, replyInputSubmit } from "./reply-input.styles";
 import { Button } from "@/components/ui";
+import IcSubmit from "@/assets/icons/ic-enter.svg";
 
 type ReplyProps = {
   comment: CreateArticleComment;
@@ -11,16 +14,39 @@ type ReplyProps = {
 };
 
 export default function Reply({ variant = "primary" }: ReplyProps) {
+  const [comment, setComment] = useState("");
+  const isFilled = comment.trim().length > 0;
+  const textareaId = useId();
+
+  const { textareaRef, onChange } = useAutoResizeTextarea();
+
   return (
-    <div className={replyWrapper({ variant })}>
+    <div className={replyInputWrapper({ variant })}>
+      {/* 추후 textarea 컴포넌트로 대체 */}
       <textarea
-        className={cn("max-h-[18.75rem]", replyTextarea({ variant }))}
-        id={`comment`}
+        id={textareaId}
+        ref={textareaRef}
+        className={cn("max-h-[18.75rem]", replyInputTextarea({ variant }))}
         placeholder="댓글을 입력해주세요"
+        value={comment}
+        onChange={e => onChange(e, setComment)}
       />
-      <div className="flex justify-end gap-2">
-        <Button size="lg">등록</Button>
-      </div>
+
+      {variant === "primary" && (
+        <Button size="sm" className={replyInputSubmit({ variant })} disabled={!isFilled}>
+          등록
+        </Button>
+      )}
+      {variant === "secondary" && (
+        <Button
+          size="icon"
+          aria-label="등록"
+          disabled={!isFilled}
+          className={cn(replyInputSubmit({ variant }), !isFilled && "text-gray-400")}
+        >
+          <IcSubmit />
+        </Button>
+      )}
     </div>
   );
 }

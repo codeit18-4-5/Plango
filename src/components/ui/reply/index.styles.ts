@@ -1,5 +1,6 @@
 import { cva } from "class-variance-authority";
 
+// Reply 컴포넌트 스타일
 export const replyWrapper = cva("relative text-body-s text-gray-100 grid", {
   variants: {
     variant: {
