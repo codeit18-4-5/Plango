@@ -16,7 +16,6 @@ const useClickOutside = (
   useEffect(() => {
     const handleClickOutside = (event: Event) => {
       const targetRef = ref.current;
-
       if (targetRef && !targetRef.contains(event.target as Node)) {
         onClickOutside(event);
       }
@@ -29,7 +28,7 @@ const useClickOutside = (
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
-  }, [ref, onClickOutside]);
+  }, [onClickOutside]);
 };
 
 export default useClickOutside;

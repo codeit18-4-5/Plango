@@ -81,7 +81,7 @@ const config: Config = {
       screens: {
         mobile: "375px",
         tablet: "744px",
-        desktop: "1028px",
+        desktop: "1200px",
       },
       boxShadow: {
         xl: "0 25px 50px 0 rgba(0,0,0,0.25)",
