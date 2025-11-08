@@ -1,13 +1,13 @@
 "use client";
 
 //import cn from "@/lib/cn";
-import { Comments } from "@/types/comments";
+import { ArticleComment } from "@/types/article-comment";
 import { Avatar, Button } from "@/components/ui";
 import { getTimeAgo } from "@/lib/utils";
 import useEditable from "@/hooks/use-editable";
 
 type ReplyProps = {
-  comment: Comments;
+  comment: ArticleComment;
 };
 
 export default function Reply({ comment }: ReplyProps) {
@@ -40,12 +40,18 @@ export default function Reply({ comment }: ReplyProps) {
         </>
       ) : (
         <>
-          <Button onClick={startEditing}>수정</Button>
-
+          <div>
+            <Button shape="basic" intent="primary" size="icon" aria-label="액션 메뉴">
+              ...
+            </Button>
+            <Button onClick={startEditing} intent="tertiary">
+              수정
+            </Button>
+          </div>
           <p>{comment.content}</p>
           <div>
-            <Avatar image={comment.user.image} />
-            <span>{comment.user.nickname}</span>
+            <Avatar image={comment.writer.image} />
+            <span>{comment.writer.nickname}</span>
           </div>
           <span>{getTimeAgo(comment.createdAt)}</span>
         </>

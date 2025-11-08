@@ -1,11 +1,11 @@
 import { UserSummary } from "@/types/user";
 
 /**
- * comments 관련 타입 정의
+ * Comment(task) 관련 타입 정의
  * @author yeonsu
  */
 
-export interface Comments {
+export interface Comment {
   id: number;
   content: string;
   userId: number;
