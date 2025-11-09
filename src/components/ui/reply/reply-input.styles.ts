@@ -19,18 +19,11 @@ export const replyInputTextarea = cva(
     variants: {
       variant: {
         primary: [
-          "min-h-24",
-          "text-body-m",
+          "min-h-24 border border-gray-600 text-body-m bg-gray-800 rounded-lg p-4",
+          "active:border-pink-500 focus:border-pink-400",
           "placeholder:text-gray-400",
-          "bg-gray-800 rounded-lg p-4",
         ],
-        secondary: [
-          "h-4",
-          "pt-0.5",
-          "w-[calc(100%-24px)]",
-          "text-body-s",
-          "placeholder:text-gray-500",
-        ],
+        secondary: ["h-4 pt-0.5 w-[calc(100%-24px)] text-body-s placeholder:text-gray-500"],
       },
     },
     defaultVariants: {
@@ -42,7 +35,7 @@ export const replyInputTextarea = cva(
 export const replyInputSubmit = cva("block", {
   variants: {
     variant: {
-      primary: ["px-6", "tablet:h-12", "tablet:min-w-44", "tablet:text-body-m"],
+      primary: ["px-6", "tablet:h-12 tablet:min-w-44 tablet:text-body-m"],
       secondary: ["h-6 w-6 !bg-transparent text-pink-400", "hover:text-pink-500"],
     },
   },

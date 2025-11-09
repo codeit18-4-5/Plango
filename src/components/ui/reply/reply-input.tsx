@@ -22,7 +22,6 @@ export default function Reply({ variant = "primary" }: ReplyProps) {
 
   return (
     <div className={replyInputWrapper({ variant })}>
-      {/* 추후 textarea 컴포넌트로 대체 */}
       <textarea
         id={textareaId}
         ref={textareaRef}

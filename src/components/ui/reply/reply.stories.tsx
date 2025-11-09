@@ -38,7 +38,7 @@ const mockComments = {
 } satisfies Record<string, ArticleComment>;
 
 export default {
-  title: "Components/Reply",
+  title: "UI/Reply",
   component: Reply,
   tags: ["autodocs"],
   parameters: {

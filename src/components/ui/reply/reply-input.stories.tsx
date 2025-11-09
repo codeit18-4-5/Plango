@@ -6,7 +6,7 @@ const mockComment: CreateArticleComment = {
 };
 
 export default {
-  title: "Components/ReplyInput",
+  title: "UI/ReplyInput",
   component: ReplyInput,
   tags: ["autodocs"],
   parameters: {
