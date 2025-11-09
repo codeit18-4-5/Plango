@@ -57,19 +57,11 @@ export default function Alert({
         </div>
         <div className={buttonContainerStyle}>
           {type !== ALERT_TYPE.Confirm && (
-            <Button
-              className={alertButtonStyle({ variant: "cancel" })}
-              intent="secondary"
-              onClick={onCancel}
-            >
+            <Button className={alertButtonStyle} intent="cancel" onClick={onCancel}>
               닫기
             </Button>
           )}
-          <Button
-            className={alertButtonStyle({ variant: "confirm" })}
-            intent="danger"
-            onClick={onConfirm}
-          >
+          <Button className={alertButtonStyle} intent="danger" onClick={onConfirm}>
             {confirmText}
           </Button>
         </div>

@@ -51,18 +51,4 @@ export const alertTextStyle = cva("", {
 
 export const buttonContainerStyle = "mt-[24px] flex justify-center gap-[8px]";
 
-export const alertButtonStyle = cva("flex-none w-[134px]", {
-  variants: {
-    variant: {
-      cancel: [
-        "border-gray-500 text-gray-500",
-        "hover:border-gray-500 hover:bg-gray-200",
-        "active:border-gray-300 active:bg-gray-300",
-      ],
-      confirm: "hover:bg-red-700 active:bg-red-800",
-    },
-  },
-  defaultVariants: {
-    variant: "confirm",
-  },
-});
+export const alertButtonStyle = "flex-none w-[134px]";
