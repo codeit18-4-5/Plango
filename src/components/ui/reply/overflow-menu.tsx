@@ -11,7 +11,7 @@ type OverflowMenuProps = {
 
 export default function OverflowMenu({ onEdit }: OverflowMenuProps) {
   const menuWrapperRef = useRef<HTMLDivElement>(null);
-  const { isOn: isMenuOpen, toggle: toggleMenu, setOff: closeMenu } = useToggle(false);
+  const { isOpen: isMenuOpen, toggle: toggleMenu, setClose: closeMenu } = useToggle(false);
 
   useClickOutside(menuWrapperRef, closeMenu);
 
