@@ -21,6 +21,8 @@ const colors = [
   "pink-800",
   "pink-900",
   "red-400",
+  "red-500",
+  "red-600",
   "rose-400",
   "orange-400",
   "yellow-400",
