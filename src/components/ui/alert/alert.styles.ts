@@ -1,12 +1,11 @@
 import { cva } from "class-variance-authority";
 
-export const alertOverlayStyle = cva(
-  "fixed inset-0 z-[9999] flex items-center justify-center bg-modal-dimmed",
-);
+export const alertOverlayStyle =
+  "fixed inset-0 z-[9999] flex items-center justify-center bg-modal-dimmed";
 
 export const alertContainerStyle = cva(
   [
-    "flex flex-col bg-gray-800 px-4 pb-8 pt-4 text-center items-center rounded-t-xl h-auro",
+    "flex flex-col bg-gray-800 px-4 pb-8 pt-4 text-center items-center rounded-t-xl h-auto",
     "p-0 tablet:px-4 tablet:pb-8 tablet:pt-4",
     "absolute bottom-0 mobile:relative mobile:bottom-auto mobile:rounded-bl-0 mobile:rounded-b-xl",
   ],
@@ -23,16 +22,22 @@ export const alertContainerStyle = cva(
   },
 );
 
-export const alertIcon = cva("mt-[24px] w-[24px] h-[24px]");
+export const alertIcon = "mt-[24px] w-[24px] h-[24px]";
 
-export const textContainer = cva("max-h-[30vh] overflow-y-auto w-full", {
-  variants: {
-    spacing: {
-      default: "mt-[32px]",
-      leave: "mt-[16px]",
+export const textContainer = cva(
+  [
+    "max-h-[30vh] overflow-y-auto w-full [&::-webkit-scrollbar]:h-2",
+    "[&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-gray-500 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-thumb]:rounded-md",
+  ],
+  {
+    variants: {
+      spacing: {
+        default: "mt-[32px]",
+        leave: "mt-[16px]",
+      },
     },
   },
-});
+);
 
 export const alertTextStyle = cva("", {
   variants: {
@@ -44,7 +49,7 @@ export const alertTextStyle = cva("", {
   },
 });
 
-export const buttonContainerStyle = cva("mt-[24px] flex justify-center gap-[8px]");
+export const buttonContainerStyle = "mt-[24px] flex justify-center gap-[8px]";
 
 export const alertButtonStyle = cva("flex-none w-[134px]", {
   variants: {
@@ -53,7 +58,7 @@ export const alertButtonStyle = cva("flex-none w-[134px]", {
         "border-gray-500 text-gray-500",
         "hover:border-gray-500 hover:bg-gray-200",
         "active:border-gray-300 active:bg-gray-300",
-      ].join(" "),
+      ],
       confirm: "hover:bg-red-700 active:bg-red-800",
     },
   },
