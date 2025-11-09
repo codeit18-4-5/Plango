@@ -206,7 +206,7 @@ body {
 .icon-btn {
   line-height: 0;
 }
-
+/* 접근성 텍스트 숨김 */
 .visually-hidden {
   position: absolute;
   width: 1px;
