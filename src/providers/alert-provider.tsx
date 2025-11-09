@@ -11,12 +11,12 @@ export const ALERT_TYPE = {
 
 export type AlertType = (typeof ALERT_TYPE)[keyof typeof ALERT_TYPE];
 
-export interface AlertOptions {
+interface AlertOptions {
   descriptionMessage?: string;
   type?: AlertType;
 }
 
-export interface AlertEssentialProps extends AlertOptions {
+interface AlertEssentialProps extends AlertOptions {
   isOpen: boolean;
   title?: string;
   confirmText?: string;
