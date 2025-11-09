@@ -15,6 +15,13 @@ interface UseImageUploadOptions {
   onError?: (msg: string) => void;
 }
 
+/** 이미지 업로드 훅
+ * 미리보기, 파일 처리 함수, 이미지 제거 함수, 에러 메시지 관리
+ * @author yeonsu
+ * @param maxImageSizeMB 최대 이미지 파일 크기 (MB)
+ * @param onError
+ */
+
 const useImageUpload = ({
   maxImageSizeMB = FILE_POLICY.MAX_IMAGE_SIZE_MB,
   onError,
@@ -63,9 +70,6 @@ const useImageUpload = ({
     };
 
     reader.readAsDataURL(file);
-
-    setError(null);
-
     resetInput?.();
   };
 
