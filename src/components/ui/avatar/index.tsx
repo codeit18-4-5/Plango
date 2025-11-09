@@ -29,8 +29,10 @@ export default function Avatar({ image, alt = "", shape = "basic", className }: 
           className="object-cover"
           onError={() => setImageError(true)}
         />
+      ) : shape === "basic" ? (
+        <FallbackImageBasic />
       ) : (
-        <>{shape === "basic" ? <FallbackImageBasic /> : <FallbackImageSquare />}</>
+        <FallbackImageSquare />
       )}
     </span>
   );
