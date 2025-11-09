@@ -1,3 +1,5 @@
+"use client";
+
 import { ALERT_TYPE, AlertType } from "@/providers/alert-provider";
 import {
   alertButtonStyle,
