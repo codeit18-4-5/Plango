@@ -6,7 +6,7 @@ type ButtonProps<T extends ElementType = "button"> = {
   as?: T;
   size?: "sm" | "md" | "lg" | "icon";
   shape?: "basic" | "round";
-  intent?: "primary" | "secondary" | "tertiary" | "danger";
+  intent?: "primary" | "secondary" | "tertiary" | "danger" | "cancel";
   full?: boolean;
   disabled?: boolean;
   className?: string;

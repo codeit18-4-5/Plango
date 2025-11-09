@@ -12,6 +12,16 @@ const outlineButtonBase = [
   "disabled:text-gray-400 disabled:border-gray-400 aria-disabled:text-gray-400 aria-disabled:border-gray-400",
 ].join(" ");
 
+const iconButtonBase = [
+  "bg-transparent border-transparent",
+  "hover:bg-transparent active:bg-transparent",
+].join(" ");
+
+const cancelButton = [
+  "bg-white text-gray-500 border border-gray-300",
+  "hover:border-gray-500 hover:bg-gray-100 active:border-gray-700 active:text-gray-700",
+].join(" ");
+
 const buttonStyle = cva("flex items-center justify-center gap-1 whitespace-nowrap", {
   variants: {
     size: {
@@ -28,7 +38,8 @@ const buttonStyle = cva("flex items-center justify-center gap-1 whitespace-nowra
       primary: backgroundButton,
       secondary: `${outlineButtonBase} bg-white`,
       tertiary: outlineButtonBase,
-      danger: "text-white bg-red-400",
+      cancel: cancelButton,
+      danger: "text-white bg-red-400 hover:bg-red-500 active:bg-red-600",
     },
     full: {
       true: "w-full",
@@ -42,7 +53,7 @@ const buttonStyle = cva("flex items-center justify-center gap-1 whitespace-nowra
   compoundVariants: [
     {
       size: "icon",
-      className: "rounded-full bg-transparent border-transparent",
+      className: `icon-btn rounded-full ${iconButtonBase}`,
     },
   ],
   defaultVariants: {

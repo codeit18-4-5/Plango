@@ -32,7 +32,9 @@
   --pink-800: #5a1428;
   --pink-900: #27040d;
 
-  --red-400: #dc2626;
+  --red-400: #cc1020;
+  --red-500: #b30c1a;
+  --red-600: #a0020f;
 
   --rose-400: #f43f5e;
 
@@ -116,6 +118,8 @@
   --blue-300: #3b82f6;
   --blue-400: #06b6d4;
 
+  --red-600: #cc1020;
+  --red-400: #a0020f;
   /* Base colors */
   --black: #ffffff;
   --white: var(--gray-100);

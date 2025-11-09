@@ -37,6 +37,8 @@ const config: Config = {
         },
         red: {
           400: "var(--red-400)",
+          500: "var(--red-500)",
+          600: "var(--red-600)",
         },
         rose: {
           400: "var(--rose-400)",
