@@ -16,7 +16,6 @@ interface AlertProps {
   title?: string;
   descriptionMessage?: string;
   confirmText?: string;
-  cancelText?: string;
   onConfirm: () => void;
   onCancel: () => void;
   type: AlertType;
@@ -34,9 +33,9 @@ export default function Alert({
   if (!isOpen) return null;
 
   return (
-    <div className={alertOverlayStyle()} onClick={onCancel}>
+    <div className={alertOverlayStyle} onClick={onCancel}>
       <div className={alertContainerStyle()} onClick={e => e.stopPropagation()}>
-        {type === ALERT_TYPE.Leave && <AlertIcon className={alertIcon()} alt="Alert Icon" />}
+        {type === ALERT_TYPE.Leave && <AlertIcon className={alertIcon} alt="Alert Icon" />}
         <div
           className={textContainer({ spacing: type === ALERT_TYPE.Leave ? "leave" : "default" })}
         >
@@ -56,7 +55,7 @@ export default function Alert({
             />
           )}
         </div>
-        <div className={buttonContainerStyle()}>
+        <div className={buttonContainerStyle}>
           {type !== ALERT_TYPE.Confirm && (
             <Button
               className={alertButtonStyle({ variant: "cancel" })}
