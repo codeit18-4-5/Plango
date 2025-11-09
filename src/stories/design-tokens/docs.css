@@ -6,3 +6,18 @@ html [class^="css-"],
 html [class*=" css-"] {
   color: #000 !important;
 }
+
+.sbdocs input::-ms-check {
+  display: block;
+}
+.sbdocs select::-ms-expand {
+  display: block;
+}
+.sbdocs input[type="checkbox"] {
+  display: block;
+  cursor: pointer;
+}
+.sbdocs input[type="radio"] {
+  display: block;
+  cursor: pointer;
+}

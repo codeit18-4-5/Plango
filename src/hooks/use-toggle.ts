@@ -1,25 +1,17 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 
-/**
- * 토글 상태를 관리하는 훅
- * @param initialValue 토글의 초기 기본값: false
- */
-
-type UseToggleReturn = {
-  isOn: boolean;
+type UseToggle = {
+  isOpen: boolean;
   toggle: () => void;
-  setOn: () => void;
-  setOff: () => void;
+  setOpen: () => void;
+  setClose: () => void;
 };
 
-const useToggle = (initialValue = false): UseToggleReturn => {
-  const [isOn, setIsOn] = useState<boolean>(initialValue);
-
-  const toggle = useCallback(() => setIsOn(prev => !prev), []);
-  const setOn = useCallback(() => setIsOn(true), []);
-  const setOff = useCallback(() => setIsOn(false), []);
-
-  return { isOn, toggle, setOn, setOff };
+const useToggle = (init = false): UseToggle => {
+  const [isOpen, setIsOpen] = useState(init);
+  const toggle = () => setIsOpen(prev => !prev);
+  const setOpen = () => setIsOpen(true);
+  const setClose = () => setIsOpen(false);
+  return { isOpen, toggle, setOpen, setClose };
 };
-
 export default useToggle;
