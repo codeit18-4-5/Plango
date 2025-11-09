@@ -3,3 +3,4 @@ export { default as CircleButton } from "@/components/ui/button/circle-button";
 export { default as FloatingWrapper } from "@/components/ui/floating/floating-wrapper";
 export { default as Input } from "@/components/ui/input/input";
 export { default as Checkbox } from "@/components/ui/input/checkbox";
+export { default as ImgUpload } from "@/components/ui/img-upload";
