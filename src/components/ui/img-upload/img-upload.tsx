@@ -1,12 +1,16 @@
 "use client";
 
 import { useRef } from "react";
-import { useImageUpload } from "@/hooks";
+import { useImageUpload, useFileDrop } from "@/hooks";
 import Image from "next/image";
 import IcCancel from "@/assets/icons/ic-cancel.svg";
 
 export default function ImgUpload() {
   const { preview, error, handleFile, removeImage } = useImageUpload();
+  const { onDragOver, onDragLeave, onDrop } = useFileDrop({
+    onFiles: files => handleFile(files[0]),
+  });
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,7 +24,7 @@ export default function ImgUpload() {
 
   return (
     <div>
-      <div>
+      <div onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}>
         {!preview ? (
           <input
             ref={inputRef}
