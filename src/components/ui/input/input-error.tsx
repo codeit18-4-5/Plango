@@ -10,5 +10,5 @@ type InputErrorProps = {
 
 export default function InputError({ className }: InputErrorProps) {
   const ctx = useContext(InputContext);
-  return <p className={cn(inputErrorStyle, className)}>{ctx?.errorMsg}</p>;
+  return <>{ctx?.errorMsg && <p className={cn(inputErrorStyle, className)}>{ctx?.errorMsg}</p>}</>;
 }
