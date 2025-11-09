@@ -92,7 +92,6 @@ export function AlertProvider({ children }: { children: ReactNode }) {
   );
 
   const handleConfirm = useCallback(() => {
-    alert.onConfirm?.();
     if (alertResolver) {
       alertResolver(true);
       setAlertResolver(null);
@@ -101,7 +100,6 @@ export function AlertProvider({ children }: { children: ReactNode }) {
   }, [alert, alertResolver]);
 
   const handleCancel = useCallback(() => {
-    alert.onCancel?.();
     if (alertResolver) {
       alertResolver(false);
       setAlertResolver(null);
