@@ -31,7 +31,7 @@ const ModalContext = createContext<ModalContextType | null>(null);
 const useModalContext = () => {
   const context = useContext(ModalContext);
   if (!context) {
-    throw new Error("Modal components must be used within Modal");
+    throw new Error("Modal Context Error");
   }
   return context;
 };
