@@ -14,6 +14,8 @@ type ReplyProps = {
 };
 
 export default function Reply({ comment, variant = "primary" }: ReplyProps) {
+  const { textareaRef, onChange, resize } = useAutoResizeTextarea();
+
   const {
     isEditing,
     editedContent,
@@ -22,9 +24,7 @@ export default function Reply({ comment, variant = "primary" }: ReplyProps) {
     saveEditing,
     isSaveDisabled,
     setEditedContent,
-  } = useEditable(comment.content);
-
-  const { textareaRef, onChange, resize } = useAutoResizeTextarea();
+  } = useEditable(comment.content, { textareaRef });
 
   useEffect(() => {
     if (isEditing) {

@@ -26,7 +26,7 @@ export const replyInner = cva("relative grid", {
 });
 
 export const replyTextarea = cva(
-  "w-full overflow-auto resize-none bg-transparent whitespace-pre-line outline-none",
+  "w-full scroll-bar resize-none bg-transparent whitespace-pre-line outline-none",
   {
     variants: {
       variant: {

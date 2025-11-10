@@ -5,7 +5,7 @@ export const replyInputWrapper = cva("relative flex", {
   variants: {
     variant: {
       primary: "flex-wrap justify-end gap-y-4",
-      secondary: "justify-between items-center gap-x-2.5 py-3 border-t border-b border-gray-600",
+      secondary: "justify-between gap-x-2.5 py-3 border-t border-b border-gray-600",
     },
   },
   defaultVariants: {
@@ -14,7 +14,7 @@ export const replyInputWrapper = cva("relative flex", {
 });
 
 export const replyInputTextarea = cva(
-  "w-full overflow-auto resize-none bg-transparent whitespace-pre-line outline-none",
+  "w-full resize-none bg-transparent whitespace-pre-line outline-none scroll-bar",
   {
     variants: {
       variant: {
@@ -24,7 +24,7 @@ export const replyInputTextarea = cva(
           "placeholder:text-gray-400",
         ],
         secondary: [
-          "min-h-auto border-0 p-0 rounded-none",
+          "min-h-auto border-0 p-0 rounded-none mt-[3px]",
           "h-4 w-[calc(100%-24px)] !text-body-s placeholder:text-gray-500",
         ],
       },
