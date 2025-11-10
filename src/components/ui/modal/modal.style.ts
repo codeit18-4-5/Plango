@@ -4,8 +4,9 @@ export const modalOverlayStyle =
   "fixed inset-0 z-[9000] flex items-center justify-center bg-modal-dimmed";
 
 export const modalContainerStyle = [
-  "w-[90vw] max-w-[384px] bg-gray-800 rounded-xl flex flex-col py-[24px] desktop:pt-[24px]",
+  "w-[100vw] max-w-[384px] bg-gray-800 rounded-t-xl flex flex-col py-[24px] desktop:pt-[24px]",
   "mobile:w-[380px] mobile:max-w-full",
+  "absolute bottom-0 left-0 mobile:relative mobile:bottom-auto mobile:rounded-bl-0 mobile:rounded-b-xl",
 ].join(" ");
 
 export const headerWrapperStyle = cva("flex sticky top-0 pb-[24px] items-center text-center", {
