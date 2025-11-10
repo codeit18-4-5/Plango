@@ -5,7 +5,7 @@ export const replyInputWrapper = cva("relative flex", {
   variants: {
     variant: {
       primary: "flex-wrap justify-end gap-y-4",
-      secondary: "justify-between gap-x-2.5 py-3 border-t border-b border-gray-600",
+      secondary: "justify-between items-center gap-x-2.5 py-3 border-t border-b border-gray-600",
     },
   },
   defaultVariants: {
@@ -23,7 +23,10 @@ export const replyInputTextarea = cva(
           "active:border-pink-500 focus:border-pink-400",
           "placeholder:text-gray-400",
         ],
-        secondary: ["h-4 pt-0.5 w-[calc(100%-24px)] text-body-s placeholder:text-gray-500"],
+        secondary: [
+          "min-h-auto border-0 p-0 rounded-none",
+          "h-4 w-[calc(100%-24px)] !text-body-s placeholder:text-gray-500",
+        ],
       },
     },
     defaultVariants: {
