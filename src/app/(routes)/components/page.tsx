@@ -1,8 +1,8 @@
 "use client";
 
 import { Container } from "@/components/layout";
-import { Checkbox, Input } from "@/components/ui";
-import InputLabel from "@/components/ui/input/input-label";
+import { Checkbox, Floating } from "@/components/ui";
+import ScrollTopButton from "@/components/ui/button/scroll-top-button";
 import { useState } from "react";
 
 function CheckboxControllerDemo() {
@@ -39,16 +39,6 @@ function CheckboxControllerDemo() {
         </div>
         <Checkbox checked readOnly label="읽기 전용" />
       </section>
-      <InputLabel />
-      <Input id="password" errorMsg="">
-        <Input.Label label="비밀번호" />
-        <Input.Password />
-        <Input.Error />
-      </Input>
-      <Input id="searchBar">
-        <Input.Label label="검색창" hidden />
-        <Input.Search />
-      </Input>
     </div>
   );
 }
@@ -57,6 +47,10 @@ export default function Components() {
   return (
     <Container>
       <CheckboxControllerDemo />
+      <div className="h-[1000px] border border-pink-600">ScrollTopButton test box</div>
+      <Floating>
+        <ScrollTopButton></ScrollTopButton>
+      </Floating>
     </Container>
   );
 }

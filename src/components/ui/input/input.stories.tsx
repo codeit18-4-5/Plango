@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import type { ComponentProps } from "react";
 import Input from "./input";
 import InputField from "./input-field";
@@ -191,10 +191,37 @@ export const NoLabel: Story = {
     hidden: true,
     placeholder: "검색어를 입력해주세요",
   },
-  render: ({ id, label, hidden, size, required, ...fieldProps }) => (
+  render: ({ id, label, hidden, ...fieldProps }) => (
     <Input id={id}>
-      <Input.Label label={label} size={size} required={required} hidden={hidden} />
+      <Input.Label label={label} hidden={hidden} />
       <Input.Field {...fieldProps} />
+    </Input>
+  ),
+};
+export const Search: Story = {
+  args: {
+    id: "search",
+    label: "검색",
+    hidden: true,
+    placeholder: "검색어를 입력해주세요",
+  },
+  render: ({ id, label, hidden, ...fieldProps }) => (
+    <Input id={id}>
+      <Input.Label label={label} hidden={hidden} />
+      <Input.Search {...fieldProps} />
+    </Input>
+  ),
+};
+export const Password: Story = {
+  args: {
+    id: "password",
+    label: "비밀번호",
+    placeholder: "비밀번호를 입력해주세요",
+  },
+  render: ({ id, label, ...fieldProps }) => (
+    <Input id={id}>
+      <Input.Label label={label} />
+      <Input.Password {...fieldProps} />
     </Input>
   ),
 };
