@@ -40,7 +40,7 @@ export default function InputPassword({
         size="icon"
         aria-label={isOpen ? "비밀번호 숨기기" : "비밀번호 보기"}
         onClick={toggle}
-        className="absolute right-4 top-1/2 -translate-y-1/2"
+        className="absolute right-4 top-1/2 h-6 w-6 -translate-y-1/2"
       >
         {isOpen ? <IcVisible /> : <IcVisibleOff />}
       </Button>

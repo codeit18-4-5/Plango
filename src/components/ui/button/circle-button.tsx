@@ -1,3 +1,4 @@
+"use client";
 import cn from "@/lib/cn";
 import { ElementType, ReactNode, ComponentPropsWithoutRef } from "react";
 import { backgroundButton } from "./button.styles";
@@ -17,7 +18,14 @@ export default function CircleButton<T extends ElementType = "button">({
   const Component = as || "button";
 
   return (
-    <Component className={cn(backgroundButton, "h-14 w-14 rounded-full", className)} {...props}>
+    <Component
+      className={cn(
+        backgroundButton,
+        "flex h-14 w-14 items-center justify-center rounded-full",
+        className,
+      )}
+      {...props}
+    >
       {children}
     </Component>
   );

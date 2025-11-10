@@ -28,18 +28,21 @@ export default function Checkbox({
 
   return (
     <div className="relative">
-      <label className="flex cursor-pointer items-center gap-2">
-        {checked ? <IcChecked /> : <IcCheckbox />}
+      <label className={cn("flex cursor-pointer items-center gap-2", className)}>
+        {checked ? <IcChecked className="h-6 w-6" /> : <IcCheckbox className="h-6 w-6" />}
         <input
           type="checkbox"
           checked={checked}
           onChange={handleCheckboxToggle}
           readOnly={readOnly}
           disabled={disabled}
-          className={cn(className)}
           {...props}
         />
-        {label && <span className={cn("text-body-s", checked && "line-through")}>{label}</span>}
+        {label && (
+          <span className={cn("text-body-s text-gray-100", checked && "line-through")}>
+            {label}
+          </span>
+        )}
       </label>
     </div>
   );
