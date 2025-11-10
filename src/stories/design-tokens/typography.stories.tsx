@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 
 const texts = [
   { name: "text-heading-l", label: "h1", size: 40, tb: 24, mb: 24 },
