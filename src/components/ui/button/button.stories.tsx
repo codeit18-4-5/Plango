@@ -19,21 +19,23 @@ const meta: Meta<typeof Button> = {
       control: { type: "text" },
     },
     as: {
-      description: "적용할 태그(기본 button)",
-      control: false,
+      description: `적용할 태그(Default: button)
+    - Link 컴포넌트 사용시 해당 페이지에서 import 후 as={Link}`,
+      control: { type: "radio" },
+      options: ["button", "a"],
     },
     size: {
-      description: "버튼 크기",
+      description: "버튼 크기 (Default: lg)",
       control: { type: "radio" },
       options: ["sm", "md", "lg", "icon"],
     },
     shape: {
-      description: "버튼 모양",
+      description: "버튼 모양 (Default: basic)",
       control: { type: "radio" },
       options: ["basic", "round"],
     },
     intent: {
-      description: "버튼 상태",
+      description: "버튼 상태 (Default: primary)",
       control: { type: "radio" },
       options: ["primary", "secondary", "tertiary", "danger"],
     },
@@ -55,7 +57,7 @@ const meta: Meta<typeof Button> = {
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: { children: "로그인 하기" },
+  args: { children: "로그인 하기", full: false, disabled: false },
 };
 
 export const Icon: Story = {

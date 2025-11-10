@@ -1,15 +1,17 @@
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
+import type { Meta, StoryObj } from "@storybook/nextjs";
 import Button from "../button/button";
-import FloatingWrapper from "./floating-wrapper";
+import Floating from "./floating";
 import CircleButton from "../button/circle-button";
-const meta: Meta<typeof FloatingWrapper> = {
+import ScrollTopButton from "../button/scroll-top-button";
+import IcEdit from "@/assets/icons/ic-pencil.svg";
+const meta: Meta<typeof Floating> = {
   title: "UI/Floating",
-  component: FloatingWrapper,
+  component: Floating,
   tags: ["autodocs"],
   parameters: {
     docs: {
       description: {
-        component: "플로팅 컨텐츠 컴포넌트",
+        component: "내부 요소를 플로팅으로 변경해주는 wrapper",
       },
     },
   },
@@ -37,9 +39,9 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   render: () => (
     <div className="relative">
-      <FloatingWrapper>
+      <Floating>
         <Button shape="round">+ 글쓰기</Button>
-      </FloatingWrapper>
+      </Floating>
     </div>
   ),
 };
@@ -47,17 +49,12 @@ export const Default: Story = {
 export const Multiple: Story = {
   render: () => (
     <div className="relative h-[300px]">
-      <FloatingWrapper>
+      <Floating>
+        <ScrollTopButton />
         <CircleButton>
-          <span className="text-2xl">✎</span>
+          <IcEdit className="h-6 w-6" />
         </CircleButton>
-        <CircleButton>
-          <span className="text-2xl">↑</span>
-        </CircleButton>
-        <CircleButton>
-          <span className="text-2xl">+</span>
-        </CircleButton>
-      </FloatingWrapper>
+      </Floating>
     </div>
   ),
 };
