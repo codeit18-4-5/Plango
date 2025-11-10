@@ -7,8 +7,14 @@ import Image from "next/image";
 import IcCancel from "@/assets/icons/ic-cancel.svg";
 import IcPlus from "@/assets/icons/ic-plus.svg";
 
+/**
+ * 이미지 업로드 컴포넌트
+ * 미리보기, 드래그앤드롭, 파일 선택
+ * @author yeonsu
+ */
+
 export default function ImgUpload() {
-  const { preview, error, handleFile, removeImage } = useImageUpload();
+  const { preview, error, handleFile, clearPreview } = useImageUpload();
   const { onDragOver, onDragLeave, onDrop } = useFileDrop({
     onFiles: files => handleFile(files[0]),
   });
@@ -17,11 +23,10 @@ export default function ImgUpload() {
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      handleFile(file, () => {
-        if (inputRef.current) inputRef.current.value = "";
-      });
-    }
+    if (!file) return;
+
+    handleFile(file);
+    e.target.value = "";
   };
 
   const inputId = useId();
@@ -34,21 +39,19 @@ export default function ImgUpload() {
         onDragLeave={onDragLeave}
         onDrop={onDrop}
       >
+        <input
+          ref={inputRef}
+          id={inputId}
+          type="file"
+          accept="image/*"
+          onChange={onChange}
+          className={IMG_UPLOAD_STYLES.input}
+        />
         {!preview ? (
-          <>
-            <input
-              ref={inputRef}
-              id={inputId}
-              type="file"
-              accept="image/*"
-              onChange={onChange}
-              className={IMG_UPLOAD_STYLES.input}
-            />
-            <label htmlFor={inputId} className={IMG_UPLOAD_STYLES.label}>
-              <IcPlus className={IMG_UPLOAD_STYLES.icon.plus} />
-              <span>이미지 등록</span>
-            </label>
-          </>
+          <label htmlFor={inputId} className={IMG_UPLOAD_STYLES.label}>
+            <IcPlus className={IMG_UPLOAD_STYLES.icon.plus} />
+            <span>이미지 등록</span>
+          </label>
         ) : (
           <>
             <Image
@@ -59,7 +62,7 @@ export default function ImgUpload() {
             />
             <button
               type="button"
-              onClick={removeImage}
+              onClick={clearPreview}
               aria-label="등록 이미지 삭제"
               className={IMG_UPLOAD_STYLES.button}
             >

@@ -16,7 +16,7 @@ interface UseImageUploadOptions {
 }
 
 /** 이미지 업로드 훅
- * 미리보기, 파일 처리 함수, 이미지 제거 함수, 에러 메시지 관리
+ * 미리보기(생성/제거), 파일 처리, 파일 유효성 검사
  * @author yeonsu
  * @param maxImageSizeMB 최대 이미지 파일 크기 (MB)
  * @param onError
@@ -52,10 +52,9 @@ const useImageUpload = ({
     return true;
   };
 
-  const handleFile = (file: File, resetInput?: () => void) => {
+  const handleFile = (file: File) => {
     if (!validateFile(file)) {
-      resetInput?.();
-      return;
+      return false;
     }
 
     const reader = new FileReader();
@@ -70,10 +69,10 @@ const useImageUpload = ({
     };
 
     reader.readAsDataURL(file);
-    resetInput?.();
+    return true;
   };
 
-  const removeImage = () => {
+  const clearPreview = () => {
     setPreview(null);
   };
 
@@ -81,7 +80,7 @@ const useImageUpload = ({
     preview,
     error,
     handleFile,
-    removeImage,
+    clearPreview,
   };
 };
 
