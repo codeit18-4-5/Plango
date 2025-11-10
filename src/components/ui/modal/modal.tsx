@@ -61,14 +61,6 @@ const Body = ({ children }: ModalBodyProps) => {
   return <div className={bodyStyle}>{children}</div>;
 };
 
-const MorePaddingBody = ({ children }: ModalBodyProps) => {
-  return (
-    <div className="px-[36px]">
-      <div className={bodyStyle}>{children}</div>
-    </div>
-  );
-};
-
 const FooterWithOnlyConfirm = ({
   confirmButtonTitle,
   onConfirm,
@@ -125,7 +117,6 @@ function Modal({ children, isOpen, onClose }: ModalProps) {
 
 Modal.HeaderWithOnlyTitle = HeaderWithOnlyTitle;
 Modal.HeaderWithClose = HeaderWithClose;
-Modal.MorePaddingBody = MorePaddingBody;
 Modal.Body = Body;
 Modal.FooterWithOnlyConfirm = FooterWithOnlyConfirm;
 Modal.FooterWithButtons = FooterWithButtons;
