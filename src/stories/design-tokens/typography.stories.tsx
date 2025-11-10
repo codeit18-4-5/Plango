@@ -8,7 +8,7 @@ const texts = [
   { name: "text-body-m", label: "Body-2", size: 16, tb: 16, mb: 14 },
   { name: "text-body-s", label: "Body-3", size: 14, tb: 14, mb: 14 },
   { name: "text-body-xs", label: "Body-4", size: 12, tb: 12, mb: 12 },
-  { name: "text-modal", label: "Modal Title", size: 16, tb: 16, mb: 16 },
+  { name: "text-modal", label: "Modal Title", size: 16, tb: 16, mb: 14 },
   { name: "text-caption", label: "Caption", size: 14, tb: 14, mb: 14 },
 ];
 
