@@ -29,7 +29,7 @@ const useImageUpload = ({
   const [preview, setPreview] = useState<ImagePreview | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const MAX_SIZE = maxImageSizeMB * 1024 * 1024;
+  const maxSize = maxImageSizeMB * 1024 * 1024;
 
   const validateFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -39,7 +39,7 @@ const useImageUpload = ({
 
       return false;
     }
-    if (file.size > MAX_SIZE) {
+    if (file.size > maxSize) {
       const msg = `파일 크기는 ${maxImageSizeMB}MB를 초과할 수 없습니다.`;
       setError(msg);
       onError?.(msg);
