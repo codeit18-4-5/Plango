@@ -12,13 +12,7 @@ import Button from "../button/button";
 import { createContext, ReactNode, useContext } from "react";
 import CloseIcon from "@/assets/icons/ic-cancel.svg";
 import { Container as ModalLayoutContainer } from "@/components/layout";
-
-const MODAL_BUTTON_TYPE = {
-  Short: "short",
-  Long: "long",
-} as const;
-
-type ModalButtonType = (typeof MODAL_BUTTON_TYPE)[keyof typeof MODAL_BUTTON_TYPE];
+import { createPortal } from "react-dom";
 
 interface ModalContextType {
   onClose: () => void;
@@ -78,19 +72,13 @@ const MorePaddingBody = ({ children }: ModalBodyProps) => {
 const FooterWithOnlyConfirm = ({
   confirmButtonTitle,
   onConfirm,
-  size = "long",
 }: {
   confirmButtonTitle: string;
   onConfirm: () => void;
-  size?: ModalButtonType;
 }) => {
   return (
     <div className="relative">
-      <div
-        className={floatingButtonWrapperStyle({
-          size: size === MODAL_BUTTON_TYPE.Short ? "short" : null,
-        })}
-      >
+      <div className={floatingButtonWrapperStyle}>
         <Button className="w-[100%]" onClick={onConfirm}>
           {confirmButtonTitle}
         </Button>
@@ -109,7 +97,7 @@ const FooterWithButtons = ({
   const { onClose } = useModalContext();
 
   return (
-    <div className="flex gap-[8px]">
+    <div className="flex justify-center gap-[8px]">
       <Button className="w-[136px]" intent="secondary" onClick={onClose}>
         닫기
       </Button>
@@ -123,14 +111,15 @@ const FooterWithButtons = ({
 function Modal({ children, isOpen, onClose }: ModalProps) {
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <ModalContext.Provider value={{ onClose }}>
       <div className={modalOverlayStyle} onClick={onClose}>
         <div onClick={e => e.stopPropagation()}>
           <ModalLayoutContainer className={modalContainerStyle}>{children}</ModalLayoutContainer>
         </div>
       </div>
-    </ModalContext.Provider>
+    </ModalContext.Provider>,
+    document.body,
   );
 }
 
