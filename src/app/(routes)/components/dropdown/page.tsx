@@ -30,7 +30,9 @@ function DropdownDemo() {
         </p>
         <Dropdown size="md" selected={selected} setSelected={setSelected} className="z-20">
           <Dropdown.TriggerSelect isIcon={true} intent="select">
-            <IcDropdown />
+            <span className="w-[24px]">
+              <IcDropdown />
+            </span>
           </Dropdown.TriggerSelect>
           <Dropdown.Menu>
             {options.map(option => (
@@ -51,7 +53,9 @@ function DropdownDemo() {
         <p className="my-[20px]">icon 혹은 icon + 글자 조합 ex. 케밥아이콘, 헤더의 마이페이지 등</p>
         <Dropdown size="sm" className="z-10">
           <Dropdown.TriggerIcon intent="icon">
-            <IcKebab />
+            <span className="w-[24px]">
+              <IcKebab />
+            </span>
           </Dropdown.TriggerIcon>
           <Dropdown.Menu>
             <Dropdown.Option align="center">수정하기</Dropdown.Option>
