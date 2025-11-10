@@ -150,6 +150,10 @@
 
     --fs-heading-m: 1.125rem; /* 18px */
     --lh-heading-m: 1.167; /* 21/18 = 116.7% */
+
+    /* Modal */
+    --fs-heading-modal: 0.875rem; /* 14px */
+    --lh-heading-modal: 1.188; /* 19/14 = 118.8% */
   }
 }
 
@@ -241,4 +245,14 @@ input[type="checkbox"] {
 input[type="radio"] {
   display: none;
   cursor: pointer;
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+}
+
+svg,
+svg circle {
+  color: inherit;
 }

@@ -1,5 +1,5 @@
 import { withThemeByClassName } from "@storybook/addon-themes";
-import type { Preview } from "@storybook/nextjs-vite";
+import type { Preview } from "@storybook/nextjs";
 import "@/styles/globals.css";
 import "@/styles/fonts.css";
 import "@/stories/design-tokens/docs.css";
