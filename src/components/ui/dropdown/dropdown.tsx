@@ -1,6 +1,7 @@
 "use client";
 import cn from "@/lib/cn";
-import useToggle from "@/hooks/use-toggle";
+import { useRef } from "react";
+import { useToggle, useClickOutside } from "@/hooks";
 import { DropdownContext } from "./dropdown.context";
 import { DropdownProps } from "./dropdown.props";
 import { dropDownStyle } from "./dropdown.styles";
@@ -16,11 +17,16 @@ export default function Dropdown({
   selected,
   setSelected,
 }: DropdownProps) {
-  const { isOpen, toggle } = useToggle();
+  const { isOpen, toggle, setClose } = useToggle();
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useClickOutside(dropdownRef, setClose);
 
   return (
     <DropdownContext.Provider value={{ isOpen, toggle, size, selected, setSelected }}>
-      <div className={cn(dropDownStyle({ size, className }))}>{children}</div>
+      <div ref={dropdownRef} className="relative inline-block">
+        <div className={cn(dropDownStyle({ size, className }))}>{children}</div>
+      </div>
     </DropdownContext.Provider>
   );
 }
