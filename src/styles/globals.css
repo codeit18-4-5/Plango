@@ -8,6 +8,14 @@
   }
 }
 
+/* react-loading-skeleton 커스텀 스타일 */
+@layer components {
+  .react-loading-skeleton {
+    --base-color: var(--skeleton-base) !important;
+    --highlight-color: var(--skeleton-highlight) !important;
+  }
+}
+
 /* 기본변수 */
 :root {
   /* color */
@@ -58,6 +66,8 @@
   --modal-dimmed: rgba(0, 0, 0, 0.5);
 
   --gradient: linear-gradient(90deg, #97193d 0%, #f68c9e 100%);
+  --skeleton-base: #2d3a4d;
+  --skeleton-highlight: #344358;
 
   /* font size */
   /* Caption */
@@ -123,6 +133,9 @@
   /* Base colors */
   --black: #ffffff;
   --white: var(--gray-100);
+
+  --skeleton-base: #cbd5e1;
+  --skeleton-highlight: #bdc8d6;
 }
 
 /* 태블릿 대응 */
