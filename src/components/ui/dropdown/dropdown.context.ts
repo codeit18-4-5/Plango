@@ -1,11 +1,11 @@
 import { createContext } from "react";
+import { DropdownOption } from "@/types/option";
 
 interface DropdownContextType {
   isOpen: boolean;
   toggle: () => void;
   size?: "sm" | "md" | undefined;
-  selected?: string | undefined;
-  setSelected?: (value: string) => void;
+  onSelect?: ({ label, value }: DropdownOption) => void;
 }
 
 export const DropdownContext = createContext<DropdownContextType | null>(null);

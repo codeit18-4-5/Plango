@@ -9,7 +9,8 @@ import IcDropdown from "@/assets/icons/ic-dropdown.svg";
 import IcKebab from "@/assets/icons/ic-kebab.svg";
 
 function DropdownDemo() {
-  const [selected, setSelected] = useState("");
+  const [selectedLabel, setSelectedLabel] = useState("");
+  const [selectedValue, setSelectedValue] = useState("");
   const router = useRouter();
 
   const options: DropdownOption[] = [
@@ -19,8 +20,13 @@ function DropdownDemo() {
   ];
 
   useEffect(() => {
-    setSelected(options[0].label);
+    setSelectedLabel(options[0].label);
   }, []);
+
+  const handleSelectValue = ({ value, label }: DropdownOption) => {
+    setSelectedLabel(label ?? "");
+    setSelectedValue(value);
+  };
 
   return (
     <>
@@ -28,8 +34,8 @@ function DropdownDemo() {
         <p className="my-[20px]">
           custom option + 아이콘이 있는 경우 ex. 헤더, 자유게시판 정렬, 할일의 반복주기 생성
         </p>
-        <Dropdown size="md" selected={selected} setSelected={setSelected} className="z-20">
-          <Dropdown.TriggerSelect isIcon={true} intent="select">
+        <Dropdown size="md" onSelect={handleSelectValue} className="z-20">
+          <Dropdown.TriggerSelect isIcon={true} intent="select" selectedLabel={selectedLabel}>
             <span className="w-[24px]">
               <IcDropdown />
             </span>
@@ -39,9 +45,9 @@ function DropdownDemo() {
               <Dropdown.Option
                 onClick={() => router.push("/")}
                 key={option.value}
-                value={option.value}
+                value={selectedValue}
+                // selectedValue 사용을 안하면 lint에 걸려서 저렇게 작성하게 되었습니다.
                 label={option.label}
-                setSelected={setSelected}
               >
                 {option.label}
               </Dropdown.Option>

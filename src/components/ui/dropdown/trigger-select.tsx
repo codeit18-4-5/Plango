@@ -4,7 +4,13 @@ import { DropdownContext } from "./dropdown.context";
 import { SelectTriggerProps } from "./dropdown.props";
 import { dropDownTriggerStyle } from "./dropdown.styles";
 
-export function TriggerSelect({ children, className, isIcon, intent }: SelectTriggerProps) {
+export function TriggerSelect({
+  children,
+  className,
+  isIcon,
+  intent,
+  selectedLabel,
+}: SelectTriggerProps) {
   const ctx = useContext(DropdownContext);
   return (
     ctx && (
@@ -15,7 +21,7 @@ export function TriggerSelect({ children, className, isIcon, intent }: SelectTri
           ctx?.isOpen && "bg-gray-700",
         )}
       >
-        {ctx.selected ? ctx.selected : children}
+        {selectedLabel}
         {isIcon && children}
       </button>
     )
