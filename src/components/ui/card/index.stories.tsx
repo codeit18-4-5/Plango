@@ -55,7 +55,7 @@ export const Default: Story = {
   },
   render: args => (
     <Card {...args}>
-      <Card.Badge variant="best">Best</Card.Badge>
+      <Card.Badge />
       <Card.Content
         title="카드 제목입니다. 두 줄까지 표시되며 그 이후는 말줄임표로 처리됩니다."
         image="/assets/images/img-test.jpeg"
@@ -77,7 +77,7 @@ export const WithLink: Story = {
   },
   render: args => (
     <Card {...args}>
-      <Card.Badge variant="new">New</Card.Badge>
+      <Card.Badge />
       <Card.Content title="링크 연결 가능한 카드" image="/assets/images/img-test.jpeg" />
       <Card.Info
         writer="참깨"
@@ -96,7 +96,7 @@ export const WithActions: Story = {
   },
   render: args => (
     <Card {...args}>
-      <Card.Badge variant="best">Best</Card.Badge>
+      <Card.Badge />
       <Card.Content title="액션 메뉴가 있는 카드" image="/assets/images/img-test.jpeg" />
       <Card.Info
         writer="참깨"
@@ -116,7 +116,7 @@ export const WithLinkAndActions: Story = {
   },
   render: args => (
     <Card {...args}>
-      <Card.Badge variant="new">New</Card.Badge>
+      <Card.Badge />
       <Card.Content title="링크와 액션이 모두 있는 카드" image="/assets/images/img-test.jpeg" />
       <Card.Info
         writer="참깨"
@@ -135,7 +135,7 @@ export const variant: Story = {
   },
   render: args => (
     <Card {...args}>
-      <Card.Badge variant="best">Best</Card.Badge>
+      <Card.Badge variant="new" />
       <Card.Content
         title="variant 있는 카드 (베스트 게시글: 날짜, 작성자 순서 변경)"
         image="/assets/images/img-test.jpeg"
@@ -158,7 +158,7 @@ export const WithoutImage: Story = {
   render: args => (
     <div className="grid gap-3">
       <Card {...args}>
-        <Card.Badge variant="new">New</Card.Badge>
+        <Card.Badge />
         <Card.Content
           title={`이미지가 없는 카드 \n 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 내용 `}
         />
@@ -170,7 +170,7 @@ export const WithoutImage: Story = {
         />
       </Card>
       <Card {...args}>
-        <Card.Badge variant="new">New</Card.Badge>
+        <Card.Badge />
         <Card.Content title="대체 이미지" image="/" />
         <Card.Info
           writer="참깨"
@@ -192,7 +192,7 @@ export const TestGrid: Story = {
       <h2 className="mb-6 text-xl font-bold text-white">테스트</h2>
       <div className="grid grid-cols-1 gap-6 tablet:grid-cols-2">
         <Card {...{ id: 7, actions: mockActions }}>
-          <Card.Badge variant="new">New</Card.Badge>
+          <Card.Badge />
           <Card.Content title="dfjsdlfjsdkfjdsklfjdklfjskdlfjskdlfjskldfjskfjsdlkfjsldfkjslfjslkfjslkfjfjslkfjslkdfjlskdjflksjflskj" />
           <Card.Info
             writer="참깨"
@@ -209,10 +209,10 @@ export const TestGrid: Story = {
             likeCount={11111}
             image="/assets/images/img-test.jpeg"
           />
-          <Card.Badge variant="new">New</Card.Badge>
+          <Card.Badge />
         </Card>
         <Card {...{ id: 7, actions: mockActions }}>
-          <Card.Badge variant="new">New</Card.Badge>
+          <Card.Badge />
           <Card.Info
             writer="dfsdfsdfsdfsdfsfsdfsdfsdfsfsfsfdsfsdfsfsdfsfsdfs"
             createdAt="2025-11-11T10:30:00Z"
@@ -230,7 +230,7 @@ export const TestGrid: Story = {
           />
           <Card.Content title="dfjsdlfjsdkfjdsklfjdklfjskdlfjskdlfjskldfjskfjsdlkfjsldfkjslfjslkfjslkfjfjslkfjslkdfjlskdjflksjflskj" />
 
-          <Card.Badge variant="new">New</Card.Badge>
+          <Card.Badge />
         </Card>
       </div>
     </div>
