@@ -9,7 +9,7 @@ import {
   floatingButtonWrapperStyle,
 } from "./modal.style";
 import Button from "../button/button";
-import { createContext, ReactNode, useContext } from "react";
+import { createContext, ReactNode, useContext, useEffect } from "react";
 import CloseIcon from "@/assets/icons/ic-cancel.svg";
 import { Container as ModalLayoutContainer } from "@/components/layout";
 import { createPortal } from "react-dom";
@@ -101,6 +101,22 @@ const FooterWithButtons = ({
 };
 
 function Modal({ children, isOpen, onClose }: ModalProps) {
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscKey);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscKey);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return createPortal(
