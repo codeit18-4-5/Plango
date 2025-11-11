@@ -8,7 +8,6 @@ import IcKebab from "@/assets/icons/ic-kebab.svg";
 
 export type CardAction = {
   label: string;
-  value: string;
   onClick: () => void;
 };
 
@@ -31,13 +30,12 @@ export default function CardActions({ actions, className, onStopPropagation }: C
         </Dropdown.TriggerIcon>
         <Dropdown.Menu className="w-[120px] overflow-hidden">
           {actions.map(action => (
-            <Dropdown.Option
-              key={action.value}
-              align="center"
-              onClick={action.onClick}
-              className="p-0 hover:bg-gray-700"
-            >
-              <button className="block w-full p-[11px_8px] text-body-s font-light text-gray-100">
+            <Dropdown.Option align="center" className="p-0 hover:bg-gray-700">
+              <button
+                type="button"
+                onClick={action.onClick}
+                className="block w-full p-[11px_8px] text-body-s font-light text-gray-100"
+              >
                 {action.label}
               </button>
             </Dropdown.Option>

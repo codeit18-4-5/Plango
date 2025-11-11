@@ -15,25 +15,27 @@ type CardContentProps = {
 
 export default function CardContent({ title, image, className }: CardContentProps) {
   const [imageError, setImageError] = useState(false);
-  const isValidImage = isValidImageSrc(image) && !imageError;
+  const hasValidImageSrc = isValidImageSrc(image);
 
   return (
     <div className={cn(CARD_CONTENT_STYLES.wrapper, className)}>
       <div className={CARD_CONTENT_STYLES.title}>{title}</div>
-      <div className={`${CARD_CONTENT_STYLES.image.wrapper}`}>
-        {isValidImage ? (
-          <Image
-            src={image}
-            fill
-            alt=""
-            className="object-cover"
-            draggable={false}
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <FallbackImage className={CARD_CONTENT_STYLES.image.icon} />
-        )}
-      </div>
+      {hasValidImageSrc && (
+        <div className={`${CARD_CONTENT_STYLES.image.wrapper}`}>
+          {!imageError ? (
+            <Image
+              src={image}
+              fill
+              alt=""
+              className="object-cover"
+              draggable={false}
+              onError={() => setImageError(true)}
+            />
+          ) : (
+            <FallbackImage className={CARD_CONTENT_STYLES.image.icon} />
+          )}
+        </div>
+      )}
     </div>
   );
 }

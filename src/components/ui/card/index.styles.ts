@@ -39,7 +39,7 @@ export const CARD_CONTENT_STYLES = {
 };
 
 export const CARD_INFO_STYLES = {
-  wrapper: cva("flex items-end justify-between", {
+  wrapper: cva("grid grid-cols-[auto_65px] gap-x-[12px] items-end justify-between", {
     variants: {
       variant: {
         primary: "tablet:items-center",
@@ -54,7 +54,7 @@ export const CARD_INFO_STYLES = {
     wrapper: cva("grid", {
       variants: {
         variant: {
-          primary: "tablet:flex tablet:items-center tablet:gap-x-[12px]",
+          primary: "tablet:items-center tablet:grid-cols-[auto_auto]",
           secondary: "",
         },
       },
@@ -62,11 +62,11 @@ export const CARD_INFO_STYLES = {
         variant: "primary",
       },
     }),
-    writer: cva("flex items-center gap-x-[12px] order-2", {
+    writer: cva("grid grid-cols-[30px_auto] items-center gap-x-[12px] pr-[12px]", {
       variants: {
         variant: {
-          primary: "",
-          secondary: "order-3",
+          primary: "order-2 tablet:order-1",
+          secondary: "order-2",
         },
       },
       defaultVariants: {
@@ -74,14 +74,14 @@ export const CARD_INFO_STYLES = {
       },
     }),
     avatar: cn("w-[32px] h-[32px]"),
-    nickname: cn("text-[12px] text-gray-100", "tablet:text-[14px]"),
+    nickname: cn("text-[12px] text-gray-100 line-clamp-1 break-words block", "tablet:text-[14px]"),
     time: cva(
-      "text-[12px] text-gray-400 mb-[16px] order-1 block tablet:before:relative tablet:order-3 tablet:text-[14px] tablet:mb-0 tablet:before:content-[''] tablet:before:inline-block tablet:before:w-[1px] tablet:before:h-[12px] tablet:before:bg-gray-700 tablet:before:mr-[12px] tablet:before:top-[1px]",
+      "text-[12px] text-gray-400 mb-[16px] block tablet:before:relative tablet:text-[14px] tablet:mb-0 tablet:before:content-[''] tablet:before:inline-block tablet:before:w-[1px] tablet:before:h-[12px] tablet:before:bg-gray-700 tablet:before:mr-[12px] tablet:before:top-[1px]",
       {
         variants: {
           variant: {
-            primary: "",
-            secondary: "tablet:mb-[20px] order-2 tablet:order-1 tablet:before:hidden",
+            primary: "order-1 tablet:order-2",
+            secondary: "order-1 tablet:order-1 tablet:before:hidden tablet:mb-[20px]",
           },
         },
         defaultVariants: {
@@ -91,14 +91,17 @@ export const CARD_INFO_STYLES = {
     ),
   },
   like: {
-    wrapper: cn("flex items-center text-[12px] gap-x-[4px] text-gray-400", "tablet:text-[14px]"),
+    wrapper: cn(
+      "relative flex items-center justify-end text-[12px] gap-x-[4px] text-gray-400 top-[-7px] ",
+      "tablet:text-[14px] tablet:top-0",
+    ),
     icon: cn("w-[16px] h-[16px] block"),
   },
 };
 
 export const CARD_ACTIONS_STYLES = {
   wrapper: cn(
-    "absolute right-[16px] bottom-[18px] p-0 z-[5]",
+    "absolute right-[16px] bottom-[24px] p-0 z-[5]",
     "tablet:top-[22px] tablet:right-[32px] tablet:bottom-auto",
   ),
   icon: cn("h-[16px] w-[16px] text-gray-500", "tablet:h-[24px] tablet:w-[24px]"),
