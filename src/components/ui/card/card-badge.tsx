@@ -1,4 +1,6 @@
 import cn from "@/lib/cn";
+import { CARD_BADGE_STYLES } from "./index.styles";
+import IcMedal from "@/assets/icons/ic-medal.svg";
 
 type CardBadgeProps = {
   variant?: "best" | "new";
@@ -12,5 +14,12 @@ const badgeText = {
 };
 
 export default function CardBadge({ variant = "best", className, children }: CardBadgeProps) {
-  return <div className={cn(className)}>{children || badgeText[variant]}</div>;
+  return (
+    <div className={cn(CARD_BADGE_STYLES.wrapper, className)}>
+      <span className={CARD_BADGE_STYLES.icon}>
+        <IcMedal />
+      </span>
+      {children || badgeText[variant]}
+    </div>
+  );
 }

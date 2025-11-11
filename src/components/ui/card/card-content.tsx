@@ -1,3 +1,4 @@
+import { CARD_CONTENT_STYLES } from "./index.styles";
 import Image from "next/image";
 
 type CardContentProps = {
@@ -7,10 +8,10 @@ type CardContentProps = {
 
 export default function CardContent({ title, image }: CardContentProps) {
   return (
-    <div>
-      <div>{title}</div>
+    <div className={CARD_CONTENT_STYLES.wrapper}>
+      <div className={CARD_CONTENT_STYLES.title}>{title}</div>
       {image && (
-        <div>
+        <div className={CARD_CONTENT_STYLES.image}>
           <Image src={image} fill alt="" />
         </div>
       )}
