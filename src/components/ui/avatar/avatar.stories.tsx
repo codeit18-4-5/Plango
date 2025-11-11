@@ -7,6 +7,11 @@ const meta = {
   tags: ["autodocs"],
   parameters: {
     layout: "centered",
+    docs: {
+      description: {
+        component: "Avatar 컴포넌트",
+      },
+    },
   },
   argTypes: {
     shape: {
