@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Modal from "./modal";
 import Button from "../button/button";
 
@@ -25,6 +25,10 @@ type Story = StoryObj<typeof meta>;
 
 export const InteractiveModal: Story = {
   render: () => {
+    const modalRef1 = useRef<HTMLDialogElement>(null);
+    const modalRef2 = useRef<HTMLDialogElement>(null);
+    const modalRef3 = useRef<HTMLDialogElement>(null);
+
     const [isOpen, setIsOpen] = useState(false);
     const [isOpen2, setIsOpen2] = useState(false);
     const [isOpen3, setIsOpen3] = useState(false);
@@ -47,7 +51,7 @@ export const InteractiveModal: Story = {
           <Button onClick={handleOpen3}>모달3 열기</Button>
         </div>
 
-        <Modal isOpen={isOpen} onClose={handleClose}>
+        <Modal isOpen={isOpen} onClose={handleClose} ref={modalRef1}>
           <Modal.HeaderWithClose title="모달 형태 1" />
           <Modal.Body>
             <p>모달에 들어갈 내용</p>
@@ -65,7 +69,7 @@ export const InteractiveModal: Story = {
           />
         </Modal>
 
-        <Modal isOpen={isOpen2} onClose={handleClose}>
+        <Modal isOpen={isOpen2} onClose={handleClose} ref={modalRef2}>
           <Modal.HeaderWithOnlyTitle title="모달 형태 2" />
           <Modal.Body>
             <p>모달에 들어갈 내용</p>
@@ -83,7 +87,7 @@ export const InteractiveModal: Story = {
           />
         </Modal>
 
-        <Modal isOpen={isOpen3} onClose={handleClose}>
+        <Modal isOpen={isOpen3} onClose={handleClose} ref={modalRef3}>
           <Modal.HeaderWithOnlyTitle title="모달 형태 3" />
           <div className="px-[50px]">
             <Modal.Body>
