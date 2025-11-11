@@ -60,6 +60,8 @@
 
   --gradient: linear-gradient(90deg, #97193d 0%, #f68c9e 100%);
 
+  --line-strong: #475569;
+
   /* font size */
   /* Caption */
   --fs-caption: 0.875rem; /* 14px */
@@ -124,6 +126,8 @@
   /* Base colors */
   --black: #ffffff;
   --white: var(--gray-100);
+
+  --line-strong: #a9b7c9;
 }
 
 /* 태블릿 대응 */

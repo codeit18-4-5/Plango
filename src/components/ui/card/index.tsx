@@ -1,55 +1,66 @@
 "use client";
 
-import { ReactNode, Children, isValidElement, createContext, useContext } from "react";
+import cn from "@/lib/cn";
+import { ReactNode, createContext, useContext, MouseEvent } from "react";
 import CardBadge from "./card-badge";
 import CardContent from "./card-content";
 import CardInfo from "./card-info";
-import CardActions from "./card-actions";
-import CardLink from "./card-link";
+import CardActions, { CardAction } from "./card-actions";
 import { CARD_WRAPPER_STYLES } from "./index.styles";
 
 type CardContextType = {
   hasActions: boolean;
 };
 
-const CardContext = createContext<CardContextType>({ hasActions: false });
-
-export const useCardContext = () => useContext(CardContext);
-
 type CardProps = {
   id: number;
   children: ReactNode;
   className?: string;
+  href?: string;
+  actions?: CardAction[];
 };
 
-function Card({ id, children, className }: CardProps) {
-  const hasLink = Children.toArray(children).some(
-    child =>
-      isValidElement(child) &&
-      (child.type === CardLink ||
-        (child.type as { displayName?: string })?.displayName === "CardLink"),
-  );
+const CardContext = createContext<CardContextType>({ hasActions: false });
 
-  const hasActions = Children.toArray(children).some(
-    child =>
-      isValidElement(child) &&
-      (child.type === CardActions ||
-        (child.type as { displayName?: string })?.displayName === "CardActions"),
-  );
+export const useCardContext = () => useContext(CardContext);
 
-  return (
+function Card({ id, children, className, href, actions = [] }: CardProps) {
+  const hasLink = Boolean(href);
+  const hasActions = actions.length > 0;
+
+  const handleActionClick = (e: MouseEvent) => {
+    e.stopPropagation();
+  };
+
+  const cardContent = (
     <CardContext.Provider value={{ hasActions }}>
       <div key={id} className={CARD_WRAPPER_STYLES.wrapper(hasLink, className)}>
-        {children}
+        {hasLink ? (
+          <a
+            href={href}
+            className={cn(
+              CARD_WRAPPER_STYLES.inner,
+              CARD_WRAPPER_STYLES.group,
+              CARD_WRAPPER_STYLES.spacing(hasActions),
+            )}
+          >
+            {children}
+          </a>
+        ) : (
+          <div className={cn(CARD_WRAPPER_STYLES.group, CARD_WRAPPER_STYLES.spacing(hasActions))}>
+            {children}
+          </div>
+        )}
+        {hasActions && <CardActions actions={actions} onStopPropagation={handleActionClick} />}
       </div>
     </CardContext.Provider>
   );
+
+  return cardContent;
 }
 
 Card.Badge = CardBadge;
 Card.Content = CardContent;
 Card.Info = CardInfo;
-Card.Actions = CardActions;
-Card.Link = CardLink;
 
 export default Card;
