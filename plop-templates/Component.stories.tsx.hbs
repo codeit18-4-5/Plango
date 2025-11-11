@@ -5,6 +5,13 @@ const meta = {
   title: "UI/{{pascalCase name}}",
   component: {{pascalCase name}},
   tags: ["autodocs"],
+  parameters: {
+    docs: {
+      description: {
+        component: "{{pascalCase name}} 컴포넌트",
+      },
+    },
+  },
   argTypes: {},
 } satisfies Meta<typeof {{pascalCase name}}>;
 

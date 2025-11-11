@@ -25,6 +25,9 @@ export default {
       ],
     },
     docs: {
+      description: {
+        component: "ReplyInput 컴포넌트",
+      },
       story: {
         inline: true,
       },
