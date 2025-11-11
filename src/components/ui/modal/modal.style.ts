@@ -26,9 +26,8 @@ export const titleStyle = cva("text-modal", {
 });
 
 export const bodyStyle = [
-  "max-h-[80vh] overflow-y-auto h-auto flex-1",
-  "[&::-webkit-scrollbar] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:bg-gray-500 [&::-webkit-scrollbar-track]:bg-gray-800 [&::-webkit-scrollbar-thumb]:rounded-md",
-  "pb-[70px]",
+  "max-h-[80vh] overflow-y-auto h-auto flex-1 pb-[70px]",
+  "scroll-bar",
 ].join(" ");
 
 export const floatingButtonWrapperStyle =
