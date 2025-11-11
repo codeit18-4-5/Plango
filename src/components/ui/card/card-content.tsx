@@ -4,6 +4,7 @@ import { useState } from "react";
 import { isValidImageSrc } from "@/lib/utils";
 import { CARD_CONTENT_STYLES } from "./index.styles";
 import Image from "next/image";
+import FallbackImage from "@/assets/icons/ic-img.svg";
 
 type CardContentProps = {
   title: string;
@@ -17,11 +18,13 @@ export default function CardContent({ title, image }: CardContentProps) {
   return (
     <div className={CARD_CONTENT_STYLES.wrapper}>
       <div className={CARD_CONTENT_STYLES.title}>{title}</div>
-      {isValidImage && (
-        <div className={CARD_CONTENT_STYLES.image}>
+      <div className={CARD_CONTENT_STYLES.image.wrapper}>
+        {isValidImage ? (
           <Image src={image} fill alt="" draggable={false} onError={() => setImageError(true)} />
-        </div>
-      )}
+        ) : (
+          <FallbackImage className={CARD_CONTENT_STYLES.image.icon} />
+        )}
+      </div>
     </div>
   );
 }

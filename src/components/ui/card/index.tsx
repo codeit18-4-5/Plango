@@ -1,29 +1,55 @@
-import { ReactNode } from "react";
-import cn from "@/lib/cn";
+"use client";
+
+import { ReactNode, Children, isValidElement, createContext, useContext } from "react";
 import CardBadge from "./card-badge";
 import CardContent from "./card-content";
 import CardInfo from "./card-info";
+import CardActions from "./card-actions";
+import CardLink from "./card-link";
 import { CARD_WRAPPER_STYLES } from "./index.styles";
+
+type CardContextType = {
+  hasActions: boolean;
+};
+
+const CardContext = createContext<CardContextType>({ hasActions: false });
+
+export const useCardContext = () => useContext(CardContext);
 
 type CardProps = {
   id: number;
-  href: string;
   children: ReactNode;
   className?: string;
 };
 
-function Card({ id, href, children, className }: CardProps) {
+function Card({ id, children, className }: CardProps) {
+  const hasLink = Children.toArray(children).some(
+    child =>
+      isValidElement(child) &&
+      (child.type === CardLink ||
+        (child.type as { displayName?: string })?.displayName === "CardLink"),
+  );
+
+  const hasActions = Children.toArray(children).some(
+    child =>
+      isValidElement(child) &&
+      (child.type === CardActions ||
+        (child.type as { displayName?: string })?.displayName === "CardActions"),
+  );
+
   return (
-    <div key={id} className={cn(CARD_WRAPPER_STYLES.wrapper, className)}>
-      <a href={href} className={CARD_WRAPPER_STYLES.inner}>
+    <CardContext.Provider value={{ hasActions }}>
+      <div key={id} className={CARD_WRAPPER_STYLES.wrapper(hasLink, className)}>
         {children}
-      </a>
-    </div>
+      </div>
+    </CardContext.Provider>
   );
 }
 
 Card.Badge = CardBadge;
 Card.Content = CardContent;
 Card.Info = CardInfo;
+Card.Actions = CardActions;
+Card.Link = CardLink;
 
 export default Card;

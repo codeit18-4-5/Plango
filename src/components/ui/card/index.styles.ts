@@ -1,11 +1,14 @@
 import cn from "@/lib/cn";
 
 export const CARD_WRAPPER_STYLES = {
-  wrapper: cn(
-    "relative bg-gray-800 border border-gray-700 rounded-lg p-[24px_16px]",
-    "tablet:p-[20px_32px]",
-  ),
-  inner: cn("relative block"),
+  wrapper: (link: boolean, className?: string) =>
+    cn(
+      "relative bg-gray-800 border border-gray-700 rounded-lg p-[24px_16px]",
+      "tablet:p-[20px_32px]",
+      { "p-0 tablet:p-0": link },
+      className,
+    ),
+  inner: cn("relative block p-[24px_16px]", "tablet:p-[20px_32px]"),
 };
 
 export const CARD_BADGE_STYLES = {
@@ -16,11 +19,20 @@ export const CARD_BADGE_STYLES = {
 export const CARD_CONTENT_STYLES = {
   wrapper: cn("grid grid-cols-[auto_auto] justify-between items-start gap-x-[16px]"),
   title: cn("min-h-[48px] text-body-l break-word line-clamp-2", "tablet:min-h-[56px]"),
-  image: cn("w-[64px] h-[64px] rounded-[8px] overflow-hidden", "tablet:w-[72px] tablet:h-[72px]"),
+  image: {
+    wrapper: cn(
+      "relative w-[64px] h-[64px] rounded-[8px] overflow-hidden bg-gray-700 flex items-center justify-center",
+      "tablet:w-[72px] tablet:h-[72px]",
+    ),
+    icon: cn("w-[32px] h-[32px]", "tablet:w-[40px] tablet:h-[40px]"),
+  },
 };
 
 export const CARD_INFO_STYLES = {
-  wrapper: cn("flex items-end justify-between mt-[16px]", "tablet:mt-[24px] tablet:items-center"),
+  wrapper: (action: boolean) =>
+    cn("flex items-end justify-between mt-[16px]", "tablet:mt-[24px] tablet:items-center", {
+      "pr-[24px] tablet:pr-0": action,
+    }),
   meta: {
     wrapper: cn("grid", "tablet:flex tablet:items-center tablet:gap-x-[12px]"),
     writer: cn("flex items-center gap-x-[12px] order-2"),
@@ -35,4 +47,12 @@ export const CARD_INFO_STYLES = {
     wrapper: cn("flex items-center text-[12px] gap-x-[4px]", "tablet:text-[14px] text-gray-400"),
     icon: cn("w-[16px] h-[16px] block"),
   },
+};
+
+export const CARD_ACTIONS_STYLES = {
+  wrapper: cn(
+    "absolute right-[16px] bottom-[18px] z-5",
+    "tablet:top-[22px] tablet:right-[32px] tablet:bottom-auto",
+  ),
+  icon: cn("h-[16px] w-[16px] text-gray-500", "tablet:h-[24px] tablet:w-[24px]"),
 };

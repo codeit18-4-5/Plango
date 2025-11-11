@@ -1,6 +1,7 @@
 import { getTimeAgo } from "@/lib/utils";
 import { Avatar } from "@/components/ui";
 import { CARD_INFO_STYLES } from "./index.styles";
+import { useCardContext } from "./index";
 import ICLike from "@/assets/icons/ic-heart.svg";
 
 type CardInfoProps = {
@@ -11,8 +12,10 @@ type CardInfoProps = {
 };
 
 export default function CardInfo({ image, writer, createdAt, likeCount }: CardInfoProps) {
+  const { hasActions } = useCardContext();
+
   return (
-    <div className={CARD_INFO_STYLES.wrapper}>
+    <div className={CARD_INFO_STYLES.wrapper(hasActions)}>
       <div className={CARD_INFO_STYLES.meta.wrapper}>
         <div className={CARD_INFO_STYLES.meta.writer}>
           <Avatar image={image} className={CARD_INFO_STYLES.meta.avatar} />
