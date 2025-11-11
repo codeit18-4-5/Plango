@@ -106,12 +106,12 @@ const meta: Meta<typeof Form> = {
     - zod를 사용하면 zodResolver(schema)를 전달합니다`,
     },
     mode: {
-      description: "검증 트리거 모드(onBlur, onChange 등)",
+      description: "제출하기 전에 검증(onBlur, onChange 등)",
       control: "select",
       options: ["onBlur", "onChange", "onSubmit", "onTouched", "all"],
     },
     reValidateMode: {
-      description: "전체 유효성은 검증 트리거 모드",
+      description: "제출한 후 검증",
     },
   },
   decorators: [
