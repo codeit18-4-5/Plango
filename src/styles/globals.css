@@ -56,7 +56,6 @@
 
   --modal-frame: var(--gray-800);
   --modal-dimmed: rgba(0, 0, 0, 0.5);
-  --dimmed-overlay: rgba(0, 0, 0, 0.6);
 
   --gradient: linear-gradient(90deg, #97193d 0%, #f68c9e 100%);
 
@@ -256,4 +255,8 @@ svg {
 svg,
 svg circle {
   color: inherit;
+}
+
+.custom-dialog-backdrop::backdrop {
+  background-color: var(--modal-dimmed);
 }
