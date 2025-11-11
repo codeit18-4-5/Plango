@@ -58,7 +58,7 @@ export default {
     },
     docs: {
       description: {
-        component: "Reply 컴포넌트",
+        component: `Reply 컴포넌트. 댓글 내용을 표시합니다. 글 수정 시 입력에 따라 입력창 높이가 자동으로 조절됩니다.`,
       },
       story: {
         inline: true,
@@ -112,19 +112,4 @@ export const ReplySecondary = {
     comment: mockComments.short,
     variant: "secondary",
   },
-};
-
-export const LongComment = {
-  name: "Long Comment",
-  render: (args: { comment: ArticleComment; variant?: "primary" | "secondary" }) => (
-    <Reply {...args} />
-  ),
-  args: {
-    comment: mockComments.long,
-  },
-};
-
-export const NoImage = {
-  name: "No Image",
-  render: () => <Reply comment={mockComments.noImage} />,
 };

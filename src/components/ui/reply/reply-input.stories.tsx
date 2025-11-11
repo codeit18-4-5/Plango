@@ -26,7 +26,7 @@ export default {
     },
     docs: {
       description: {
-        component: "ReplyInput 컴포넌트",
+        component: "ReplyInput 컴포넌트. 글 작성 시 입력에 따라 입력창 높이가 자동으로 조절됩니다.",
       },
       story: {
         inline: true,
