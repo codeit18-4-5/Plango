@@ -9,8 +9,8 @@ type CardBadgeProps = {
 };
 
 const badgeText = {
-  best: "BEST",
-  new: "NEW",
+  best: "Best",
+  new: "New",
 };
 
 export default function CardBadge({ variant = "best", className, children }: CardBadgeProps) {

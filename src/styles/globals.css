@@ -256,3 +256,7 @@ svg,
 svg circle {
   color: inherit;
 }
+
+.break-word {
+  word-break: break-word;
+}
