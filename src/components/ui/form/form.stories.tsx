@@ -29,7 +29,7 @@ function FormFields() {
   const errors = formState.errors;
   return (
     <>
-      <Input errorMsg={errors?.name?.message as string}>
+      <Input errorMsg={errors?.name?.message}>
         <Input.Label label="이름" />
         <Input.Field
           type="text"
@@ -37,7 +37,7 @@ function FormFields() {
         />
         <Input.Error />
       </Input>
-      <Input errorMsg={errors?.email?.message as string}>
+      <Input errorMsg={errors?.email?.message}>
         <Input.Label label="이메일" />
         <Input.Field type="email" {...register("email", { validate: validateEmail })} />
         <Input.Error />
