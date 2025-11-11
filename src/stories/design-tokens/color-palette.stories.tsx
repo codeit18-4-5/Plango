@@ -34,6 +34,7 @@ const colors = [
   "gradient",
   "modal-frame",
   "modal-dimmed",
+  "dimmed-overlay",
 ];
 
 const meta: Meta = {

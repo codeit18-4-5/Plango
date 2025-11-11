@@ -12,7 +12,4 @@ module.exports = {
       },
     ],
   },
-  // svgProps: {
-  //   fill: "currentColor",
-  // },
 };
