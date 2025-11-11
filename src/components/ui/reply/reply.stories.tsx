@@ -57,6 +57,9 @@ export default {
       ],
     },
     docs: {
+      description: {
+        component: "Reply 컴포넌트",
+      },
       story: {
         inline: true,
       },

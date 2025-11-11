@@ -64,6 +64,7 @@ const config: Config = {
         background: "var(--background)",
         "modal-frame": "var(--modal-frame)",
         "modal-dimmed": "var(--modal-dimmed)",
+        "dimmed-overlay": "var(--dimmed-overlay)",
         gradient: "var(--gradient)",
       },
       fontSize: {
