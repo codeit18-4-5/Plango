@@ -9,15 +9,7 @@ import {
   floatingButtonWrapperStyle,
 } from "./modal.style";
 import Button from "../button/button";
-import {
-  createContext,
-  forwardRef,
-  ReactNode,
-  useContext,
-  useEffect,
-  useImperativeHandle,
-  useRef,
-} from "react";
+import { createContext, ReactNode, useContext, useEffect, useRef } from "react";
 import CloseIcon from "@/assets/icons/ic-cancel.svg";
 import { Container as ModalLayoutContainer } from "@/components/layout";
 import { createPortal } from "react-dom";
@@ -32,15 +24,6 @@ interface ModalBodyProps {
 
 interface ModalProps extends ModalContextType, ModalBodyProps {
   isOpen: boolean;
-}
-
-interface ModalComponent
-  extends React.ForwardRefExoticComponent<ModalProps & React.RefAttributes<HTMLDialogElement>> {
-  HeaderWithOnlyTitle: typeof HeaderWithOnlyTitle;
-  HeaderWithClose: typeof HeaderWithClose;
-  Body: typeof Body;
-  FooterWithOnlyConfirm: typeof FooterWithOnlyConfirm;
-  FooterWithButtons: typeof FooterWithButtons;
 }
 
 const ModalContext = createContext<ModalContextType | null>(null);
@@ -117,11 +100,8 @@ const FooterWithButtons = ({
   );
 };
 
-const Modal = forwardRef<HTMLDialogElement, ModalProps>((props, ref) => {
-  const { children, isOpen, onClose } = props;
+function Modal({ children, isOpen, onClose }: ModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
-
-  useImperativeHandle(ref, () => dialogRef.current!, []);
 
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -168,7 +148,7 @@ const Modal = forwardRef<HTMLDialogElement, ModalProps>((props, ref) => {
     </ModalContext.Provider>,
     document.body,
   );
-}) as ModalComponent;
+}
 
 Modal.HeaderWithOnlyTitle = HeaderWithOnlyTitle;
 Modal.HeaderWithClose = HeaderWithClose;
