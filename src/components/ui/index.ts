@@ -6,5 +6,4 @@ export { default as Checkbox } from "@/components/ui/input/checkbox";
 export { default as Avatar } from "@/components/ui/avatar";
 export { default as Reply } from "@/components/ui/reply";
 export { default as ReplyInput } from "@/components/ui/reply/reply-input";
-export { default as OverflowMenu } from "@/components/ui/reply/overflow-menu";
 export { default as ImgUpload } from "@/components/ui/img-upload";
