@@ -4,13 +4,13 @@ import { DropdownContext } from "./dropdown.context";
 import { DropdownOptionProps } from "./dropdown.props";
 import { dropDownOptionStyle } from "./dropdown.styles";
 
-export function Option({ children, onClick, value, label, align, className }: DropdownOptionProps) {
+export function Option({ children, onClick, option, align, className }: DropdownOptionProps) {
   const ctx = useContext(DropdownContext);
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (label && value) {
-      ctx?.onSelect?.({ label, value });
+    if (option) {
+      ctx?.onSelect?.(option);
     }
     onClick?.();
     ctx?.toggle();

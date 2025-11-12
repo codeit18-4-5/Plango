@@ -6,6 +6,7 @@ export interface DropdownProps {
   intent?: "select" | "icon" | undefined;
   children?: ReactNode;
   className?: string;
+  options?: DropdownOption[];
   onSelect?: ({ label, value }: DropdownOption) => void;
 }
 
@@ -15,8 +16,7 @@ export interface SelectTriggerProps extends DropdownProps {
 }
 
 export interface DropdownOptionProps extends DropdownProps {
-  value?: string | undefined;
-  label?: string | undefined;
+  option?: DropdownOption;
   onClick?: () => void;
   align?: "center" | "left" | undefined;
 }

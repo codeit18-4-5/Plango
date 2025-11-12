@@ -5,7 +5,8 @@ interface DropdownContextType {
   isOpen: boolean;
   toggle: () => void;
   size?: "sm" | "md" | undefined;
-  onSelect?: ({ label, value }: DropdownOption) => void;
+  onSelect?: (option: DropdownOption) => void;
+  options?: DropdownOption[];
 }
 
 export const DropdownContext = createContext<DropdownContextType | null>(null);
