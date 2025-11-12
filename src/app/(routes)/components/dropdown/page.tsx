@@ -50,7 +50,7 @@ function DropdownDemo() {
         <p className="my-[20px]">
           custom option + 아이콘이 있는 경우 ex. 헤더, 자유게시판 정렬, 할일의 반복주기 생성
         </p>
-        <Dropdown size="md" onSelect={handleSelectValue} className="z-20">
+        <Dropdown size="md" onSelect={handleSelectValue}>
           <Dropdown.TriggerSelect
             isIcon={true}
             intent="select"
@@ -75,7 +75,7 @@ function DropdownDemo() {
       </div>
       <div>
         <p className="my-[20px]">icon 혹은 icon + 글자 조합 ex. 케밥아이콘, 헤더의 마이페이지 등</p>
-        <Dropdown size="sm" className="z-10">
+        <Dropdown size="sm">
           <Dropdown.TriggerIcon intent="icon">
             <span className="w-[24px]">
               <IcKebab />
