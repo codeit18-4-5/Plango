@@ -9,7 +9,7 @@ import {
   floatingButtonWrapperStyle,
 } from "./modal.style";
 import Button from "../button/button";
-import { createContext, ReactNode, useContext, useEffect } from "react";
+import { createContext, ReactNode, useContext, useEffect, useRef } from "react";
 import CloseIcon from "@/assets/icons/ic-cancel.svg";
 import { Container as ModalLayoutContainer } from "@/components/layout";
 import { createPortal } from "react-dom";
@@ -101,7 +101,28 @@ const FooterWithButtons = ({
 };
 
 function Modal({ children, isOpen, onClose }: ModalProps) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
   useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (isOpen && !dialog.open) dialog.showModal();
+  }, [isOpen]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const handleClose = () => onClose();
+    dialog.addEventListener("close", handleClose);
+    return () => dialog.removeEventListener("close", handleClose);
+  }, [onClose]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
@@ -121,11 +142,9 @@ function Modal({ children, isOpen, onClose }: ModalProps) {
 
   return createPortal(
     <ModalContext.Provider value={{ onClose }}>
-      <div className={modalOverlayStyle} onClick={onClose}>
-        <div onClick={e => e.stopPropagation()}>
-          <ModalLayoutContainer className={modalContainerStyle}>{children}</ModalLayoutContainer>
-        </div>
-      </div>
+      <dialog ref={dialogRef} className={modalOverlayStyle}>
+        <ModalLayoutContainer className={modalContainerStyle}>{children}</ModalLayoutContainer>
+      </dialog>
     </ModalContext.Provider>,
     document.body,
   );
