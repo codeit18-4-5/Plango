@@ -18,7 +18,7 @@ export default function Dropdown({ size, children, className, onSelect }: Dropdo
 
   return (
     <DropdownContext.Provider value={{ isOpen, toggle, size, onSelect }}>
-      <div ref={dropdownRef} className="relative inline-block">
+      <div ref={dropdownRef}>
         <div className={cn(dropDownStyle({ size, className }))}>{children}</div>
       </div>
     </DropdownContext.Provider>
