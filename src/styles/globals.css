@@ -270,3 +270,7 @@ svg,
 svg circle {
   color: inherit;
 }
+
+.custom-dialog-backdrop::backdrop {
+  background-color: var(--modal-dimmed);
+}
