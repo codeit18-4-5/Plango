@@ -4,7 +4,7 @@ import { Container } from "@/components/layout";
 import { useState, useEffect } from "react";
 //import { useRouter } from "next/navigation";
 import { DropdownOption } from "@/types/option";
-import Dropdown from "@/components/ui/dropdown/dropdown";
+import { Dropdown } from "@/components/ui";
 import IcDropdown from "@/assets/icons/ic-dropdown.svg";
 import IcKebab from "@/assets/icons/ic-kebab.svg";
 
