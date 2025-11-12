@@ -82,8 +82,12 @@ function DropdownDemo() {
             </span>
           </Dropdown.TriggerIcon>
           <Dropdown.Menu>
-            <Dropdown.Option align="center">수정하기</Dropdown.Option>
-            <Dropdown.Option align="center">삭제하기</Dropdown.Option>
+            <Dropdown.Option as="a" href="/" align="center">
+              수정하기
+            </Dropdown.Option>
+            <Dropdown.Option as="a" align="center">
+              삭제하기
+            </Dropdown.Option>
           </Dropdown.Menu>
         </Dropdown>
       </div>
