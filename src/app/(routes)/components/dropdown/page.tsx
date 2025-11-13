@@ -75,17 +75,15 @@ function DropdownDemo() {
       </div>
       <div>
         <p className="my-[20px]">icon 혹은 icon + 글자 조합 ex. 케밥아이콘, 헤더의 마이페이지 등</p>
-        <Dropdown size="sm">
+        <Dropdown>
           <Dropdown.TriggerIcon intent="icon">
-            <span className="w-[24px]">
-              <IcKebab />
-            </span>
+            <IcKebab className="w-[24px]" />
           </Dropdown.TriggerIcon>
-          <Dropdown.Menu>
+          <Dropdown.Menu size="sm">
             <Dropdown.Option as="a" href="/" align="center">
               수정하기
             </Dropdown.Option>
-            <Dropdown.Option as="a" align="center">
+            <Dropdown.Option as="a" href="/" align="center">
               삭제하기
             </Dropdown.Option>
           </Dropdown.Menu>
