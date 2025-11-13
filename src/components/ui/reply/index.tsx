@@ -3,30 +3,31 @@
 import cn from "@/lib/cn";
 import { useEffect } from "react";
 import { CommentBase } from "@/types/comment-base";
+import { ReplyAction } from "@/types/action";
+import ReplyActions from "./reply-actions";
 import { useEditable, useAutoResizeTextarea } from "@/hooks";
 import { replyWrapper, replyInner, replyTextarea, replyInfo, replyTimeStamp } from "./index.styles";
 import { Avatar, Button } from "@/components/ui";
-import ReplyActions from "./reply-actions";
 import { getTimeAgo } from "@/lib/utils";
 
 type ReplyProps = {
   comment: CommentBase;
   isEditing: boolean;
-  onEdit: () => void;
   onCancelEdit: () => void;
   onSaveEdit: (value: string) => void;
   isAuthor: boolean;
   variant?: "primary" | "secondary";
+  actions?: ReplyAction[];
 };
 
 export default function Reply({
   comment,
   isEditing,
-  onEdit,
   onCancelEdit,
   onSaveEdit,
   isAuthor,
   variant = "primary",
+  actions = [],
 }: ReplyProps) {
   const { textareaRef, onChange, resize } = useAutoResizeTextarea();
 
@@ -69,9 +70,10 @@ export default function Reply({
               <Button
                 onClick={onCancelEdit}
                 size="sm"
+                intent="cancel"
                 className={cn(
-                  "bg-transparent text-gray-500",
-                  "hover:bg-transparent hover:text-gray-400",
+                  "border-0 bg-transparent",
+                  "duration-200 hover:bg-transparent hover:text-gray-400 active:text-gray-300",
                 )}
               >
                 취소
@@ -83,6 +85,7 @@ export default function Reply({
                 disabled={isSaveDisabled}
                 size="sm"
                 intent="tertiary"
+                className="duration-200"
               >
                 수정하기
               </Button>
@@ -98,14 +101,7 @@ export default function Reply({
               </div>
               <span className={replyTimeStamp({ variant })}>{getTimeAgo(comment.createdAt)}</span>
             </div>
-            {isAuthor && (
-              <ReplyActions
-                actions={[
-                  { label: "수정하기", onClick: onEdit },
-                  { label: "삭제하기", onClick: () => {} },
-                ]}
-              />
-            )}
+            {isAuthor && <ReplyActions actions={actions} />}
           </>
         )}
       </div>

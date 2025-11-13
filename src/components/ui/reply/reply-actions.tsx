@@ -1,11 +1,8 @@
 import cn from "@/lib/cn";
-import Dropdown from "@/components/ui/dropdown/dropdown";
+import { ReplyAction } from "@/types/action";
+import { REPLY_ACTIONS_STYLES } from "./index.styles";
+import { Dropdown } from "@/components/ui";
 import IcKebab from "@/assets/icons/ic-kebab.svg";
-
-export type ReplyAction = {
-  label: string;
-  onClick: () => void;
-};
 
 type ReplyActionsProps = {
   actions: ReplyAction[];
@@ -13,24 +10,18 @@ type ReplyActionsProps = {
 };
 
 export default function ReplyActions({ actions, className }: ReplyActionsProps) {
+  if (actions.length === 0) return null;
+
   return (
-    <div className={cn("absolute right-0 top-0 flex items-center justify-end", className)}>
-      <Dropdown size="sm" className="z-5 w-auto align-top">
-        <Dropdown.TriggerIcon intent="icon" className="p-0">
-          <span className="flex size-6 items-center justify-center text-gray-400 hover:text-gray-300">
-            <IcKebab />
-          </span>
+    <div className={cn(REPLY_ACTIONS_STYLES.wrapper, className)}>
+      <Dropdown>
+        <Dropdown.TriggerIcon intent="icon" className={REPLY_ACTIONS_STYLES.icon}>
+          <IcKebab />
         </Dropdown.TriggerIcon>
-        <Dropdown.Menu className="w-[120px] overflow-hidden">
-          {actions.map((action, index) => (
-            <Dropdown.Option key={index} align="center" className="p-0 hover:bg-gray-700">
-              <button
-                type="button"
-                onClick={action.onClick}
-                className="block w-full p-[11px_8px] text-body-s font-light text-gray-100"
-              >
-                {action.label}
-              </button>
+        <Dropdown.Menu size="md">
+          {actions.map(action => (
+            <Dropdown.Option key={action.label} align="center" onClick={action.onClick}>
+              {action.label}
             </Dropdown.Option>
           ))}
         </Dropdown.Menu>

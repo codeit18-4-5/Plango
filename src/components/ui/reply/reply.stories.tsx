@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import { Reply } from "@/components/ui";
 import { CommentBase } from "@/types/comment-base";
 
@@ -70,18 +70,6 @@ export default {
     },
   },
   argTypes: {
-    comment: {
-      description: "댓글 데이터 객체",
-      control: { type: "object" },
-    },
-    isEditing: {
-      description: "편집 모드 여부",
-      control: { type: "boolean" },
-    },
-    isAuthor: {
-      description: "현재 사용자가 작성자인지 여부",
-      control: { type: "boolean" },
-    },
     variant: {
       description: "댓글 스타일 변형",
       control: { type: "radio" },
@@ -92,55 +80,75 @@ export default {
 
 export const Default = {
   name: "Default",
-  render: (args: {
-    comment: CommentBase;
-    isEditing: boolean;
-    isAuthor: boolean;
-    variant?: "primary" | "secondary";
-  }) => (
-    <Reply
-      {...args}
-      onEdit={() => console.log("편집 시작")}
-      onCancelEdit={() => console.log("편집 취소")}
-      onSaveEdit={(value: string) => console.log("저장:", value)}
-    />
-  ),
   args: {
-    comment: mockComments[0],
-    isEditing: false,
-    isAuthor: false,
     variant: "primary",
+  },
+  render: ({ variant }: { variant: "primary" | "secondary" }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    return (
+      <Reply
+        comment={mockComments[0]}
+        isEditing={isEditing}
+        onCancelEdit={() => setIsEditing(false)}
+        onSaveEdit={() => {
+          setIsEditing(false);
+        }}
+        isAuthor={true}
+        variant={variant}
+        actions={[
+          {
+            label: "수정하기",
+            onClick: () => setIsEditing(true),
+          },
+          {
+            label: "삭제하기",
+            onClick: () => alert("삭제하기"),
+          },
+        ]}
+      />
+    );
   },
 };
 
-export const SecondaryVariant = {
-  name: "Secondary Variant",
-  render: (args: {
-    comment: CommentBase;
-    isEditing: boolean;
-    isAuthor: boolean;
-    variant?: "primary" | "secondary";
-  }) => (
-    <Reply
-      {...args}
-      onEdit={() => console.log("편집 시작")}
-      onCancelEdit={() => console.log("편집 취소")}
-      onSaveEdit={(value: string) => console.log("저장:", value)}
-    />
-  ),
+export const Secondary = {
+  name: "Secondary",
   args: {
-    comment: mockComments[0],
-    isEditing: false,
-    isAuthor: true,
     variant: "secondary",
+  },
+  render: ({ variant }: { variant: "primary" | "secondary" }) => {
+    const [isEditing, setIsEditing] = useState(false);
+    return (
+      <div className="bg-gray-900 p-4">
+        <Reply
+          variant={variant}
+          comment={mockComments[0]}
+          isEditing={isEditing}
+          onCancelEdit={() => setIsEditing(false)}
+          onSaveEdit={() => {
+            setIsEditing(false);
+          }}
+          isAuthor={true}
+          actions={[
+            {
+              label: "수정하기",
+              onClick: () => setIsEditing(true),
+            },
+            {
+              label: "삭제하기",
+              onClick: () => alert("삭제하기"),
+            },
+          ]}
+        />
+      </div>
+    );
   },
 };
 
 export const InteractiveCommentList = {
   name: "Interactive Comment List",
   render: () => {
-    const [editingId, setEditingId] = React.useState<number | null>(null);
-    const [comments, setComments] = React.useState<CommentBase[]>(mockComments);
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [comments, setComments] = useState<CommentBase[]>(mockComments);
     const currentUserIds = [1, 3];
 
     const handleSaveEdit = (commentId: number, newContent: string) => {
@@ -161,10 +169,19 @@ export const InteractiveCommentList = {
             key={comment.id}
             comment={comment}
             isEditing={editingId === comment.id}
-            onEdit={() => setEditingId(comment.id)}
             onCancelEdit={() => setEditingId(null)}
-            onSaveEdit={(value: string) => handleSaveEdit(comment.id, value)}
+            onSaveEdit={value => handleSaveEdit(comment.id, value)}
             isAuthor={currentUserIds.includes(comment.user.id)}
+            actions={[
+              {
+                label: "수정하기",
+                onClick: () => setEditingId(comment.id),
+              },
+              {
+                label: "삭제하기",
+                onClick: () => alert("삭제하기"),
+              },
+            ]}
           />
         ))}
       </div>

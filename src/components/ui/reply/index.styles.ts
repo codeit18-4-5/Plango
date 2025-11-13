@@ -1,3 +1,4 @@
+import cn from "@/lib/cn";
 import { cva } from "class-variance-authority";
 
 // Reply 컴포넌트 스타일
@@ -66,3 +67,12 @@ export const replyTimeStamp = cva("flex items-center", {
     variant: "primary",
   },
 });
+
+export const REPLY_ACTIONS_STYLES = {
+  wrapper: cn("absolute right-0 top-0 text-body-s p-0 z-[5]"),
+  icon: cn(
+    "h-[16px] w-[16px] text-gray-500 align-top inline-block duration-200",
+    "hover:text-gray-400 active:text-gray-300 focus:text-gray-200",
+    "tablet:h-[24px] tablet:w-[24px]",
+  ),
+};
