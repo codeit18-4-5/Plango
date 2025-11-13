@@ -30,7 +30,7 @@ export default function CardActions({ actions, className, onStopPropagation }: C
         </Dropdown.TriggerIcon>
         <Dropdown.Menu className="w-[120px] overflow-hidden">
           {actions.map(action => (
-            <Dropdown.Option align="center" className="p-0 hover:bg-gray-700">
+            <Dropdown.Option key={action.label} align="center" className="p-0 hover:bg-gray-700">
               <button
                 type="button"
                 onClick={action.onClick}
