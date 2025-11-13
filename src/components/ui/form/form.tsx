@@ -32,7 +32,8 @@ export default function Form<T extends FieldValues = FieldValues>({
 
   const handleFormSubmit: SubmitHandler<T> = async data => {
     try {
-      await onSubmit?.(data);
+      const result = await onSubmit?.(data);
+      return result;
     } catch (error) {
       if (onServerError) {
         onServerError(error, setError);
