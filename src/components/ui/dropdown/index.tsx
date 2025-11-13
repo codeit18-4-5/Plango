@@ -10,15 +10,15 @@ import { TriggerSelect } from "./trigger-select";
 import { Menu } from "./menu";
 import { Option } from "./option";
 
-export default function Dropdown({ size, children, className, onSelect }: DropdownProps) {
+export default function Dropdown({ size, children, className, onSelect, options }: DropdownProps) {
   const { isOpen, toggle, setClose } = useToggle();
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   useClickOutside(dropdownRef, setClose);
 
   return (
-    <DropdownContext.Provider value={{ isOpen, toggle, size, onSelect }}>
-      <div ref={dropdownRef} className="relative inline-block">
+    <DropdownContext.Provider value={{ isOpen, toggle, size, onSelect, options }}>
+      <div ref={dropdownRef}>
         <div className={cn(dropDownStyle({ size, className }))}>{children}</div>
       </div>
     </DropdownContext.Provider>
