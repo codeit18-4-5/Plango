@@ -2,14 +2,10 @@
 
 import cn from "@/lib/cn";
 import { MouseEvent } from "react";
+import { CardAction } from "@/types/action";
 import { CARD_ACTIONS_STYLES } from "./index.styles";
 import Dropdown from "@/components/ui/dropdown/dropdown";
 import IcKebab from "@/assets/icons/ic-kebab.svg";
-
-export type CardAction = {
-  label: string;
-  onClick: () => void;
-};
 
 type CardActionsProps = {
   actions: CardAction[];
