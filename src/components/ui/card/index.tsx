@@ -33,7 +33,7 @@ function Card({ id, children, className, href, actions = [] }: CardProps) {
     e.stopPropagation();
   };
 
-  const cardContent = (
+  return (
     <CardContext.Provider value={{ hasActions }}>
       <div key={id} className={CARD_WRAPPER_STYLES.wrapper(hasLink, className)}>
         {hasLink ? (
@@ -56,8 +56,6 @@ function Card({ id, children, className, href, actions = [] }: CardProps) {
       </div>
     </CardContext.Provider>
   );
-
-  return cardContent;
 }
 
 Card.Badge = CardBadge;
