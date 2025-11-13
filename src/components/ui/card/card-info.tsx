@@ -1,5 +1,6 @@
 import cn from "@/lib/cn";
 import { getTimeAgo } from "@/lib/utils";
+import { DISPLAY_LIMITS } from "@/constants/display";
 import { Avatar } from "@/components/ui";
 import { CARD_INFO_STYLES } from "./index.styles";
 import ICLike from "@/assets/icons/ic-heart.svg";
@@ -35,7 +36,9 @@ export default function CardInfo({
           <span className={CARD_INFO_STYLES.like.icon}>
             <ICLike />
           </span>
-          {likeCount > 9999 ? "9999+" : likeCount}
+          {likeCount > DISPLAY_LIMITS.MAX_LIKE_COUNT
+            ? DISPLAY_LIMITS.MAX_LIKE_COUNT_TEXT
+            : likeCount}
         </div>
       )}
     </div>
