@@ -11,3 +11,4 @@ export { default as ReplyInput } from "@/components/ui/reply/reply-input";
 export { default as OverflowMenu } from "@/components/ui/reply/overflow-menu";
 export { default as ImgUpload } from "@/components/ui/img-upload";
 export { default as Dropdown } from "@/components/ui/dropdown";
+export { default as Card } from "@/components/ui/card";
