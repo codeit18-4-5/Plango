@@ -101,8 +101,12 @@ export const CARD_INFO_STYLES = {
 
 export const CARD_ACTIONS_STYLES = {
   wrapper: cn(
-    "absolute right-[16px] bottom-[24px] p-0 z-[5]",
+    "absolute right-[16px] bottom-[31px] text-body-s p-0 z-[5]",
     "tablet:top-[22px] tablet:right-[32px] tablet:bottom-auto",
   ),
-  icon: cn("h-[16px] w-[16px] text-gray-500", "tablet:h-[24px] tablet:w-[24px]"),
+  icon: cn(
+    "h-[16px] w-[16px] text-gray-500 align-top inline-block duration-200",
+    "hover:text-gray-400 active:text-gray-300 focus:text-gray-200",
+    "tablet:h-[24px] tablet:w-[24px]",
+  ),
 };

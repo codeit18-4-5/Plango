@@ -4,7 +4,7 @@ import cn from "@/lib/cn";
 import { MouseEvent } from "react";
 import { CardAction } from "@/types/action";
 import { CARD_ACTIONS_STYLES } from "./index.styles";
-import Dropdown from "@/components/ui/dropdown/dropdown";
+import { Dropdown } from "@/components/ui";
 import IcKebab from "@/assets/icons/ic-kebab.svg";
 
 type CardActionsProps = {
@@ -18,22 +18,14 @@ export default function CardActions({ actions, className, onStopPropagation }: C
 
   return (
     <div onClick={onStopPropagation} className={cn(CARD_ACTIONS_STYLES.wrapper, className)}>
-      <Dropdown size="sm" className="z-5 w-auto align-top">
-        <Dropdown.TriggerIcon intent="icon" className="p-0">
-          <span className={CARD_ACTIONS_STYLES.icon}>
-            <IcKebab />
-          </span>
+      <Dropdown>
+        <Dropdown.TriggerIcon intent="icon" className={CARD_ACTIONS_STYLES.icon}>
+          <IcKebab />
         </Dropdown.TriggerIcon>
-        <Dropdown.Menu className="w-[120px] overflow-hidden">
+        <Dropdown.Menu size="md">
           {actions.map(action => (
-            <Dropdown.Option key={action.label} align="center" className="p-0 hover:bg-gray-700">
-              <button
-                type="button"
-                onClick={action.onClick}
-                className="block w-full p-[11px_8px] text-body-s font-light text-gray-100"
-              >
-                {action.label}
-              </button>
+            <Dropdown.Option key={action.label} align="center" onClick={action.onClick}>
+              {action.label}
             </Dropdown.Option>
           ))}
         </Dropdown.Menu>
