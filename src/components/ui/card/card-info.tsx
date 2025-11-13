@@ -19,7 +19,7 @@ export default function CardInfo({
   createdAt,
   likeCount,
   className,
-  variant,
+  variant = "primary",
 }: CardInfoProps) {
   return (
     <div className={cn(CARD_INFO_STYLES.wrapper({ variant }), className)}>
