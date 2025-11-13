@@ -67,6 +67,9 @@ const config: Config = {
         "dimmed-overlay": "var(--dimmed-overlay)",
         gradient: "var(--gradient)",
       },
+      borderColor: {
+        "line-strong": "var(--line-strong)",
+      },
       fontSize: {
         caption: ["var(--fs-caption)", { lineHeight: "var(--lh-caption)" }],
         "body-xs": ["var(--fs-body-xs)", { lineHeight: "var(--lh-body-xs)" }],

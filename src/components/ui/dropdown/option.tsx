@@ -1,30 +1,40 @@
 import cn from "@/lib/cn";
-import { useContext } from "react";
+import { useContext, ElementType, MouseEvent } from "react";
 import { DropdownContext } from "./dropdown.context";
 import { DropdownOptionProps } from "./dropdown.props";
 import { dropDownOptionStyle } from "./dropdown.styles";
 
-export function Option({ children, onClick, value, label, align, className }: DropdownOptionProps) {
+export function Option({
+  as = "button",
+  children,
+  onClick,
+  option,
+  align,
+  className,
+  ...props
+}: DropdownOptionProps<ElementType>) {
   const ctx = useContext(DropdownContext);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: MouseEvent) => {
     e.stopPropagation();
-    if (label && value) {
-      ctx?.onSelect?.({ label, value });
+    if (option) {
+      ctx?.onSelect?.(option);
     }
     onClick?.();
     ctx?.toggle();
-
-    return null;
   };
+  const Component = as;
 
   return (
     ctx?.isOpen && (
-      <li
-        onClick={handleClick}
-        className={cn(dropDownOptionStyle({ size: ctx?.size, align, className }))}
-      >
-        {children}
+      <li className="w-full">
+        <Component
+          onClick={handleClick}
+          {...props}
+          className={cn(dropDownOptionStyle({ size: ctx?.size, align, className }))}
+        >
+          {children}
+        </Component>
       </li>
     )
   );

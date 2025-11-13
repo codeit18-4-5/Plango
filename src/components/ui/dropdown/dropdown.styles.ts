@@ -22,10 +22,19 @@ export const dropDownTriggerStyle = cva("relative w-full flex items-center ", {
   },
 });
 
-export const dropDownMenuStyle =
-  "absolute bg-gray-800 border border-gray-700 rounded-[12px] mt-[8px] right-0 w-full";
+export const dropDownMenuStyle = cva(
+  "absolute bg-gray-800 border border-gray-700 rounded-[12px] mt-[8px] z-[9999] right-0 w-full overflow-hidden",
+  {
+    variants: {
+      size: {
+        sm: "w-[94px]",
+        md: "w-[120px]",
+      },
+    },
+  },
+);
 
-export const dropDownOptionStyle = cva("py-[11px] w-full", {
+export const dropDownOptionStyle = cva("py-[11px] w-full block hover:bg-gray-700 ", {
   variants: {
     size: {
       sm: "px-[8px]",
