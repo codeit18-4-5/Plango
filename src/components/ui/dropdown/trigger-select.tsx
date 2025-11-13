@@ -7,8 +7,8 @@ import { dropDownTriggerStyle } from "./dropdown.styles";
 export function TriggerSelect({
   children,
   className,
-  isIcon,
   intent,
+  isIcon,
   selectedLabel,
 }: SelectTriggerProps) {
   const ctx = useContext(DropdownContext);
