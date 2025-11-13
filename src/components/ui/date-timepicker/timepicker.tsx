@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Button from "../button/button";
+import cn from "@/lib/cn";
 
 const TIME_PERIOD = {
   AM: "오전",
@@ -63,9 +64,10 @@ export default function CustomTimePicker({ selectedTime, onTimeChange }: CustomT
         {Object.values(TIME_PERIOD).map(p => (
           <Button
             key={p}
-            className={`h-[40px] w-[78px] bg-[#18212f] ${
-              period === p ? "bg-pink-500 text-white" : ""
-            }`}
+            className={cn(
+              "h-[40px] w-[78px] bg-[#18212f]",
+              period === p ? "bg-pink-500 text-white" : "",
+            )}
             intent="primary"
             onClick={() => handlePeriodChange(p)}
           >
@@ -74,17 +76,18 @@ export default function CustomTimePicker({ selectedTime, onTimeChange }: CustomT
         ))}
       </div>
 
-      <div className="h-[152px] w-[220px] rounded-xl bg-[#18212f] px-[8px] py-[8px]">
+      <div className="h-[152px] w-[220px] rounded-xl bg-[#18212f] p-[8px]">
         <div className="scroll-bar flex h-full w-full flex-col overflow-y-scroll rounded-xl bg-[#18212f] px-[14px] py-[8px]">
           {times.map((time, index) => (
             <button
               key={index}
               onClick={() => handleTimeClick(index)}
-              className={`text-fs-body-m rounded px-[2px] py-[7.5px] text-left transition ${
+              className={cn(
+                "text-fs-body-m rounded px-[2px] py-[7.5px] text-left transition",
                 index === selectedIndex
-                  ? "font-semibold text-pink-500 text-white"
-                  : "text-gray-300 hover:bg-gray-700"
-              }`}
+                  ? "font-semibold text-pink-500"
+                  : "text-gray-300 hover:bg-gray-700",
+              )}
             >
               {time.label}
             </button>
