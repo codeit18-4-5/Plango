@@ -1,39 +1,105 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import CustomSingleDatepicker from "./single-datepicker";
+import { useState } from "react";
+import { SingleDatepicker, MultipleDatepicker, Timepicker } from "@/components/ui";
 import "@/styles/custom-react-datepicker.css";
 
-const meta = {
-  title: "UI/Date-timepicker/singleDatepicker",
-  component: CustomSingleDatepicker,
+export default {
+  title: "UI/DatePicker",
   tags: ["autodocs"],
   parameters: {
+    layout: "padded",
+    backgrounds: {
+      default: "dark",
+      values: [
+        {
+          name: "dark",
+          value: "#0f172a",
+        },
+        {
+          name: "light",
+          value: "#ffffff",
+        },
+      ],
+    },
     docs: {
       description: {
-        component: "CustomSingleDatepicker 컴포넌트",
+        component: "날짜 및 시간 선택 컴포넌트 모음",
       },
     },
   },
-  argTypes: {
-    startDate: {
-      control: "date",
-      description: "선택 날짜",
-    },
-    onSingleChange: {
-      action: "선택 날짜 변경됨",
-      description: "선택 날짜가 변경될 때 호출되는 함수",
-    },
+};
+
+export const SingleDatePicker = {
+  name: "Single Datepicker",
+  render: () => {
+    const [date, setDate] = useState<Date | null>(new Date());
+
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="text-white">
+          <p className="mb-2 text-sm text-gray-400">선택된 날짜:</p>
+          <p className="font-semibold text-pink-600">
+            {date ? date.toLocaleDateString("ko-KR") : "날짜를 선택해주세요"}
+          </p>
+        </div>
+        <SingleDatepicker startDate={date} onSingleChange={setDate} />
+      </div>
+    );
   },
-} satisfies Meta<typeof CustomSingleDatepicker>;
+};
 
-export default meta;
+export const MultipleDatePicker = {
+  name: "Multiple Datepcker (Range)",
+  render: () => {
+    const [startDate, setStartDate] = useState<Date | null>(new Date());
+    const [endDate, setEndDate] = useState<Date | null>(null);
 
-type Story = StoryObj<typeof CustomSingleDatepicker>;
+    const handleRangeChange = (dates: [Date | null, Date | null]) => {
+      const [start, end] = dates;
+      setStartDate(start);
+      setEndDate(end);
+    };
 
-export const Primary: Story = {
-  args: {
-    startDate: new Date("2025-11-5"),
-    onSingleChange: (date: Date | null) => {
-      console.log("선택된 날짜:", date);
-    },
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="text-white">
+          <p className="mb-2 text-sm text-gray-400">선택된 기간:</p>
+          <p className="font-semibold text-pink-600">
+            {startDate ? startDate.toLocaleDateString("ko-KR") : "시작일"}
+            {" ~ "}
+            {endDate ? endDate.toLocaleDateString("ko-KR") : "종료일"}
+          </p>
+        </div>
+        <MultipleDatepicker
+          startDate={startDate}
+          endDate={endDate}
+          onRangeChange={handleRangeChange}
+        />
+      </div>
+    );
+  },
+};
+
+export const TimePicker = {
+  name: "Timepicker",
+  render: () => {
+    const [time, setTime] = useState<Date | null>(new Date());
+
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="text-white">
+          <p className="mb-2 text-sm text-gray-400">선택된 시간:</p>
+          <p className="font-semibold text-pink-600">
+            {time
+              ? time.toLocaleTimeString("ko-KR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })
+              : "시간을 선택해주세요"}
+          </p>
+        </div>
+        <Timepicker selectedTime={time} onTimeChange={setTime} />
+      </div>
+    );
   },
 };
