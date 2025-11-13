@@ -7,13 +7,13 @@ export type Role = "ADMIN" | "MEMBER";
 
 export interface User {
   id: number;
-  image: string;
+  image: string | null;
   nickname: string;
   email: string;
   createdAt: string;
   updatedAt: string;
   teamId: string;
-  memberships: Membership[];
+  memberships?: Membership[];
 }
 
 export interface Membership {
