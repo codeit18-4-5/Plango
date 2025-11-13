@@ -23,9 +23,9 @@ export const dropDownTriggerStyle = cva("relative w-full flex items-center ", {
 });
 
 export const dropDownMenuStyle =
-  "absolute bg-gray-800 border border-gray-700 rounded-[12px] mt-[8px] z-[9999] right-0 w-full";
+  "absolute bg-gray-800 border border-gray-700 rounded-[12px] mt-[8px] z-[9999] right-0 w-full  overflow-hidden";
 
-export const dropDownOptionStyle = cva("py-[11px] w-full block", {
+export const dropDownOptionStyle = cva("py-[11px] w-full block hover:bg-gray-700 ", {
   variants: {
     size: {
       sm: "px-[8px]",

@@ -27,7 +27,7 @@ export function Option({
 
   return (
     ctx?.isOpen && (
-      <li className="w-full first:rounded-t-[12px] last:rounded-b-[12px] hover:bg-gray-700">
+      <li className="w-full">
         <Component
           onClick={handleClick}
           {...props}
