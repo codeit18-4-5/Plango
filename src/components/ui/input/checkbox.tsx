@@ -1,14 +1,11 @@
 import cn from "@/lib/cn";
-import { ChangeEvent } from "react";
+import { ChangeEvent, type ComponentPropsWithoutRef } from "react";
 import IcCheckbox from "@/assets/icons/ic-checked.svg";
 import IcChecked from "@/assets/icons/ic-checked-color.svg";
 
-type CheckboxProps = {
+type CheckboxProps = Omit<ComponentPropsWithoutRef<"input">, "type" | "onChange" | "checked"> & {
   checked: boolean; // check 여부
   onChange?: (checked: boolean) => void; // 상태 변경
-  readOnly?: boolean; // 읽기 전용
-  disabled?: boolean;
-  className?: string;
   label?: string;
 };
 

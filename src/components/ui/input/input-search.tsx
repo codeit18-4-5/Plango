@@ -1,14 +1,11 @@
 "use client";
 import cn from "@/lib/cn";
-import { useContext } from "react";
+import { useContext, type ComponentPropsWithoutRef } from "react";
 import inputStyle from "./input.style";
 import { InputContext } from "./input.context";
 import IcSearch from "@/assets/icons/ic-search.svg";
 
-type InputSearchProps = {
-  disabled?: boolean;
-  className?: string;
-};
+type InputSearchProps = Omit<ComponentPropsWithoutRef<"input">, "type">;
 
 export default function InputSearch({ disabled = false, className, ...props }: InputSearchProps) {
   const ctx = useContext(InputContext);
