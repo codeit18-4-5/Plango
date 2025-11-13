@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, ElementType, ComponentPropsWithoutRef } from "react";
 import { DropdownOption } from "@/types/option";
 
 export interface DropdownProps {
@@ -6,6 +6,7 @@ export interface DropdownProps {
   intent?: "select" | "icon" | undefined;
   children?: ReactNode;
   className?: string;
+  options?: DropdownOption[];
   onSelect?: ({ label, value }: DropdownOption) => void;
 }
 
@@ -14,9 +15,9 @@ export interface SelectTriggerProps extends DropdownProps {
   selectedLabel?: string;
 }
 
-export interface DropdownOptionProps extends DropdownProps {
-  value?: string | undefined;
-  label?: string | undefined;
+export type DropdownOptionProps<T extends ElementType> = DropdownProps & {
+  as?: T;
+  option?: DropdownOption;
   onClick?: () => void;
   align?: "center" | "left" | undefined;
-}
+} & Omit<ComponentPropsWithoutRef<T>, "as">;

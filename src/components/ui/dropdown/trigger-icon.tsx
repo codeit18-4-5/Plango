@@ -8,10 +8,7 @@ export function TriggerIcon({ children, intent, className }: DropdownProps) {
   const ctx = useContext(DropdownContext);
   return (
     ctx && (
-      <button
-        onClick={ctx.toggle}
-        className={cn(dropDownTriggerStyle({ size: ctx?.size, intent, className }))}
-      >
+      <button onClick={ctx.toggle} className={cn(dropDownTriggerStyle({ intent, className }))}>
         {children}
       </button>
     )
