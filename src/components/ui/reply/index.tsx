@@ -1,3 +1,5 @@
+"use client";
+
 import cn from "@/lib/cn";
 import { useEffect } from "react";
 import { CommentBase } from "@/types/comment-base";
