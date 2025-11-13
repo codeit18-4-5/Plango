@@ -86,3 +86,15 @@ export const formatDateToKorean = (date: Date): string => {
     day: "numeric",
   });
 };
+
+/**
+ * 시간을 "HH:mm" 형식으로 포맷
+ * @author luli
+ * @param date
+ */
+export const formatTimeToKorean = (date: Date): string => {
+  return date.toLocaleTimeString("ko-KR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
