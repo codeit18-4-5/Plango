@@ -20,7 +20,8 @@ export default function renderCustomHeader({
       <button
         type="button"
         onClick={decreaseMonth}
-        className="flex h-8 w-8 items-center justify-center rounded hover:bg-gray-700"
+        className="custom-datepicker-header-button"
+        aria-label="이전 달로 이동"
       >
         <div className="w-[24px]">
           <ArrowIcon className="rotate-90" />
@@ -30,7 +31,8 @@ export default function renderCustomHeader({
       <button
         type="button"
         onClick={increaseMonth}
-        className="flex h-8 w-8 items-center justify-center rounded hover:bg-gray-700"
+        className="custom-datepicker-header-button"
+        aria-label="다음 달로 이동"
       >
         <div className="w-[24px]">
           <ArrowIcon className="-rotate-90" />
