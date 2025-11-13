@@ -393,14 +393,14 @@ h2.react-datepicker__current-month {
   font-weight: 500;
   display: inline-block;
   text-align: center;
-  /* 캘린더 사이즈 조정이 필요할시 em으로 변경 */
+  /* 캘린더 사이즈 조정이 필요할시 변경 */
   /* width: 1.9em;
   line-height: 1.9em;
   margin: 0.166rem; */
-  width: 34px;
-  height: 20px;
-  line-height: 1.4em;
-  margin: 3px;
+  width: 47px;
+  height: 35px;
+  line-height: 2.2em;
+  margin: 2px 3px;
 }
 .react-datepicker__day-name--disabled,
 .react-datepicker__day--disabled,
@@ -837,6 +837,7 @@ h2.react-datepicker__current-month {
     line-height: 2rem;
   }
 }
+
 .react-datepicker__portal .react-datepicker__current-month,
 .react-datepicker__portal .react-datepicker-time__header {
   font-size: 1.44rem;
