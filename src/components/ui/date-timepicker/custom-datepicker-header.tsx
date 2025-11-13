@@ -9,10 +9,9 @@ export default function renderCustomHeader({
   decreaseMonth: () => void;
   increaseMonth: () => void;
 }) {
-  const monthYear = date.toLocaleDateString("en-US", {
+  const monthYear = date.toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "long",
-    timeZone: "Asia/Seoul",
   });
 
   return (
