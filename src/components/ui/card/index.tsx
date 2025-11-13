@@ -5,7 +5,8 @@ import { ReactNode, createContext, useContext, MouseEvent } from "react";
 import CardBadge from "./card-badge";
 import CardContent from "./card-content";
 import CardInfo from "./card-info";
-import CardActions, { CardAction } from "./card-actions";
+import CardActions from "./card-actions";
+import { CardAction } from "@/types/action";
 import { CARD_WRAPPER_STYLES } from "./index.styles";
 
 type CardContextType = {
