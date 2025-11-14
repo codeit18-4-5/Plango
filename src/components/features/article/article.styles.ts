@@ -1,0 +1,37 @@
+import cn from "@/lib/cn";
+
+const LAYOUT_GAP = "grid gap-y-[24px] tablet:gap-y-[32px] desktop:gap-y-[40px]";
+
+export const ARTICLE_STYLES = {
+  main: {
+    wrapper: LAYOUT_GAP,
+    title: "text-heading-m text-gray-100",
+  },
+  section: {
+    wrapper: LAYOUT_GAP,
+    heading: {
+      wrapper: "flex items-center justify-between gap-x-[10px]",
+      title: "text-heading-s text-gray-100",
+      moreHref: cn(
+        "text-body-xs text-gray-400 duration-200",
+        "hover:text-gray-300",
+        "tablet:text-body-s",
+      ),
+    },
+    contents: "relative",
+    grid: {
+      best: cn(
+        "grid grid-cols-1",
+        "tablet:grid-cols-2 tablet:gap-[16px]",
+        "desktop:grid-cols-3 gap-[20px]",
+      ),
+      normal: cn("grid gap-[16px]", "tablet:gap-[24px]", "desktop:grid-cols-2 gap-[20px_24px]"),
+    },
+  },
+  dropdown: {
+    wrapper: cn("text-body-xs", "tablet:text-body-s tablet:w-[120px]"),
+    trigger: "tablet:h-[44px] tablet:p-[10px_14px]",
+    icon: "w-[24px]",
+    option: "tablet:p-[10px_14px]",
+  },
+};

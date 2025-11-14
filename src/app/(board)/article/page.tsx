@@ -6,11 +6,12 @@ import {
   BestArticlesSection,
   ArticleListSection,
 } from "@/components/features/article/article-list";
+import { ARTICLE_STYLES } from "@/components/features/article/article.styles";
 
 export default function ArticlesPage() {
   return (
-    <Container as="main">
-      <h2>자유게시판</h2>
+    <Container as="main" className={ARTICLE_STYLES.main.wrapper}>
+      <h2 className={ARTICLE_STYLES.main.title}>자유게시판</h2>
       <ArticleSearchBar />
       <BestArticlesSection />
       <ArticleListSection
