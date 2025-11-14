@@ -1,12 +1,8 @@
 "use client";
 import { Container } from "@/components/layout";
-import { Button, Checkbox, Floating, Input } from "@/components/ui";
+import { Checkbox, Floating } from "@/components/ui";
 import ScrollTopButton from "@/components/ui/button/scroll-top-button";
-import Form from "@/components/ui/form/form";
-import { signUpSchema, type SignUpSchema } from "@/constants/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useFormContext } from "react-hook-form";
 
 function CheckboxControllerDemo() {
   const [checked, setChecked] = useState(false);
@@ -45,50 +41,9 @@ function CheckboxControllerDemo() {
     </div>
   );
 }
-function SignUpFormFields() {
-  const { register, formState } = useFormContext<SignUpSchema>();
-  const errors = formState.errors;
-  return (
-    <>
-      <Input errorMsg={errors.userName?.message}>
-        <Input.Label label="이름" />
-        <Input.Field {...register("userName")} />
-        <Input.Error />
-      </Input>
-      <Input id="email" errorMsg={errors.userEmail?.message}>
-        <Input.Label label="이메일" />
-        <Input.Field type="email" {...register("userEmail")} />
-        <Input.Error />
-      </Input>
-      <Input id="password" errorMsg={errors?.password?.message}>
-        <Input.Label label="비밀번호" />
-        <Input.Password {...register("password")} />
-        <Input.Error />
-      </Input>
-      <Input id="passwordConfirm" errorMsg={errors?.passwordConfirm?.message}>
-        <Input.Label label="비밀번호 확인" />
-        <Input.Password {...register("passwordConfirm")} />
-        <Input.Error />
-      </Input>
-    </>
-  );
-}
-
 export default function Components() {
-  const handleSubmit = (data: object) => {
-    console.log(data);
-  };
-
   return (
     <Container>
-      <Form<SignUpSchema>
-        onSubmit={handleSubmit}
-        resolver={zodResolver(signUpSchema)}
-        mode="onBlur"
-      >
-        <SignUpFormFields />
-        <Button type="submit">회원가입 하기</Button>
-      </Form>
       <CheckboxControllerDemo />
       <div className="h-[1000px] border border-pink-600">ScrollTopButton test box</div>
       <Floating>

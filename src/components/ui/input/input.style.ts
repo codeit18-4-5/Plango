@@ -6,7 +6,7 @@ export const inputBase = [
   "placeholder:text-gray-500 focus:border-pink-300 focus-visible:outline-none hover:border-pink-500",
 ].join(" ");
 
-export const inputLabelStyle = cva("text-base text-gray-100", {
+export const inputLabelStyle = cva("flex items-center text-base text-gray-100", {
   variants: {
     size: {
       sm: "mb-3",
