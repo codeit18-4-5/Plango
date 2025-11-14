@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 import { useFormContext } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signUpSchema, validateRequired, type SignUpSchema } from "@/constants/schema";
+import { signUpSchema, validateRequired, type SignUpSchema } from "@/lib/schema";
 import Form from "./form";
 import { Button, Input } from "@/components/ui";
 interface Schema {
@@ -51,14 +51,14 @@ function SignUpFormFields() {
   const errors = formState.errors;
   return (
     <>
-      <Input errorMsg={errors.userName?.message}>
-        <Input.Label label="이름" />
-        <Input.Field {...register("userName")} />
+      <Input errorMsg={errors.nickname?.message}>
+        <Input.Label label="닉네임" />
+        <Input.Field {...register("nickname")} />
         <Input.Error />
       </Input>
-      <Input errorMsg={errors.userEmail?.message}>
+      <Input errorMsg={errors.email?.message}>
         <Input.Label label="이메일" />
-        <Input.Field type="email" {...register("userEmail")} />
+        <Input.Field type="email" {...register("email")} />
         <Input.Error />
       </Input>
       <Input errorMsg={errors?.password?.message}>
@@ -66,9 +66,9 @@ function SignUpFormFields() {
         <Input.Password {...register("password")} />
         <Input.Error />
       </Input>
-      <Input errorMsg={errors?.passwordConfirm?.message}>
+      <Input errorMsg={errors?.passwordConfirmation?.message}>
         <Input.Label label="비밀번호 확인" />
-        <Input.Password {...register("passwordConfirm")} />
+        <Input.Password {...register("passwordConfirmation")} />
         <Input.Error />
       </Input>
     </>
@@ -106,12 +106,12 @@ const meta: Meta<typeof Form> = {
     - zod를 사용하면 zodResolver(schema)를 전달합니다`,
     },
     mode: {
-      description: "검증 트리거 모드(onBlur, onChange 등)",
+      description: "제출하기 전에 검증(onBlur, onChange 등)",
       control: "select",
       options: ["onBlur", "onChange", "onSubmit", "onTouched", "all"],
     },
     reValidateMode: {
-      description: "전체 유효성은 검증 트리거 모드",
+      description: "제출한 후 검증",
     },
   },
   decorators: [

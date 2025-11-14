@@ -1,6 +1,6 @@
 "use client";
 import cn from "@/lib/cn";
-import { useContext } from "react";
+import { useContext, type ComponentPropsWithoutRef } from "react";
 import inputStyle from "./input.style";
 import { InputContext } from "./input.context";
 import Button from "../button/button";
@@ -8,14 +8,9 @@ import IcVisible from "@/assets/icons/ic-visible.svg";
 import IcVisibleOff from "@/assets/icons/ic-visible-false.svg";
 import useToggle from "@/hooks/use-toggle";
 
-type InputPasswordProps = {
-  name?: string;
-  disabled?: boolean;
-  className?: string;
-};
+type InputPasswordProps = Omit<ComponentPropsWithoutRef<"input">, "type">;
 
 export default function InputPassword({
-  name,
   disabled = false,
   className,
   ...props
@@ -28,7 +23,6 @@ export default function InputPassword({
       <input
         type={isOpen ? "text" : "password"}
         id={ctx?.id}
-        name={name}
         disabled={disabled}
         className={cn(
           inputStyle({ intent: "password", disabled, error: Boolean(ctx?.errorMsg) }),
@@ -37,6 +31,7 @@ export default function InputPassword({
         {...props}
       />
       <Button
+        type="button"
         size="icon"
         aria-label={isOpen ? "비밀번호 숨기기" : "비밀번호 보기"}
         onClick={toggle}
