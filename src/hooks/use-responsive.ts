@@ -7,10 +7,6 @@ export function useResponsive() {
     minWidth: BREAKPOINTS.mobile + 1,
     maxWidth: BREAKPOINTS.tablet,
   });
-  const isDesktop = useMediaQuery({
-    minWidth: BREAKPOINTS.tablet + 1,
-    maxWidth: BREAKPOINTS.desktop,
-  });
-  const isWide = useMediaQuery({ minWidth: BREAKPOINTS.desktop + 1 });
-  return { isMobile, isTablet, isDesktop, isWide };
+  const isDesktop = useMediaQuery({ minWidth: BREAKPOINTS.tablet + 1 });
+  return { isMobile, isTablet, isDesktop };
 }

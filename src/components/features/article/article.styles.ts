@@ -21,7 +21,7 @@ export const ARTICLE_STYLES = {
     contents: "relative",
     grid: {
       best: cn(
-        "grid grid-cols-1",
+        "grid grid-cols-1 gap-[16px]",
         "tablet:grid-cols-2 tablet:gap-[16px]",
         "desktop:grid-cols-3 desktop:gap-[20px]",
       ),

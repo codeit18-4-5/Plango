@@ -11,9 +11,17 @@ type CardContentProps = {
   title: string;
   image?: string | null;
   className?: string;
+  blurDataURL?: string;
+  fallbackBlurDataURL?: string;
 };
 
-export default function CardContent({ title, image, className }: CardContentProps) {
+export default function CardContent({
+  title,
+  image,
+  className,
+  blurDataURL,
+  fallbackBlurDataURL,
+}: CardContentProps) {
   const [imageError, setImageError] = useState(false);
   const hasValidImageSrc = isValidImageSrc(image);
 
@@ -29,6 +37,7 @@ export default function CardContent({ title, image, className }: CardContentProp
               alt=""
               className="object-cover"
               draggable={false}
+              blurDataURL={blurDataURL ?? fallbackBlurDataURL}
               onBlur={() => setImageError(true)}
               onError={() => setImageError(true)}
             />
