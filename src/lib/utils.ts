@@ -54,3 +54,47 @@ export const getTimeAgo = (dateString: string) => {
 
   return "방금 전";
 };
+
+/**
+ * datepicker week 3글자까지만 자르기 (e.g. Sunday -> Sun)
+ * @author luli
+ * @param day
+ */
+export const cuttingDayString = (day: string) => day.substring(0, 3);
+
+/**
+ * datepicker 현재 달력에서 보고있는 날짜를 제외한 날짜는 other-month-day class 적용
+ * @author luli
+ * @param date, currentMonth, currentYear
+ */
+export const otherMonthIndicator = (date: Date, currentMonth: number, currentYear: number) => {
+  if (date.getMonth() !== currentMonth || date.getFullYear() !== currentYear) {
+    return "other-month-day";
+  }
+  return "";
+};
+
+/**
+ * datepicker 넘어간 date를 `YYYY년 MM월 DD일` 형식으로 포맷 -> input용
+ * @author luli
+ * @param date
+ */
+export const formatDateToKorean = (date: Date): string => {
+  return date.toLocaleDateString("ko-KR", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+/**
+ * 시간을 "HH:mm" 형식으로 포맷
+ * @author luli
+ * @param date
+ */
+export const formatTimeToKorean = (date: Date): string => {
+  return date.toLocaleTimeString("ko-KR", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+};
