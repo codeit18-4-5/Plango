@@ -14,7 +14,7 @@ export const replyInputWrapper = cva("relative flex", {
 });
 
 export const replyInputTextarea = cva(
-  "w-full overflow-auto resize-none bg-transparent whitespace-pre-line outline-none",
+  "w-full resize-none bg-transparent whitespace-pre-line outline-none scroll-bar",
   {
     variants: {
       variant: {
@@ -23,7 +23,10 @@ export const replyInputTextarea = cva(
           "active:border-pink-500 focus:border-pink-400",
           "placeholder:text-gray-400",
         ],
-        secondary: ["h-4 pt-0.5 w-[calc(100%-24px)] text-body-s placeholder:text-gray-500"],
+        secondary: [
+          "min-h-auto border-0 p-0 rounded-none mt-[3px]",
+          "h-4 w-[calc(100%-24px)] !text-body-s placeholder:text-gray-500",
+        ],
       },
     },
     defaultVariants: {

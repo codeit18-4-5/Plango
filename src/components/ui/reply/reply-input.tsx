@@ -2,18 +2,17 @@
 
 import cn from "@/lib/cn";
 import { useId, useState } from "react";
-import { CreateArticleComment } from "@/types/article-comment";
 import { useAutoResizeTextarea } from "@/hooks";
 import { replyInputWrapper, replyInputTextarea, replyInputSubmit } from "./reply-input.styles";
-import { Button } from "@/components/ui";
+import { Button, Input } from "@/components/ui";
 import IcSubmit from "@/assets/icons/ic-enter.svg";
 
 type ReplyProps = {
-  comment: CreateArticleComment;
   variant?: "primary" | "secondary";
+  onSubmit?: (value: string) => void;
 };
 
-export default function Reply({ variant = "primary" }: ReplyProps) {
+export default function Reply({ variant = "primary", onSubmit }: ReplyProps) {
   const [comment, setComment] = useState("");
   const isFilled = comment.trim().length > 0;
   const textareaId = useId();
@@ -22,17 +21,23 @@ export default function Reply({ variant = "primary" }: ReplyProps) {
 
   return (
     <div className={replyInputWrapper({ variant })}>
-      <textarea
+      <Input.Field
+        as="textarea"
         id={textareaId}
         ref={textareaRef}
         className={cn("max-h-[18.75rem]", replyInputTextarea({ variant }))}
         placeholder="댓글을 입력해주세요"
         value={comment}
-        onChange={e => onChange(e, setComment)}
+        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onChange(e, setComment)}
       />
 
       {variant === "primary" && (
-        <Button size="sm" className={replyInputSubmit({ variant })} disabled={!isFilled}>
+        <Button
+          size="sm"
+          className={replyInputSubmit({ variant })}
+          disabled={!isFilled}
+          onClick={() => onSubmit?.(comment)}
+        >
           등록
         </Button>
       )}
@@ -42,6 +47,7 @@ export default function Reply({ variant = "primary" }: ReplyProps) {
           aria-label="등록"
           disabled={!isFilled}
           className={cn(replyInputSubmit({ variant }), !isFilled && "text-gray-400")}
+          onClick={() => onSubmit?.(comment)}
         >
           <IcSubmit />
         </Button>

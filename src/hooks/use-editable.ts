@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type UseEditableReturn = {
   isEditing: boolean;
@@ -10,17 +10,33 @@ type UseEditableReturn = {
   setEditedContent: (value: string) => void;
 };
 
+type UseEditableOptions = {
+  textareaRef?: React.RefObject<HTMLTextAreaElement | null>;
+};
+
 /**
  * 작성글 수정 상태 관리 훅
  * @author yeonsu
  * @param initialValue 초기 작성글 값
+ * @param options 추가 옵션 (textareaRef 등)
  */
-const useEditable = (initialValue: string): UseEditableReturn => {
+const useEditable = (initialValue: string, options?: UseEditableOptions): UseEditableReturn => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(initialValue);
 
-  const startEditing = () => setIsEditing(true);
+  useEffect(() => {
+    if (isEditing && options?.textareaRef?.current) {
+      const textarea = options.textareaRef.current;
+      textarea.focus();
 
+      const length = textarea.value.length;
+      textarea.setSelectionRange(length, length);
+    }
+  }, [isEditing, options?.textareaRef]);
+
+  const startEditing = () => {
+    setIsEditing(true);
+  };
   const cancelEditing = () => {
     setIsEditing(false);
     setEditedContent(initialValue);
