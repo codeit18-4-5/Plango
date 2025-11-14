@@ -23,9 +23,13 @@ export const ARTICLE_STYLES = {
       best: cn(
         "grid grid-cols-1",
         "tablet:grid-cols-2 tablet:gap-[16px]",
-        "desktop:grid-cols-3 gap-[20px]",
+        "desktop:grid-cols-3 desktop:gap-[20px]",
       ),
-      normal: cn("grid gap-[16px]", "tablet:gap-[24px]", "desktop:grid-cols-2 gap-[20px_24px]"),
+      normal: cn(
+        "grid gap-[16px]",
+        "tablet:gap-[16px]",
+        "desktop:grid-cols-2 desktop:gap-[20px_20px]",
+      ),
     },
   },
   dropdown: {
@@ -33,5 +37,8 @@ export const ARTICLE_STYLES = {
     trigger: "tablet:h-[44px] tablet:p-[10px_14px]",
     icon: "w-[24px]",
     option: "tablet:p-[10px_14px]",
+  },
+  card: {
+    content: cn("tablet:min-h-[72px]"),
   },
 };

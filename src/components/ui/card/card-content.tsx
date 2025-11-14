@@ -29,6 +29,7 @@ export default function CardContent({ title, image, className }: CardContentProp
               alt=""
               className="object-cover"
               draggable={false}
+              onBlur={() => setImageError(true)}
               onError={() => setImageError(true)}
             />
           ) : (
