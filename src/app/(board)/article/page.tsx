@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import getArticles from "@/api/article/get-articles";
 import { Container } from "@/components/layout";
+import { Floating, ScrollTopButton, CircleButton } from "@/components/ui";
 import {
   ArticleSearchBar,
   BestArticlesSection,
@@ -9,6 +10,7 @@ import {
 } from "@/components/features/article/article-list";
 import { ARTICLE_STYLES } from "@/components/features/article/article.styles";
 import { Article } from "@/types/article";
+import IcEdit from "@/assets/icons/ic-pencil.svg";
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -31,6 +33,13 @@ export default function ArticlesPage() {
           { label: "좋아요순", value: "like" },
         ]}
       />
+      <Floating>
+        <ScrollTopButton />
+        <CircleButton as="a" href="/article/write">
+          <IcEdit className="h-6 w-6" />
+          <span className="visually-hidden">글쓰기</span>
+        </CircleButton>
+      </Floating>
     </Container>
   );
 }

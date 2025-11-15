@@ -28,7 +28,7 @@ export default function CardContent({
     <div className={cn(CARD_CONTENT_STYLES.wrapper, className)}>
       <div className={CARD_CONTENT_STYLES.title}>{title}</div>
       {hasValidImageSrc && (
-        <div className={`${CARD_CONTENT_STYLES.image.wrapper}`}>
+        <div className={CARD_CONTENT_STYLES.image.wrapper}>
           {!imageError ? (
             <Image
               src={image}
