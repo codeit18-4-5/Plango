@@ -9,11 +9,12 @@ import {
 
 type CardSkeletonProps = {
   badge?: boolean;
+  className?: string;
 };
 
-export default function CardSkeleton({ badge = false }: CardSkeletonProps) {
+export default function CardSkeleton({ badge = false, className }: CardSkeletonProps) {
   return (
-    <div className={CARD_WRAPPER_STYLES.wrapper(false)}>
+    <div className={cn(CARD_WRAPPER_STYLES.wrapper(false), className)}>
       <div className={CARD_WRAPPER_STYLES.group}>
         {badge && <Skeleton height={22} width={48} />}
         <div className="flex w-full justify-between">

@@ -100,7 +100,13 @@ export function BestArticlesSection() {
       <div className={ARTICLE_STYLES.section.contents}>
         <div className={ARTICLE_STYLES.section.grid.best}>
           {articles.length === 0
-            ? Array.from({ length: showCount }).map((_, i) => <CardSkeleton key={i} badge />)
+            ? Array.from({ length: showCount }).map((_, i) => (
+                <CardSkeleton
+                  key={i}
+                  badge
+                  className={i === 1 ? "mobile:hidden desktop:block" : ""}
+                />
+              ))
             : articles.slice(0, showCount).map(article => (
                 <Card id={article.id} href={`/article/${article.id}`} key={article.id}>
                   <Card.Badge />
