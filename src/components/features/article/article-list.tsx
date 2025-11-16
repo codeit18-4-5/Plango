@@ -66,14 +66,16 @@ export function ArticleSortDropdown({ options, selected, onChange }: ArticleSort
 export function BestArticlesSection() {
   const [articles, setArticles] = useState<Article[]>([]);
   const { isMobile, isTablet } = useResponsive();
-
-  const showCount = isMobile ? 1 : isTablet ? 2 : 3;
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     getArticles({ page: 1, pageSize: 3, orderBy: "like" }).then(res => {
       setArticles(res.list);
+      setMounted(true);
     });
   }, []);
+
+  const showCount = mounted ? (isMobile ? 1 : isTablet ? 2 : 3) : 3;
 
   return (
     <section className={ARTICLE_STYLES.section.wrapper}>
