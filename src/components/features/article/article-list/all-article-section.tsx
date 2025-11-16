@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import getArticles from "@/api/article/get-articles";
+import { useDebouncedValue, useInfiniteObserver } from "@/hooks";
 import { Card, Dropdown } from "@/components/ui";
 import { ArticleListEmpty } from "@/components/features/article";
 import CardSkeleton from "@/components/skeleton-ui/card-skeleton";
@@ -14,42 +15,53 @@ const sortOptions: ArticleSortOption[] = [
   { label: "좋아요순", value: "like" },
 ];
 
+const PAGE_SIZE = 6;
+const DEBOUNCE_DELAY = 200;
+
 export default function AllArticleSection() {
+  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const param = searchParams.get("orderBy");
+  const orderBy: OrderByType = param === "like" || param === "recent" ? param : "recent";
 
-  const [orderBy, setOrderBy] = useState<OrderByType>("recent");
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const debouncedOrderBy = useDebouncedValue(orderBy, DEBOUNCE_DELAY);
 
-  useEffect(() => {
-    const param = searchParams.get("orderBy");
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<
+    Article[],
+    Error
+  >({
+    queryKey: ["articles", debouncedOrderBy],
+    queryFn: ({ pageParam = 1 }) =>
+      getArticles({
+        orderBy: debouncedOrderBy,
+        page: pageParam as number,
+        pageSize: PAGE_SIZE,
+      }).then(res => res.list),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage: Article[], allPages: Article[][]): number | undefined =>
+      lastPage.length < PAGE_SIZE ? undefined : allPages.length + 1,
+    staleTime: 60000,
+  });
 
-    setOrderBy(param === "like" || param === "recent" ? (param as OrderByType) : "recent");
-  }, [searchParams]);
+  const articles = data?.pages.flat() ?? [];
 
-  useEffect(() => {
-    setIsLoading(true);
-    getArticles({ page: 1, pageSize: 6, orderBy }).then(res => {
-      setArticles(res.list);
-      setIsLoading(false);
-    });
-  }, [orderBy]);
+  const ObserverRef = useInfiniteObserver({
+    onIntersect: fetchNextPage,
+    isEnabled: !!hasNextPage && !isFetchingNextPage,
+  });
 
   const setQueryParams = (newOrderBy: OrderByType) => {
+    queryClient.removeQueries({ queryKey: ["articles", newOrderBy] });
+
     const params = new URLSearchParams(searchParams.toString());
+
     params.delete("page");
     params.set("orderBy", newOrderBy);
-    router.push(`?${params.toString()}`, {
-      scroll: false,
-    });
+    router.push(`?${params.toString()}`, { scroll: false });
   };
 
   const selectedSort = sortOptions.find(opt => opt.value === orderBy) ?? sortOptions[0];
-
-  const onSortChange = (option: ArticleSortOption) => {
-    setQueryParams(option.value);
-  };
 
   return (
     <section className={ARTICLE_LIST_STYLES.section.wrapper}>
@@ -64,12 +76,12 @@ export default function AllArticleSection() {
           >
             <IcDropdown className={ARTICLE_COMMON_STYLES.dropdown.icon} />
           </Dropdown.TriggerSelect>
-          <Dropdown.Menu>
+          <Dropdown.Menu className="z-10">
             {sortOptions.map(option => (
               <Dropdown.Option
                 key={option.value}
                 option={option}
-                onClick={() => onSortChange(option)}
+                onClick={() => setQueryParams(option.value)}
                 className={ARTICLE_COMMON_STYLES.dropdown.option}
               >
                 {option.label}
@@ -79,21 +91,20 @@ export default function AllArticleSection() {
         </Dropdown>
       </div>
       <ListSectionContent gridType="all">
-        {isLoading && Array.from({ length: 4 }).map((_, i) => <CardSkeleton key={i} />)}
+        {isLoading && Array.from({ length: PAGE_SIZE }).map((_, i) => <CardSkeleton key={i} />)}
         {!isLoading && articles.length === 0 && <ArticleListEmpty />}
-        {!isLoading &&
-          articles.length > 0 &&
-          articles.map(article => (
-            <Card id={article.id} href={`/article/${article.id}`} key={article.id}>
-              <Card.Content title={article.title} image={article.image} />
-              <Card.Info
-                writer={article.writer.nickname}
-                createdAt={article.createdAt}
-                likeCount={article.likeCount}
-                image={article.writer.image}
-              />
-            </Card>
-          ))}
+        {articles.map(article => (
+          <Card id={article.id} href={`/article/${article.id}`} key={article.id}>
+            <Card.Content title={article.title} image={article.image} />
+            <Card.Info
+              writer={article.writer.nickname}
+              createdAt={article.createdAt}
+              likeCount={article.likeCount}
+              image={article.writer.image}
+            />
+          </Card>
+        ))}
+        <div ref={ObserverRef} className="infinite-scroll-trigger" />
       </ListSectionContent>
     </section>
   );

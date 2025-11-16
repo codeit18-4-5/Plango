@@ -282,3 +282,9 @@ svg circle {
 .break-word {
   word-break: break-word;
 }
+
+.infinite-scroll-trigger {
+  width: 100%;
+  height: 1px;
+  margin-top: 20px;
+}

@@ -13,7 +13,7 @@ export default function ArticlesPage() {
       <SearchBar />
       <BestArticleSection />
       <AllArticleSection />
-      <Floating>
+      <Floating className="z-20">
         <ScrollTopButton />
         <CircleButton as="a" href="/article/write">
           <IcEdit className="h-6 w-6" />

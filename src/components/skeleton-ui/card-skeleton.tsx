@@ -10,9 +10,14 @@ import {
 type CardSkeletonProps = {
   badge?: boolean;
   className?: string;
+  variant?: "primary" | "secondary";
 };
 
-export default function CardSkeleton({ badge = false, className }: CardSkeletonProps) {
+export default function CardSkeleton({
+  badge = false,
+  variant = "primary",
+  className,
+}: CardSkeletonProps) {
   return (
     <div className={cn(CARD_WRAPPER_STYLES.wrapper(false), className)}>
       <div className={CARD_WRAPPER_STYLES.group}>
@@ -33,17 +38,25 @@ export default function CardSkeleton({ badge = false, className }: CardSkeletonP
             )}
           />
         </div>
-        <div
-          className={cn(CARD_INFO_STYLES.wrapper({ variant: "primary" }), "grid-cols-[auto_auto]")}
-        >
+        <div className={cn(CARD_INFO_STYLES.wrapper({ variant }), "grid-cols-[auto_auto]")}>
           <div
             className={cn(
-              "flex flex-row-reverse flex-col-reverse flex-wrap gap-[8px]",
-              "tablet:flex-row tablet:items-center",
+              CARD_INFO_STYLES.meta.wrapper({ variant }),
+              "flex flex-col-reverse gap-y-[8px]",
+              variant === "primary" ? "gap-x-[10px] tablet:grid" : "tablet:gap-y-[17px]",
             )}
           >
-            <Skeleton circle={true} height={32} width={32} className="align-top" />
-            <Skeleton height={14} width={72} />
+            <Skeleton
+              circle={true}
+              height={32}
+              width={32}
+              className={CARD_INFO_STYLES.meta.writer({ variant })}
+            />
+            <Skeleton
+              height={14}
+              width={72}
+              className={cn(CARD_INFO_STYLES.meta.time({ variant }), "m-0 tablet:m-0")}
+            />
           </div>
           <Skeleton height={14} width={30} />
         </div>

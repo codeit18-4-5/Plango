@@ -4,7 +4,7 @@ const LAYOUT_GAP = "grid gap-y-[24px] tablet:gap-y-[32px] desktop:gap-y-[40px]";
 
 export const ARTICLE_COMMON_STYLES = {
   main: {
-    wrapper: LAYOUT_GAP,
+    wrapper: cn(LAYOUT_GAP, "pb-[50px] tablet:pb-[67px] desktop:pb-[117px]"),
     title: "text-heading-m text-gray-100",
   },
   section: {
