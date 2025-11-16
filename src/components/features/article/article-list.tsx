@@ -3,32 +3,14 @@ import { useResponsive } from "@/hooks/use-responsive";
 import getArticles from "@/api/article/get-articles";
 import { Input, Dropdown, Card } from "@/components/ui";
 import CardSkeleton from "@/components/skeleton-ui/card-skeleton";
-import { Article } from "@/types/article";
+import {
+  Article,
+  SectionHeaderProps,
+  ArticleSortDropdownProps,
+  ArticleListSectionProps,
+} from "@/types/article";
 import { ARTICLE_STYLES } from "./article.styles";
 import IcDropdown from "@/assets/icons/ic-dropdown.svg";
-
-type SectionHeaderProps = {
-  title: string;
-  moreHref?: string;
-};
-
-type DropdownOption = {
-  label: string;
-  value: "recent" | "like";
-};
-
-type ArticleSortDropdownProps = {
-  options: DropdownOption[];
-  selected: DropdownOption;
-  onChange: (option: DropdownOption) => void;
-};
-
-type ArticleListSectionProps = {
-  articles: Article[];
-  options: DropdownOption[];
-  selected: DropdownOption;
-  onChange: (option: DropdownOption) => void;
-};
 
 export function SectionHeader({ title, moreHref }: SectionHeaderProps) {
   return (
@@ -83,13 +65,9 @@ export function ArticleSortDropdown({ options, selected, onChange }: ArticleSort
 
 export function BestArticlesSection() {
   const [articles, setArticles] = useState<Article[]>([]);
-  const [isClient, setIsClient] = useState(false);
+  const { isMobile, isTablet } = useResponsive();
 
-  const { isMobile, isTablet, isDesktop } = useResponsive();
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const showCount = isMobile ? 1 : isTablet ? 2 : 3;
 
   useEffect(() => {
     getArticles({ page: 1, pageSize: 3, orderBy: "like" }).then(res => {
@@ -97,17 +75,9 @@ export function BestArticlesSection() {
     });
   }, []);
 
-  let showCount = 3;
-
-  if (isClient) {
-    if (isMobile) showCount = 1;
-    if (isTablet) showCount = 2;
-    if (isDesktop) showCount = 3;
-  }
-
   return (
     <section className={ARTICLE_STYLES.section.wrapper}>
-      <SectionHeader title="베스트 게시글" moreHref="/article/best" />
+      <SectionHeader title="베스트 게시글" />
       <div className={ARTICLE_STYLES.section.contents}>
         <div className={ARTICLE_STYLES.section.grid.best}>
           {articles.length === 0
