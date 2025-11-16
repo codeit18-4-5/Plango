@@ -12,14 +12,29 @@ import { ARTICLE_STYLES } from "@/components/features/article/article.styles";
 import { Article } from "@/types/article";
 import IcEdit from "@/assets/icons/ic-pencil.svg";
 
+type ArticleOrderType = "recent" | "like";
+
+type ArticleSortOption = {
+  label: string;
+  value: ArticleOrderType;
+};
+
+const sortOptions: ArticleSortOption[] = [
+  { label: "최신순", value: "recent" },
+  { label: "좋아요순", value: "like" },
+];
+
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [selectedSort, setSelectedSort] = useState<ArticleSortOption>(sortOptions[0]);
 
   useEffect(() => {
-    getArticles({ page: 1, pageSize: 10, orderBy: "recent" }).then(res => {
-      setArticles(res.list);
-    });
-  }, []);
+    getArticles({
+      page: 1,
+      pageSize: 6,
+      orderBy: selectedSort.value,
+    }).then(res => setArticles(res.list));
+  }, [selectedSort.value]);
 
   return (
     <Container as="main" className={ARTICLE_STYLES.main.wrapper}>
@@ -28,10 +43,9 @@ export default function ArticlesPage() {
       <BestArticlesSection />
       <ArticleListSection
         articles={articles}
-        options={[
-          { label: "최신순", value: "recent" },
-          { label: "좋아요순", value: "like" },
-        ]}
+        options={sortOptions}
+        selected={selectedSort}
+        onChange={setSelectedSort}
       />
       <Floating>
         <ScrollTopButton />

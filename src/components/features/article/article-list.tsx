@@ -3,7 +3,6 @@ import { useResponsive } from "@/hooks/use-responsive";
 import getArticles from "@/api/article/get-articles";
 import { Input, Dropdown, Card } from "@/components/ui";
 import CardSkeleton from "@/components/skeleton-ui/card-skeleton";
-import { DropdownOption } from "@/types/option";
 import { Article } from "@/types/article";
 import { ARTICLE_STYLES } from "./article.styles";
 import IcDropdown from "@/assets/icons/ic-dropdown.svg";
@@ -13,7 +12,19 @@ type SectionHeaderProps = {
   moreHref?: string;
 };
 
+type DropdownOption = {
+  label: string;
+  value: "recent" | "like";
+};
+
 type ArticleSortDropdownProps = {
+  options: DropdownOption[];
+  selected: DropdownOption;
+  onChange: (option: DropdownOption) => void;
+};
+
+type ArticleListSectionProps = {
+  articles: Article[];
   options: DropdownOption[];
   selected: DropdownOption;
   onChange: (option: DropdownOption) => void;
@@ -132,17 +143,14 @@ export function BestArticlesSection() {
 export function ArticleListSection({
   articles,
   options,
-}: {
-  articles: Article[];
-  options: DropdownOption[];
-}) {
-  const [selected, setSelected] = useState(options[0]);
-
+  selected,
+  onChange,
+}: ArticleListSectionProps) {
   return (
     <section className={ARTICLE_STYLES.section.wrapper}>
       <div className={ARTICLE_STYLES.section.heading.wrapper}>
         <SectionHeader title="게시글" />
-        <ArticleSortDropdown options={options} selected={selected} onChange={setSelected} />
+        <ArticleSortDropdown options={options} selected={selected} onChange={onChange} />
       </div>
       <div className={ARTICLE_STYLES.section.contents}>
         <div className={ARTICLE_STYLES.section.grid.normal}>
