@@ -2,7 +2,6 @@
  * Article 관련 타입 정의
  * @author yeonsu
  */
-
 export interface Writer {
   nickname: string;
   id: number;
@@ -24,35 +23,23 @@ export interface ArticleListResponse {
 }
 
 /**
- * Article 컴포넌트 관련 타입 정의
+ * 자유게시판 리스트 페이지 관련 타입 정의
+ * @author yeonsu
  */
 
-export type ArticleOrderType = "recent" | "like";
-
-export type ArticleSortOption = {
-  label: string;
-  value: ArticleOrderType;
-};
-
-type SortOption = {
-  label: string;
-  value: "recent" | "like";
-};
-
-export type SectionHeaderProps = {
+export type ListSectionHeaderProps = {
   title: string;
   moreHref?: string;
 };
 
-export type ArticleSortDropdownProps = {
-  options: SortOption[];
-  selected: SortOption;
-  onChange: (option: SortOption) => void;
+export type ListSectionContentProps = {
+  gridType?: "all" | "best" | "none";
+  children: React.ReactNode;
 };
 
-export type ArticleListSectionProps = {
-  articles: Article[];
-  options: SortOption[];
-  selected: SortOption;
-  onChange: (option: SortOption) => void;
+export type OrderByType = "recent" | "like";
+
+export type ArticleSortOption = {
+  label: string;
+  value: OrderByType;
 };
