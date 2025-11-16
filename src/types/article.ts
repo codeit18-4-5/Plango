@@ -43,3 +43,8 @@ export type ArticleSortOption = {
   label: string;
   value: OrderByType;
 };
+
+export type ArticleEmptyProps = {
+  children?: React.ReactNode;
+  className?: string;
+};

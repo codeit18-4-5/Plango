@@ -15,7 +15,7 @@ const sortOptions: ArticleSortOption[] = [
   { label: "좋아요순", value: "like" },
 ];
 
-const PAGE_SIZE = 6;
+const PAGE_SIZE = 4;
 const DEBOUNCE_DELAY = 200;
 
 export default function AllArticleSection() {
@@ -24,17 +24,20 @@ export default function AllArticleSection() {
   const router = useRouter();
   const param = searchParams.get("orderBy");
   const orderBy: OrderByType = param === "like" || param === "recent" ? param : "recent";
+  const searchQuery = searchParams.get("keyword") ?? "";
 
   const debouncedOrderBy = useDebouncedValue(orderBy, DEBOUNCE_DELAY);
+  const debouncedQuery = useDebouncedValue(searchQuery, DEBOUNCE_DELAY);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<
     Article[],
     Error
   >({
-    queryKey: ["articles", debouncedOrderBy],
+    queryKey: ["articles", debouncedOrderBy, debouncedQuery],
     queryFn: ({ pageParam = 1 }) =>
       getArticles({
         orderBy: debouncedOrderBy,
+        keyword: debouncedQuery,
         page: pageParam as number,
         pageSize: PAGE_SIZE,
       }).then(res => res.list),
@@ -42,7 +45,10 @@ export default function AllArticleSection() {
     getNextPageParam: (lastPage: Article[], allPages: Article[][]): number | undefined =>
       lastPage.length < PAGE_SIZE ? undefined : allPages.length + 1,
     staleTime: 60000,
+    placeholderData: previousData => previousData,
   });
+
+  const isInitialLoading = isLoading && !data;
 
   const articles = data?.pages.flat() ?? [];
 
@@ -90,11 +96,19 @@ export default function AllArticleSection() {
           </Dropdown.Menu>
         </Dropdown>
       </div>
-      <ListSectionContent gridType="all">
-        {isLoading && Array.from({ length: PAGE_SIZE }).map((_, i) => <CardSkeleton key={i} />)}
-        {!isLoading && articles.length === 0 && <ArticleListEmpty />}
+      <ListSectionContent gridType={!isLoading && articles.length === 0 ? "none" : "all"}>
+        {isInitialLoading &&
+          !searchQuery &&
+          Array.from({ length: PAGE_SIZE }).map((_, i) => <CardSkeleton key={i} />)}
+        {!isLoading && articles.length === 0 && searchQuery && (
+          <ArticleListEmpty>
+            <div className="text-body-l text-gray-500">
+              <b className="text-gray-200">'{searchQuery}'</b> 에 대한 검색 결과가 없습니다
+            </div>
+          </ArticleListEmpty>
+        )}
         {articles.map(article => (
-          <Card id={article.id} href={`/article/${article.id}`} key={article.id}>
+          <Card id={article.id} href={`/articles/${article.id}`} key={article.id}>
             <Card.Content title={article.title} image={article.image} />
             <Card.Info
               writer={article.writer.nickname}

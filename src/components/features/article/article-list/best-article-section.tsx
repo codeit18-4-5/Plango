@@ -28,7 +28,7 @@ export default function BestArticleSection() {
   return (
     <section className={ARTICLE_LIST_STYLES.section.wrapper}>
       <ListSectionHeader title="베스트 게시글" />
-      <ListSectionContent gridType="best">
+      <ListSectionContent gridType={!isLoading && articles.length === 0 ? "none" : "best"}>
         {isLoading &&
           Array.from({ length: showCount }).map((_, i) => (
             <CardSkeleton
@@ -42,7 +42,7 @@ export default function BestArticleSection() {
         {!isLoading &&
           articles.length > 0 &&
           articles.slice(0, showCount).map(article => (
-            <Card id={article.id} href={`/article/${article.id}`} key={article.id}>
+            <Card id={article.id} href={`/articles/${article.id}`} key={article.id}>
               <Card.Badge />
               <Card.Content
                 title={article.title}

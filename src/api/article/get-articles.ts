@@ -5,6 +5,7 @@ type GetArticlesParams = {
   page?: number;
   pageSize?: number;
   orderBy?: "recent" | "like";
+  keyword?: string;
 };
 
 const getArticles = async (params?: GetArticlesParams): Promise<ArticleListResponse> => {
