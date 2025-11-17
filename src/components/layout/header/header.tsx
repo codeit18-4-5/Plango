@@ -58,7 +58,9 @@ export default function Header({ isLoginPage, isUser, isGroup }: HeaderProps) {
             onClick={handleMenuClick(true)}
             className="mr-[16px] inline-block w-[24px] tablet:hidden"
           />
-          <Logo className="h-[20px] w-[100px] tablet:mr-[32px] desktop:mr-[40px] desktop:h-[32px] desktop:w-[158px]" />
+          <Link href="/">
+            <Logo className="h-[20px] w-[100px] tablet:mr-[32px] desktop:mr-[40px] desktop:h-[32px] desktop:w-[158px]" />
+          </Link>
           <div className="hidden w-[200px] tablet:block tablet:flex tablet:items-center tablet:justify-between">
             {isGroup && <HeaderDropdown groups={groups} />}
             <Link href="/">자유게시판</Link>
