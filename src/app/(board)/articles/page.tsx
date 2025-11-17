@@ -5,6 +5,7 @@ import { Container } from "@/components/layout";
 import { SearchBar, BestArticleSection, AllArticleSection } from "@/components/features/article";
 import { Floating, ScrollTopButton, CircleButton } from "@/components/ui";
 import CardSkeleton from "@/components/skeleton-ui/card-skeleton";
+import InputFieldSkeleton from "@/components/skeleton-ui/input-field-skeleton";
 import {
   ARTICLE_COMMON_STYLES,
   ARTICLE_LIST_STYLES,
@@ -15,7 +16,9 @@ export default function ArticlesPage() {
   return (
     <Container as="main" className={ARTICLE_COMMON_STYLES.main.wrapper}>
       <h2 className={ARTICLE_COMMON_STYLES.main.title}>자유게시판</h2>
-      <SearchBar />
+      <Suspense fallback={<InputFieldSkeleton />}>
+        <SearchBar />
+      </Suspense>
       <BestArticleSection />
       <Suspense
         fallback={
