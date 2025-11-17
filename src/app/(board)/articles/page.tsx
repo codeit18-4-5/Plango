@@ -1,9 +1,14 @@
 "use client";
 
+import { Suspense } from "react";
 import { Container } from "@/components/layout";
 import { SearchBar, BestArticleSection, AllArticleSection } from "@/components/features/article";
 import { Floating, ScrollTopButton, CircleButton } from "@/components/ui";
-import { ARTICLE_COMMON_STYLES } from "@/components/features/article/index.styles";
+import CardSkeleton from "@/components/skeleton-ui/card-skeleton";
+import {
+  ARTICLE_COMMON_STYLES,
+  ARTICLE_LIST_STYLES,
+} from "@/components/features/article/index.styles";
 import IcEdit from "@/assets/icons/ic-pencil.svg";
 
 export default function ArticlesPage() {
@@ -12,7 +17,17 @@ export default function ArticlesPage() {
       <h2 className={ARTICLE_COMMON_STYLES.main.title}>자유게시판</h2>
       <SearchBar />
       <BestArticleSection />
-      <AllArticleSection />
+      <Suspense
+        fallback={
+          <div className={ARTICLE_LIST_STYLES.section.grid.all}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <CardSkeleton key={i} />
+            ))}
+          </div>
+        }
+      >
+        <AllArticleSection />
+      </Suspense>
       <Floating className="z-20">
         <ScrollTopButton />
         <CircleButton as="a" href="/article/write">
