@@ -48,7 +48,7 @@ export default function SearchBar() {
         <Input.Label label="게시글 검색" hidden />
         <Input.Search
           placeholder="검색어를 입력해주세요"
-          className="duration-200"
+          className="bg-gray-800 duration-200"
           value={searchTerm}
           onChange={handleChange}
           maxLength={50}
