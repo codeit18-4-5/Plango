@@ -48,8 +48,6 @@ export default function AllArticleSection() {
     placeholderData: previousData => previousData,
   });
 
-  const isInitialLoading = isLoading && !data;
-
   const articles = data?.pages.flat() ?? [];
 
   const ObserverRef = useInfiniteObserver({
@@ -97,9 +95,7 @@ export default function AllArticleSection() {
         </Dropdown>
       </div>
       <ListSectionContent gridType={!isLoading && articles.length === 0 ? "none" : "all"}>
-        {isInitialLoading &&
-          !searchQuery &&
-          Array.from({ length: PAGE_SIZE }).map((_, i) => <CardSkeleton key={i} />)}
+        {isLoading && Array.from({ length: PAGE_SIZE }).map((_, i) => <CardSkeleton key={i} />)}
         {!isLoading && articles.length === 0 && searchQuery && (
           <ArticleListEmpty>
             <div className="text-body-l text-gray-500">
@@ -118,6 +114,8 @@ export default function AllArticleSection() {
             />
           </Card>
         ))}
+        {isFetchingNextPage &&
+          Array.from({ length: PAGE_SIZE }).map((_, i) => <CardSkeleton key={i} />)}
         <div ref={ObserverRef} className="infinite-scroll-trigger" />
       </ListSectionContent>
     </section>

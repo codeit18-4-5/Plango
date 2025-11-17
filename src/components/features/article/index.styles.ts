@@ -48,3 +48,7 @@ export const ARTICLE_LIST_STYLES = {
     },
   },
 };
+
+export const ARTICLE_LIST_EMPTY_STYLES = {
+  wrapper: "w-full p-[30px_0] text-center text-caption text-gray-500 tablet:p-[50px_0]",
+};

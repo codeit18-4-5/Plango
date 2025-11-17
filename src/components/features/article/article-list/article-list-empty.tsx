@@ -1,19 +1,10 @@
-export type ArticleListEmptyProps = {
-  message?: string;
-  children?: React.ReactNode;
-  className?: string;
-};
+import { ArticleEmptyProps } from "@/types/article";
+import { ARTICLE_LIST_EMPTY_STYLES } from "../index.styles";
 
-export default function ArticleListEmpty({
-  message,
-  children = "등록된 게시글이 없습니다.",
-  className,
-}: ArticleListEmptyProps) {
+export default function ArticleListEmpty({ children, className }: ArticleEmptyProps) {
   return (
-    <div
-      className={`w-full p-[30px_0] text-center text-caption text-gray-500 tablet:p-[50px_0] ${className}`}
-    >
-      {message ?? children}
+    <div className={`${ARTICLE_LIST_EMPTY_STYLES.wrapper} ${className}`}>
+      {children ?? "등록된 게시물이 없습니다."}
     </div>
   );
 }

@@ -6,7 +6,7 @@ export const CARD_WRAPPER_STYLES = {
     cn(
       "relative bg-gray-800 border border-gray-700 rounded-lg p-[24px_16px] duration-200",
       "tablet:p-[20px_32px]",
-      "hover:scale-[.97] hover:border-pink-500",
+      "hover:scale-[.98]",
       { "p-0 tablet:p-0": link },
       className,
     ),
