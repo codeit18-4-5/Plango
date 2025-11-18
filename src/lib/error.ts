@@ -1,7 +1,7 @@
 import { isAxiosError } from "axios";
 import { UseFormSetError, FieldValues, Path } from "react-hook-form";
 import type { ServerErrorHandler, ServerErrorMsg } from "@/types/api";
-import { SignInSchema } from "./schema";
+import { NicknameSchema, SignInSchema } from "./schema";
 
 /**
  * 서버에서 전달된 에러 내용을 react hook form의 setError에 연결해주는 함수
@@ -36,4 +36,13 @@ export const loginErrorHandler: ServerErrorHandler<SignInSchema> = (error, setEr
   if (!isAxiosError(error)) return;
   setError("email", { message: "이메일 혹은 비밀번호를 확인해주세요." });
   setError("password", { message: "이메일 혹은 비밀번호를 확인해주세요." });
+};
+
+/**
+ * 로그인 실패시 서버 에러 처리
+ * @author sohyun
+ */
+export const nicknameErrorHandler: ServerErrorHandler<NicknameSchema> = (error, setError) => {
+  if (!isAxiosError(error)) return;
+  setError("nickname", { message: "이미 사용중인 닉네임입니다." });
 };
