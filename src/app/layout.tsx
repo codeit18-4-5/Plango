@@ -4,6 +4,7 @@ import "../styles/fonts.css";
 import "../styles/globals.css";
 import "../styles/custom-react-datepicker.css";
 import { AlertProvider } from "@/providers/alert-provider";
+import AuthProvider from "@/providers/auth-provider";
 
 export const metadata: Metadata = {
   title: "Plango",
@@ -18,9 +19,11 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <QueryProvider>
-          <AlertProvider>{children}</AlertProvider>
-        </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            <AlertProvider>{children}</AlertProvider>
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );
