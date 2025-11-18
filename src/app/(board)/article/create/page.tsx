@@ -10,7 +10,16 @@ import { ArticleFormFields } from "@/components/features/article";
 
 export default function CreateArticlesPage() {
   const handleSubmit = async (data: CreateArticleSchema) => {
-    await postArticle(data);
+    console.log(await postArticle(data));
+    // try {
+    //   await postArticle(data);
+    // } catch (error) {
+    //   if (error && typeof error === "object" && "response" in error) {
+    //     console.error("서버 에러", error.response);
+    //   } else {
+    //     console.error("에러", error);
+    //   }
+    // }
   };
   return (
     <Container as="main">

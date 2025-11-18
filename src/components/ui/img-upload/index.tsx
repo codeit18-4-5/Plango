@@ -1,7 +1,9 @@
+import postImagesUpload from "@/api/image/post-images-upload";
 import { Controller } from "react-hook-form";
 import type { Control } from "react-hook-form";
 import { CreateArticleSchema } from "@/lib/schema";
 import { useImageUpload, useFileDrop } from "@/hooks";
+import { ImagesUpload } from "@/types/api";
 import { IMG_UPLOAD_STYLES } from "./index.styles";
 import Image from "next/image";
 import IcCancel from "@/assets/icons/ic-cancel.svg";
@@ -24,61 +26,52 @@ type ImgUploadProps = {
 };
 
 export default function ImgUpload({ control, id, name }: ImgUploadProps) {
+  const { preview, error, handleFile, clearPreview } = useImageUpload();
+
   return (
     <Controller
       control={control}
       name={name}
       defaultValue={null}
       render={({ field: { onChange } }) => {
-        const { preview, error, handleFile, clearPreview } = useImageUpload();
-
-        const onFilesDrop = (files: File[]) => {
-          const file = files[0];
-          if (!file) return;
-
-          const isValid = handleFile(file);
+        const handleUploadAndChange = async (data: ImagesUpload) => {
+          const isValid = handleFile(data.url);
           if (!isValid) {
             onChange(null);
             return;
           }
-          const reader = new FileReader();
-          reader.onload = () => {
-            onChange(reader.result as string);
-          };
-          reader.readAsDataURL(file);
+          try {
+            const { url } = await postImagesUpload({ url: data.url });
+            onChange(url);
+          } catch {
+            onChange(null);
+          }
         };
 
-        const { onDragOver, onDragLeave, onDrop } = useFileDrop({
+        const onFilesDrop = (files: File[]) => {
+          const file = files[0];
+          if (file) handleUploadAndChange({ url: file });
+        };
+
+        const { isDragActive, onDragOver, onDragLeave, onDrop } = useFileDrop({
           onFiles: onFilesDrop,
         });
 
         const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           const file = e.target.files?.[0];
-          if (!file) return;
-
-          const isValid = handleFile(file);
-          if (!isValid) {
-            onChange(null);
-            e.target.value = "";
-            return;
-          }
-          const reader = new FileReader();
-          reader.onload = () => {
-            onChange(reader.result as string);
-          };
-          reader.readAsDataURL(file);
+          if (file) handleUploadAndChange({ url: file });
           e.target.value = "";
         };
 
         const clearAll = () => {
           clearPreview();
-          onChange(null);
+          onChange(undefined);
         };
 
         return (
           <>
             <div
-              className={IMG_UPLOAD_STYLES.wrapper(!preview, !!error)}
+              className={IMG_UPLOAD_STYLES.wrapper(!preview, !!error, isDragActive)}
               onDragOver={onDragOver}
               onDragLeave={onDragLeave}
               onDrop={onDrop}
@@ -92,9 +85,17 @@ export default function ImgUpload({ control, id, name }: ImgUploadProps) {
                 className={IMG_UPLOAD_STYLES.input}
               />
               {!preview ? (
-                <label htmlFor={id} className={IMG_UPLOAD_STYLES.label}>
-                  <IcPlus className={IMG_UPLOAD_STYLES.icon.plus} />
-                  <span>이미지 등록</span>
+                <label htmlFor={id} className={IMG_UPLOAD_STYLES.label(isDragActive)}>
+                  <IcPlus className={IMG_UPLOAD_STYLES.icon.plus(isDragActive)} />
+                  <span className="text-center">
+                    {isDragActive ? (
+                      "이미지를 여기에 드롭하세요."
+                    ) : (
+                      <>
+                        여기로 이미지를 드래그하거나 <br /> 클릭해서 업로드하세요.
+                      </>
+                    )}
+                  </span>
                 </label>
               ) : (
                 <>

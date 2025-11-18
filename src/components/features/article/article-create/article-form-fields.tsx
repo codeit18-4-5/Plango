@@ -2,6 +2,7 @@ import { useFormContext } from "react-hook-form";
 import { CreateArticleSchema } from "@/lib/schema";
 import { ArticleField, CreateSectionHeader } from "@/components/features/article/layout";
 import { Input, ImgUpload, Button } from "@/components/ui";
+import { FILE_POLICY } from "@/constants/file_policy";
 
 export default function ArticleFormFields() {
   const {
@@ -32,7 +33,11 @@ export default function ArticleFormFields() {
           className="bg-gray-800"
         />
       </ArticleField>
-      <ArticleField id="image" label="이미지" caption="5MB 미만의 이미지까지 업로드할 수 있습니다.">
+      <ArticleField
+        id="image"
+        label="이미지"
+        caption={`이미지 파일 최대 용량은 ${FILE_POLICY.MAX_IMAGE_SIZE_MB}MB입니다.`}
+      >
         <ImgUpload control={control} name="image" id="image" />
       </ArticleField>
     </>

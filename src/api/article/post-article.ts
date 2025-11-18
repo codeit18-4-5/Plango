@@ -3,7 +3,7 @@ import { CreateArticleData } from "@/types/article";
 
 const postArticle = async (articleData: CreateArticleData) => {
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjM5MiwidGVhbUlkIjoiMTgtNSIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzYzNDgyNDg2LCJleHAiOjE3NjM0ODYwODYsImlzcyI6InNwLWNvd29ya2VycyJ9.4_ezutn_-zrMBzaI_JDKx8G8eBX_ZgtBSBQc8DAh-ks";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjM5MiwidGVhbUlkIjoiMTgtNSIsInNjb3BlIjoiYWNjZXNzIiwiaWF0IjoxNzYzNDg1Mzg4LCJleHAiOjE3NjM0ODg5ODgsImlzcyI6InNwLWNvd29ya2VycyJ9.JaoZFYF_rJSCg9O8HB630Ddqc_i0GbTXvrZnhQQTFOo";
   const res = await axiosInstance.post("/articles", articleData, {
     headers: {
       Authorization: `Bearer ${token}`,
