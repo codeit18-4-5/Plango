@@ -35,3 +35,4 @@ export type OAuthResponse = OAuth & {
   updatedAt: string;
   teamId: string;
 };
+export type Token = string | null;
