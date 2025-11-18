@@ -8,8 +8,21 @@ import { AuthField } from "./authPage";
 export function SignUpFormFields() {
   const {
     register,
-    formState: { errors, isValid, isDirty },
+    formState: { errors },
+    watch,
   } = useFormContext<SignUpSchema>();
+
+  const [email, nickname, password, passwordConfirmation] = watch([
+    "email",
+    "nickname",
+    "password",
+    "passwordConfirmation",
+  ]);
+  const allFilled =
+    !!email?.toString().trim() &&
+    !!nickname?.toString().trim() &&
+    !!password?.toString().trim() &&
+    !!passwordConfirmation?.toString().trim();
 
   return (
     <>
@@ -40,7 +53,7 @@ export function SignUpFormFields() {
         />
       </AuthField>
 
-      <Button type="submit" className="mt-4" disabled={!isValid && !isDirty}>
+      <Button type="submit" className="mt-4" disabled={!allFilled}>
         회원가입
       </Button>
     </>
@@ -49,8 +62,12 @@ export function SignUpFormFields() {
 export function SignInFormFields() {
   const {
     register,
-    formState: { errors, isValid, isDirty },
+    formState: { errors },
+    watch,
   } = useFormContext<SignInSchema>();
+
+  const [email, password] = watch(["email", "password"]);
+  const allFilled = !!email?.toString().trim() && !!password?.toString().trim();
 
   return (
     <>
@@ -66,7 +83,7 @@ export function SignInFormFields() {
         비밀번호를 잊으셨나요?
       </button>
 
-      <Button type="submit" className="mt-4" disabled={!isValid && !isDirty}>
+      <Button type="submit" className="mt-4" disabled={!allFilled}>
         로그인
       </Button>
     </>
