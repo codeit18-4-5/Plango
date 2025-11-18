@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
  */
 const useLogout = () => {
   const router = useRouter();
-  const { clearAuth } = useAuthStore();
+  const useAuthActions = () => useAuthStore(state => state.actions);
+  const { clearAuth } = useAuthActions();
 
   return async ({ isRedirect = true } = {}) => {
     try {

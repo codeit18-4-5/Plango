@@ -58,14 +58,14 @@ axiosInstance.interceptors.response.use(
     if (refreshRes.ok) {
       const { accessToken } = await refreshRes.json();
       // accessToken 업데이트
-      useAuthStore.getState().setAccessToken(accessToken);
+      useAuthStore.getState().actions.setAccessToken(accessToken);
 
       config.headers.Authorization = `Bearer ${accessToken}`;
       return axiosInstance(config);
     }
 
     // refresh 실패시 로그아웃
-    useAuthStore.getState().clearAuth();
+    useAuthStore.getState().actions.clearAuth();
     window.location.href = "/login";
   },
 );

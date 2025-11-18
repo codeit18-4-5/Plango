@@ -16,8 +16,9 @@ type AuthSuccessPayload = {
 
 const useAuthSuccess = () => {
   const router = useRouter();
-  const { setAccessToken, setUser } = useAuthStore();
-  const { setAuthError } = useUIStore();
+  const useAuthActions = () => useAuthStore(state => state.actions);
+  const { setAccessToken, setUser } = useAuthActions();
+  const setAuthError = useUIStore(state => state.setAuthError);
   const logout = useLogout();
 
   return async (authData: AuthSuccessPayload) => {
