@@ -9,6 +9,7 @@ import {
 } from "@/components/features/auth";
 import { AuthLink } from "@/components/features/auth/authPage";
 import { Form } from "@/components/ui";
+import { useAuthSuccess } from "@/hooks";
 import { axiosErrorMsg } from "@/lib/error";
 import { signUpSchema, SignUpSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,10 +17,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const title = "회원가입";
 
 export default function Signup() {
+  const authSuccess = useAuthSuccess();
+
   const handleSubmit = async (data: SignUpSchema) => {
     const res = await PostSignUp(data);
-    // @TODO 회원가입 성공처리 : 토큰저장, 가입 후 자동 로그인 , 페이지 이동
-    console.log(res.data);
+    await authSuccess(res.data);
   };
   return (
     <div>
