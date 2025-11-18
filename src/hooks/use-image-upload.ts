@@ -54,6 +54,7 @@ const useImageUpload = ({
 
   const handleFile = (file: File) => {
     if (!validateFile(file)) {
+      setPreview(null);
       return false;
     }
 
