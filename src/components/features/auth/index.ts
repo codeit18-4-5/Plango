@@ -5,4 +5,5 @@ export {
   AuthLink,
   AuthField,
   SocialAuthButton,
+  AuthErrorModal,
 } from "@/components/features/auth/authPage";
