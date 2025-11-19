@@ -1,6 +1,6 @@
 "use client";
 
-import PostSignUp from "@/api/auth/post-signup";
+import postSignUp from "@/api/auth/post-signup";
 import {
   AuthDivider,
   AuthTitle,
@@ -21,8 +21,8 @@ export default function Signup() {
   const authSuccess = useAuthSuccess();
 
   const handleSubmit = async (data: SignUpSchema) => {
-    const res = await PostSignUp(data);
-    await authSuccess(res.data);
+    const res = await postSignUp(data);
+    await authSuccess(res);
   };
   return (
     <div>

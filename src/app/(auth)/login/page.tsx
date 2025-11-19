@@ -1,6 +1,6 @@
 "use client";
 
-import PostSignIn from "@/api/auth/post-signin";
+import postSignIn from "@/api/auth/post-signin";
 import {
   AuthDivider,
   AuthTitle,
@@ -20,8 +20,8 @@ export default function Signup() {
   const authSuccess = useAuthSuccess();
 
   const handleSubmit = async (data: SignInSchema) => {
-    const res = await PostSignIn(data);
-    await authSuccess(res.data);
+    const res = await postSignIn(data);
+    await authSuccess(res);
   };
   return (
     <div>
