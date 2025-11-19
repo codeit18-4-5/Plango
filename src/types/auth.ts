@@ -17,8 +17,8 @@ export type SNSAuth = {
 };
 
 export type OAuth = {
-  appSecret: string;
-  appKey: string;
+  appSecret?: string;
+  appKey?: string;
   provider: "KAKAO";
 };
 
