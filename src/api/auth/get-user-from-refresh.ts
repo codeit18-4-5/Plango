@@ -1,7 +1,7 @@
 "use server";
 import { User } from "@/types/user";
 
-export type SSRUserPayload = {
+type SSRUserPayload = {
   user: User | null;
   accessToken: string | null;
 };
