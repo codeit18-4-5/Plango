@@ -36,3 +36,9 @@ export type OAuthResponse = OAuth & {
   teamId: string;
 };
 export type Token = string | null;
+
+export type OauthProvider = {
+  state: string;
+  redirectUri: string;
+  token: string;
+};
