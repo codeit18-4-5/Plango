@@ -56,7 +56,9 @@ export default function AllArticleSection() {
   });
 
   const setQueryParams = (newOrderBy: OrderByType) => {
-    queryClient.removeQueries({ queryKey: ["articles", newOrderBy] });
+    queryClient.removeQueries({
+      queryKey: ["articles", debouncedOrderBy, debouncedQuery],
+    });
 
     const params = new URLSearchParams(searchParams.toString());
 
