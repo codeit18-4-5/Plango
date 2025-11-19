@@ -22,6 +22,13 @@ export interface ArticleListResponse {
   list: Article[];
 }
 
+export type GetArticlesParams = {
+  page?: number;
+  pageSize?: number;
+  orderBy?: "recent" | "like";
+  keyword?: string;
+};
+
 /**
  * 자유게시판 리스트 페이지 관련 타입 정의
  * @author yeonsu
