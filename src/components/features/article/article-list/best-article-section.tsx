@@ -13,7 +13,7 @@ export default function BestArticleSection() {
   const { isMobile, isTablet } = useResponsive();
   const [mounted, setMounted] = useState(false);
 
-  const { data: articles = [], isLoading } = useQuery<Article[], Error>({
+  const { data: articles = [], isPending } = useQuery<Article[], Error>({
     queryKey: ["best-articles"],
     queryFn: () => getArticles({ page: 1, pageSize: 3, orderBy: "like" }).then(res => res.list),
     staleTime: 300000,
@@ -33,8 +33,8 @@ export default function BestArticleSection() {
   return (
     <section className={ARTICLE_LIST_STYLES.section.wrapper}>
       <ListSectionHeader title="베스트 게시글" />
-      <ListSectionContent gridType={!isLoading && articles.length === 0 ? "none" : "best"}>
-        {isLoading &&
+      <ListSectionContent gridType={!isPending && articles.length === 0 ? "none" : "best"}>
+        {isPending &&
           Array.from({ length: showCount }).map((_, i) => (
             <CardSkeleton
               key={i}
@@ -43,8 +43,8 @@ export default function BestArticleSection() {
               variant="secondary"
             />
           ))}
-        {!isLoading && articles.length === 0 && <ArticleListEmpty />}
-        {!isLoading &&
+        {!isPending && articles.length === 0 && <ArticleListEmpty />}
+        {!isPending &&
           articles.length > 0 &&
           articles.slice(0, showCount).map(article => (
             <Card id={article.id} href={`/articles/${article.id}`} key={article.id}>
