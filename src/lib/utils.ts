@@ -1,4 +1,4 @@
-import { DateFullProps, DateTimeProps, FrequencyType } from "@/types/date-format-type";
+import { DateFullProps, DateTimeProps, FrequencyOptions } from "@/types/date-format-type";
 
 /**
  * URL이 유효한 형식의 이미지 주소인지 검사
@@ -167,7 +167,7 @@ export const strToDate = (str: Date | string): Date => {
  * @param value
  */
 export const isEmpty = (value: unknown): boolean => {
-  if (value === null) return true;
+  if (value === null || value === undefined) return true;
   if (value instanceof Date) return isNaN(value.getTime());
   if (typeof value === "string") return value.trim().length === 0;
   if (Array.isArray(value)) return value.length === 0;
@@ -183,8 +183,5 @@ export const isEmpty = (value: unknown): boolean => {
  * @param value
  */
 export const getFrequencyLabel = (frequency: string): string => {
-  if (frequency in FrequencyType) {
-    return FrequencyType[frequency as keyof typeof FrequencyType];
-  }
-  return frequency;
+  return FrequencyOptions.find(fo => fo.value === frequency)?.label ?? "";
 };

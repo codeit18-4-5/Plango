@@ -24,11 +24,11 @@ export const DateFormatTypeTime = {
 
 export type DateFormatTypeTimeValue = (typeof DateFormatTypeTime)[keyof typeof DateFormatTypeTime];
 
-export const FrequencyType = {
-  ONCE: "한번",
-  DAILY: "매일 반복",
-  WEEKLY: "매주 반복",
-  MONTHLY: "매월 반복",
-} as const;
+export const FrequencyOptions = [
+  { label: "한 번", value: "ONCE" },
+  { label: "매일 반복", value: "DAILY" },
+  { label: "매주 반복", value: "WEEKLY" },
+  { label: "매월 반복", value: "MONTHLY" },
+] as const;
 
-export type FrequencyTypeValue = (typeof FrequencyType)[keyof typeof FrequencyType];
+export type FrequencyTypeArray = (typeof FrequencyOptions)[number];
