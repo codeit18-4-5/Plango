@@ -4,10 +4,13 @@ import type { ServerErrorHandler, ServerErrorMsg } from "@/types/api";
 import { NicknameSchema, SignInSchema } from "./schema";
 
 /**
- * 서버에서 전달된 에러 내용을 react hook form의 setError에 연결해주는 함수
+ * 회원 가입 시 서버에서 전달된 에러 내용을 RHF의 setError에 연결해주는 함수
  * @author sohyun
  */
-export function axiosErrorMsg<T extends FieldValues>(error: unknown, setError: UseFormSetError<T>) {
+export const signUpErrorHandler = <T extends FieldValues>(
+  error: unknown,
+  setError: UseFormSetError<T>,
+) => {
   if (!isAxiosError<ServerErrorMsg>(error)) {
     if (process.env.NODE_ENV === "development") {
       console.error(error);
@@ -26,7 +29,7 @@ export function axiosErrorMsg<T extends FieldValues>(error: unknown, setError: U
     // 예상치 못한 에러 처리
     throw error;
   }
-}
+};
 
 /**
  * 로그인 실패시 서버 에러 처리

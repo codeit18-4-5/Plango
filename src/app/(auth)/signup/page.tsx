@@ -10,7 +10,8 @@ import {
 import { AuthLink } from "@/components/features/auth/authPage";
 import { Form } from "@/components/ui";
 import { useAuthSuccess } from "@/hooks";
-import { axiosErrorMsg } from "@/lib/error";
+import { signUpErrorHandler } from "@/lib/error";
+
 import { signUpSchema, SignUpSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -28,7 +29,7 @@ export default function Signup() {
       <AuthTitle>{title}</AuthTitle>
       <Form<SignUpSchema>
         onSubmit={handleSubmit}
-        onServerError={axiosErrorMsg}
+        onServerError={signUpErrorHandler}
         resolver={zodResolver(signUpSchema)}
         mode="onBlur"
         reValidateMode="onBlur"
