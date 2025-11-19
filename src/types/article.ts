@@ -44,6 +44,7 @@ export type ArticleFormFieldProps = {
 
 export type CreateSectionHeaderProps = {
   title: string;
-  as?: "h2" | "h3" | "h4";
+  as?: "h2" | "h3";
+  className?: string;
   children?: React.ReactNode;
 };

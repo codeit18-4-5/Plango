@@ -7,6 +7,10 @@ import { axiosErrorMsg } from "@/lib/error";
 import { Container } from "@/components/layout";
 import { ArticleFormFields } from "@/components/features/article";
 import { Form } from "@/components/ui";
+import {
+  ARTICLE_COMMON_STYLES,
+  ARTICLE_FORM_STYLES,
+} from "@/components/features/article/index.styles";
 
 export default function CreateArticlesPage() {
   const handleSubmit = async (data: ArticleFormSchema) => {
@@ -17,7 +21,7 @@ export default function CreateArticlesPage() {
   };
 
   return (
-    <Container as="main">
+    <Container as="main" className={ARTICLE_COMMON_STYLES.main.wrapper}>
       <h2 className="visually-hidden">자유게시판</h2>
       <Form<ArticleFormSchema>
         onSubmit={handleSubmit}
@@ -25,6 +29,7 @@ export default function CreateArticlesPage() {
         resolver={zodResolver(articleFormSchema)}
         mode="onBlur"
         reValidateMode="onBlur"
+        className={ARTICLE_FORM_STYLES.form.wrapper}
       >
         <ArticleFormFields />
       </Form>

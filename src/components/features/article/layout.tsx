@@ -18,11 +18,16 @@ export function ArticleField({
   );
 }
 
-export function CreateSectionHeader({ title, as = "h2", children }: CreateSectionHeaderProps) {
+export function CreateSectionHeader({
+  title,
+  as = "h2",
+  className,
+  children,
+}: CreateSectionHeaderProps) {
   const HeadingTag = as;
 
   return (
-    <div>
+    <div className={className}>
       <HeadingTag>{title}</HeadingTag>
       <div>{children}</div>
     </div>

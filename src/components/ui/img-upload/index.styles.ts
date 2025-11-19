@@ -13,8 +13,8 @@ export const IMG_UPLOAD_STYLES = {
   input: cn("absolute w-0 h-0 overflow-hidden opacity-0 pointer-events-none"),
   label: (isDragActive?: boolean) =>
     cn(
-      "absolute w-full h-full top-0 left-0 cursor-pointer [&>span]:text-gray-400 grid gap-[12px] justify-center items-center text-body-m content-center",
-      isDragActive ? "[&>span]:text-gray-00" : "",
+      "absolute w-full h-full top-0 left-0 cursor-pointer [&>span]:text-gray-500 grid gap-[12px] justify-center items-center text-body-m content-center",
+      isDragActive ? "[&>span]:text-gray-200" : "",
     ),
   image: cn("object-contain"),
   button: cn(
@@ -23,7 +23,7 @@ export const IMG_UPLOAD_STYLES = {
   icon: {
     plus: (isDragActive?: boolean) =>
       cn(
-        "m-auto w-[24px] h-[24px] stroke-gray-400",
+        "m-auto w-[24px] h-[24px] stroke-gray-500",
         "tablet:w-[48px] tablet:h-[48px]",
         isDragActive ? "stroke-gray-200" : "",
       ),

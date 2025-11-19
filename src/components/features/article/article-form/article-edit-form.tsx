@@ -7,6 +7,10 @@ import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
 import { Container } from "@/components/layout";
 import { ArticleFormFields } from "@/components/features/article";
 import { Form } from "@/components/ui";
+import {
+  ARTICLE_COMMON_STYLES,
+  ARTICLE_FORM_STYLES,
+} from "@/components/features/article/index.styles";
 
 type ArticleEditFormProps = {
   articleId: number;
@@ -30,17 +34,20 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
   };
 
   return (
-    <Container as="main">
+    <Container as="main" className={(ARTICLE_COMMON_STYLES.main.wrapper, "pb-[120px]")}>
       <h2 className="visually-hidden">자유게시판</h2>
-      <Form<ArticleFormSchema>
-        onSubmit={handleSubmit}
-        resolver={zodResolver(articleFormSchema)}
-        defaultValues={data}
-        mode="onChange"
-        reValidateMode="onChange"
-      >
-        <ArticleFormFields type="edit" />
-      </Form>
+      <section>
+        <Form<ArticleFormSchema>
+          className={ARTICLE_FORM_STYLES.form.wrapper}
+          onSubmit={handleSubmit}
+          resolver={zodResolver(articleFormSchema)}
+          defaultValues={data}
+          mode="onChange"
+          reValidateMode="onChange"
+        >
+          <ArticleFormFields type="edit" />
+        </Form>
+      </section>
     </Container>
   );
 }
