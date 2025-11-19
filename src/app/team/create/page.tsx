@@ -49,7 +49,10 @@ export default function TeamCreatePage() {
 
   const createGroupMutate = useMutation({
     mutationFn: postGroups,
-    onSuccess: res => router.replace(`/team/${res.id}`),
+    onSuccess: res => {
+      router.replace(`/`);
+      console.log(res);
+    },
     onError: error => console.log(error.message),
   });
 
