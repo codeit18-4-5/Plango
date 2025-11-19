@@ -64,7 +64,7 @@ export default function AllArticleSection() {
 
     params.delete("page");
     params.set("orderBy", newOrderBy);
-    router.push(`?${params.toString()}`, { scroll: false });
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   const selectedSort = sortOptions.find(opt => opt.value === orderBy) ?? sortOptions[0];
