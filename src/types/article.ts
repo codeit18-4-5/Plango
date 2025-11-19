@@ -13,6 +13,8 @@ export interface CreateArticleData {
   image: string | null;
 }
 
+export type EditArticleData = CreateArticleData;
+
 export type Article = CreateArticleData & {
   id: number;
   updatedAt: string;
@@ -20,6 +22,16 @@ export type Article = CreateArticleData & {
   likeCount: number;
   writer: Writer;
 };
+
+export interface ArticleListResponse {
+  totalCount: number;
+  list: Article[];
+}
+
+export interface ArticleDetail extends Article {
+  commentCount: number;
+  isLiked: boolean;
+}
 
 export type ArticleFormFieldProps = {
   id: string;

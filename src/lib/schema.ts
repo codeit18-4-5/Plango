@@ -52,7 +52,7 @@ export const validateRequired = (value: string, label = "필수 항목") => {
   return isInputEmpty(value) ? `${label} 입력해주세요.` : true;
 };
 
-export const createArticleSchema = z.object({
+export const articleFormSchema = z.object({
   title: z
     .string()
     .trim()
@@ -65,7 +65,7 @@ export const createArticleSchema = z.object({
     .min(1, "내용을 입력해주세요.")
     .max(500, "내용은 최대 500자까지 가능합니다.")
     .transform(val => val.replace(/ +/g, " ")),
-  image: z.string().nullable(),
+  image: z.string().optional().nullable(),
 });
 
-export type CreateArticleSchema = z.infer<typeof createArticleSchema>;
+export type ArticleFormSchema = z.infer<typeof articleFormSchema>;

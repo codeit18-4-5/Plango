@@ -1,9 +1,7 @@
 import postImagesUpload from "@/api/image/post-images-upload";
 import { Controller } from "react-hook-form";
-import type { Control } from "react-hook-form";
-import { CreateArticleSchema } from "@/lib/schema";
+import type { Control, FieldValues, Path } from "react-hook-form";
 import { useImageUpload, useFileDrop } from "@/hooks";
-import { ImagesUpload } from "@/types/api";
 import { IMG_UPLOAD_STYLES } from "./index.styles";
 import Image from "next/image";
 import IcCancel from "@/assets/icons/ic-cancel.svg";
@@ -19,29 +17,33 @@ import IcPlus from "@/assets/icons/ic-plus.svg";
  *
  */
 
-type ImgUploadProps = {
-  control: Control<CreateArticleSchema>;
+type ImgUploadProps<T extends FieldValues = FieldValues> = {
+  control: Control<T>;
   id: string;
-  name: keyof CreateArticleSchema;
+  name: Path<T>;
 };
 
-export default function ImgUpload({ control, id, name }: ImgUploadProps) {
+export default function ImgUpload<T extends FieldValues = FieldValues>({
+  control,
+  id,
+  name,
+}: ImgUploadProps<T>) {
   const { preview, error, handleFile, clearPreview } = useImageUpload();
 
   return (
     <Controller
       control={control}
       name={name}
-      defaultValue={null}
-      render={({ field: { onChange } }) => {
-        const handleUploadAndChange = async (data: ImagesUpload) => {
-          const isValid = handleFile(data.url);
+      defaultValue={undefined}
+      render={({ field: { onChange, value } }) => {
+        const handleUploadAndChange = async (file: File) => {
+          const isValid = handleFile(file);
           if (!isValid) {
             onChange(null);
             return;
           }
           try {
-            const { url } = await postImagesUpload({ url: data.url });
+            const { url } = await postImagesUpload({ url: file });
             onChange(url);
           } catch {
             onChange(null);
@@ -50,7 +52,7 @@ export default function ImgUpload({ control, id, name }: ImgUploadProps) {
 
         const onFilesDrop = (files: File[]) => {
           const file = files[0];
-          if (file) handleUploadAndChange({ url: file });
+          if (file) handleUploadAndChange(file);
         };
 
         const { isDragActive, onDragOver, onDragLeave, onDrop } = useFileDrop({
@@ -59,19 +61,23 @@ export default function ImgUpload({ control, id, name }: ImgUploadProps) {
 
         const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           const file = e.target.files?.[0];
-          if (file) handleUploadAndChange({ url: file });
+          if (file) handleUploadAndChange(file);
           e.target.value = "";
         };
 
         const clearAll = () => {
           clearPreview();
-          onChange(undefined);
+          onChange(null);
         };
+
+        const showPreview = preview || value;
+        const previewUrl = preview?.image || value;
+        const previewName = preview?.name || "첨부 이미지";
 
         return (
           <>
             <div
-              className={IMG_UPLOAD_STYLES.wrapper(!preview, !!error, isDragActive)}
+              className={IMG_UPLOAD_STYLES.wrapper(!showPreview, !!error, isDragActive)}
               onDragOver={onDragOver}
               onDragLeave={onDragLeave}
               onDrop={onDrop}
@@ -84,7 +90,7 @@ export default function ImgUpload({ control, id, name }: ImgUploadProps) {
                 onChange={onInputChange}
                 className={IMG_UPLOAD_STYLES.input}
               />
-              {!preview ? (
+              {!showPreview ? (
                 <label htmlFor={id} className={IMG_UPLOAD_STYLES.label(isDragActive)}>
                   <IcPlus className={IMG_UPLOAD_STYLES.icon.plus(isDragActive)} />
                   <span className="text-center">
@@ -97,13 +103,15 @@ export default function ImgUpload({ control, id, name }: ImgUploadProps) {
                     )}
                   </span>
                 </label>
-              ) : (
+              ) : previewUrl ? (
                 <>
                   <Image
-                    src={preview.image}
-                    alt={preview.name}
+                    src={previewUrl}
+                    alt={previewName}
                     fill
                     className={IMG_UPLOAD_STYLES.image}
+                    priority
+                    sizes="100vw"
                   />
                   <button
                     type="button"
@@ -114,7 +122,7 @@ export default function ImgUpload({ control, id, name }: ImgUploadProps) {
                     <IcCancel className={IMG_UPLOAD_STYLES.icon.cancel} />
                   </button>
                 </>
-              )}
+              ) : null}
             </div>
             {error && (
               <span className={IMG_UPLOAD_STYLES.errorMsg} role="alert">
