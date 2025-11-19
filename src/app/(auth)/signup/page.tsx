@@ -7,7 +7,7 @@ import {
   SocialAuthButton,
   SignUpFormFields,
 } from "@/components/features/auth";
-import { AuthLink } from "@/components/features/auth/authPage";
+import { AuthLink } from "@/components/features/auth/auth-page";
 import { Form } from "@/components/ui";
 import { useAuthSuccess } from "@/hooks";
 import { signUpErrorHandler } from "@/lib/error";

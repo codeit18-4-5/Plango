@@ -3,7 +3,7 @@
 import { Button, Input } from "@/components/ui";
 import { SignInSchema, SignUpSchema } from "@/lib/schema";
 import { useFormContext } from "react-hook-form";
-import { AuthField } from "./authPage";
+import { AuthField } from "./auth-page";
 
 export function SignUpFormFields() {
   const {
