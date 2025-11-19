@@ -23,7 +23,12 @@ export default function BestArticleSection() {
     setMounted(true);
   }, []);
 
-  const showCount = !mounted ? 3 : isMobile ? 1 : isTablet ? 2 : 3;
+  const showCount = (() => {
+    if (!mounted) return 3;
+    if (isMobile) return 1;
+    if (isTablet) return 2;
+    return 3;
+  })();
 
   return (
     <section className={ARTICLE_LIST_STYLES.section.wrapper}>
