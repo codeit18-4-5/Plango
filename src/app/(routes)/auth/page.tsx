@@ -1,6 +1,7 @@
 "use client";
 
-import PatchUser from "@/api/user/patch-user";
+import deleteUser from "@/api/user/delete-user";
+import patchUser from "@/api/user/patch-user";
 import { Button, Form, Input } from "@/components/ui";
 import { useLogout } from "@/hooks";
 import { nicknameErrorHandler } from "@/lib/error";
@@ -56,11 +57,19 @@ export default function HomePage() {
     updateUser({ nickname: data.nickname });
 
     try {
-      await PatchUser({ nickname: data.nickname });
+      await patchUser({ nickname: data.nickname });
     } catch (err) {
       // 실패 시 롤백
       updateUser({ nickname: prev?.nickname ?? "" });
       throw err;
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteUser();
+    } finally {
+      logout();
     }
   };
   return (
@@ -84,6 +93,9 @@ export default function HomePage() {
       </Form>
       <button onClick={() => logout()} className="mt-4 border p-2">
         로그아웃
+      </button>
+      <button onClick={handleDelete} className="mt-4 border p-2">
+        회원탈퇴
       </button>
     </div>
   );
