@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/store/auth.store";
 import axios, { AxiosInstance } from "axios";
 import { isNoAuthURL } from "./utils";
+import { logoutDirect } from "./logout";
 
 /**
  * axios 인터셉터:  then 또는 catch로 처리되기 전에 요청과 응답을 가로채는 기능
@@ -65,7 +66,7 @@ axiosInstance.interceptors.response.use(
     }
 
     // refresh 실패시 로그아웃
-    useAuthStore.getState().actions.clearAuth();
+    await logoutDirect();
     window.location.href = "/login";
   },
 );
