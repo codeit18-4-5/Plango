@@ -17,12 +17,12 @@ type ArticleEditFormProps = {
 };
 
 export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
-  const { data, isLoading } = useQuery<ArticleFormSchema>({
+  const { data, isPending } = useQuery<ArticleFormSchema>({
     queryKey: ["article-edit", articleId],
     queryFn: () => getArticleDetail({ articleId: Number(articleId) }),
     enabled: !!articleId,
   });
-  if (isLoading || !data) {
+  if (isPending || !data) {
     return;
   }
 
