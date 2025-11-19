@@ -29,7 +29,7 @@ export default function AllArticleSection() {
   const debouncedOrderBy = useDebouncedValue(orderBy, DEBOUNCE_DELAY);
   const debouncedQuery = useDebouncedValue(searchQuery, DEBOUNCE_DELAY);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } = useInfiniteQuery<
     Article[],
     Error
   >({
@@ -96,9 +96,9 @@ export default function AllArticleSection() {
           </Dropdown.Menu>
         </Dropdown>
       </div>
-      <ListSectionContent gridType={!isLoading && articles.length === 0 ? "none" : "all"}>
-        {isLoading && Array.from({ length: PAGE_SIZE }).map((_, i) => <CardSkeleton key={i} />)}
-        {!isLoading && articles.length === 0 && searchQuery && (
+      <ListSectionContent gridType={!isPending && articles.length === 0 ? "none" : "all"}>
+        {isPending && Array.from({ length: PAGE_SIZE }).map((_, i) => <CardSkeleton key={i} />)}
+        {!isPending && articles.length === 0 && searchQuery && (
           <ArticleListEmpty>
             <div className="text-body-l text-gray-500">
               <b className="text-gray-200">'{searchQuery}'</b> 에 대한 검색 결과가 없습니다
