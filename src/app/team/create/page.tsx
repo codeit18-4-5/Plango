@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { Button, Input } from "@/components/ui";
 import { GroupCreateRequest } from "@/types/group";
@@ -50,8 +50,7 @@ export default function TeamCreatePage() {
   const createGroupMutate = useMutation({
     mutationFn: postGroups,
     onSuccess: res => {
-      router.replace(`/`);
-      console.log(res);
+      router.replace(`/team/${res.id}`);
     },
     onError: error => console.log(error.message),
   });
