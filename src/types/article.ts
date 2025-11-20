@@ -5,13 +5,13 @@
 export interface Writer {
   nickname: string;
   id: number;
-  image?: string | null;
+  image?: string;
 }
 
 export interface CreateArticleData {
   title: string;
   content: string;
-  image: string | null;
+  image?: string;
 }
 
 export type EditArticleData = CreateArticleData;

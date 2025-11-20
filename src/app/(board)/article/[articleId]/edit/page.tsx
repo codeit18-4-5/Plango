@@ -7,18 +7,15 @@ export default async function EditArticlePage({
 }: {
   params: Promise<{ articleId: string }>;
 }) {
-  const queryClient = new QueryClient();
-
   const { articleId } = await params;
+  const articleIdNum = Number(articleId);
 
-  await queryClient.prefetchQuery({
-    queryKey: ["article-edit", articleId],
-    queryFn: () => getArticleDetail({ articleId: Number(articleId) }),
-  });
-
+  const queryClient = new QueryClient();
+  const article = await getArticleDetail({ articleId: articleIdNum });
+  queryClient.setQueryData(["article-edit", articleIdNum], article);
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <ArticleEditForm articleId={Number(articleId)} />
+      <ArticleEditForm articleId={articleIdNum} />
     </HydrationBoundary>
   );
 }

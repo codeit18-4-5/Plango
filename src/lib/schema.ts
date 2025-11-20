@@ -65,7 +65,7 @@ export const articleFormSchema = z.object({
     .min(1, "내용을 입력해주세요.")
     .max(500, "내용은 최대 500자까지 가능합니다.")
     .transform(val => val.replace(/ +/g, " ")),
-  image: z.string().optional().nullable(),
+  image: z.string().optional(),
 });
 
 export type ArticleFormSchema = z.infer<typeof articleFormSchema>;

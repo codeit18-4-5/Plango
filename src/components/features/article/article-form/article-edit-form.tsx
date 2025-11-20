@@ -1,4 +1,6 @@
 "use client";
+
+import cn from "@/lib/cn";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import postImagesUpload from "@/api/image/post-images-upload";
@@ -6,6 +8,7 @@ import patchArticle from "@/api/article/patch-article";
 import getArticleDetail from "@/api/article/get-article-detail";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
+import { CreateArticleData } from "@/types/article";
 import { Container } from "@/components/layout";
 import { ArticleFormFields } from "@/components/features/article";
 import { Form } from "@/components/ui";
@@ -32,35 +35,33 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
     : undefined;
 
   const handleImageChange = (fileOrUrl: File | string | null) => {
-    if (fileOrUrl instanceof File) {
-      setSelectedFile(fileOrUrl);
-    } else {
-      setSelectedFile(null);
-    }
+    setSelectedFile(fileOrUrl instanceof File ? fileOrUrl : null);
   };
 
   const handleSubmit = async (values: ArticleFormSchema) => {
-    let imageUrl: string | null | undefined = values.image;
+    let imageUrl: string | undefined = values.image;
 
     if (selectedFile) {
       try {
         const { url } = await postImagesUpload({ url: selectedFile });
         imageUrl = url;
       } catch {
-        imageUrl = null;
+        imageUrl = undefined;
       }
     }
 
-    await patchArticle(articleId, {
-      ...values,
-      image: imageUrl || null,
-    });
+    const patchBody: CreateArticleData = {
+      title: values.title,
+      content: values.content,
+      ...(imageUrl && { image: imageUrl }),
+    };
+    await patchArticle(articleId, patchBody);
   };
 
   if (isPending || !defaultValues) return null;
 
   return (
-    <Container as="main" className={(ARTICLE_COMMON_STYLES.main.wrapper, "pb-[120px]")}>
+    <Container as="main" className={cn(ARTICLE_COMMON_STYLES.main.wrapper, "pb-[120px]")}>
       <h2 className="visually-hidden">자유게시판</h2>
       <section>
         <Form<ArticleFormSchema>

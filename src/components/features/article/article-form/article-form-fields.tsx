@@ -65,9 +65,9 @@ export default function ArticleFormFields({
           render={({ field, fieldState }) => (
             <ImgUpload
               value={field.value}
-              onChange={val => {
-                field.onChange(val instanceof File ? "" : val);
-                onImageChange?.(val);
+              onChange={value => {
+                field.onChange(typeof value === "string" ? value : "");
+                onImageChange?.(value);
               }}
               id="image"
               error={fieldState.error?.message}

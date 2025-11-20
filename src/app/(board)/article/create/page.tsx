@@ -6,6 +6,7 @@ import postArticle from "@/api/article/post-article";
 import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { axiosErrorMsg } from "@/lib/error";
+import { CreateArticleData } from "@/types/article";
 import { Container } from "@/components/layout";
 import { ArticleFormFields } from "@/components/features/article";
 import { Form } from "@/components/ui";
@@ -18,29 +19,26 @@ export default function CreateArticlesPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleImageChange = (fileOrUrl: File | string | null) => {
-    if (fileOrUrl instanceof File) {
-      setSelectedFile(fileOrUrl);
-    } else {
-      setSelectedFile(null);
-    }
+    setSelectedFile(fileOrUrl instanceof File ? fileOrUrl : null);
   };
 
   const handleSubmit = async (data: ArticleFormSchema) => {
-    let imageUrl = data.image;
-
+    let imageUrl: string | undefined;
     if (selectedFile) {
       try {
         const { url } = await postImagesUpload({ url: selectedFile });
         imageUrl = url;
       } catch {
-        imageUrl = null;
+        imageUrl = undefined;
       }
     }
 
-    await postArticle({
-      ...data,
-      image: imageUrl ?? null,
-    });
+    const postBody: CreateArticleData = {
+      title: data.title,
+      content: data.content,
+      ...(imageUrl && { image: imageUrl }),
+    };
+    await postArticle(postBody);
   };
 
   return (
