@@ -21,6 +21,38 @@ export const ARTICLE_COMMON_STYLES = {
   },
 };
 
+export const ARTICLE_LIST_STYLES = {
+  section: {
+    wrapper: LAYOUT_GAP,
+    heading: {
+      wrapper: "flex items-center justify-between gap-x-[10px]",
+      title: "text-heading-s text-gray-100",
+      moreHref: cn(
+        "text-body-xs text-gray-400 duration-200",
+        "hover:text-gray-300",
+        "tablet:text-body-s",
+      ),
+    },
+    grid: {
+      best: cn(
+        "grid grid-cols-1 gap-[16px]",
+        "tablet:grid-cols-2 tablet:gap-[16px]",
+        "desktop:grid-cols-3 desktop:gap-[20px]",
+      ),
+      all: cn(
+        "grid gap-[16px]",
+        "tablet:gap-[16px]",
+        "desktop:grid-cols-2 desktop:gap-[20px_20px]",
+      ),
+      none: "",
+    },
+  },
+};
+
+export const ARTICLE_LIST_EMPTY_STYLES = {
+  wrapper: "w-full p-[30px_0] text-center text-caption text-gray-500 tablet:p-[50px_0]",
+};
+
 export const ARTICLE_FORM_STYLES = {
   section: {
     heading: {
