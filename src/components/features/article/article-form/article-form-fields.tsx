@@ -4,11 +4,8 @@ import { ArticleFormSchema } from "@/lib/schema";
 import { ArticleField, CreateSectionHeader } from "@/components/features/article/layout";
 import { Input, ImgUpload, Button } from "@/components/ui";
 import { FILE_POLICY } from "@/constants/file_policy";
+import { ArticleFormFieldsProps } from "@/types/article";
 import { ARTICLE_FORM_STYLES } from "@/components/features/article/index.styles";
-
-type ArticleFormFieldsProps = {
-  type?: "create" | "edit";
-};
 
 export default function ArticleFormFields({ type = "create" }: ArticleFormFieldsProps) {
   const {

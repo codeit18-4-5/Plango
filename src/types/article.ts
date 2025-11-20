@@ -73,6 +73,10 @@ export type ArticleEmptyProps = {
  * @author yeonsu
  */
 
+export type ArticleFormFieldsProps = {
+  type?: "create" | "edit";
+};
+
 export type ArticleFormFieldProps = {
   id: string;
   label: string;
