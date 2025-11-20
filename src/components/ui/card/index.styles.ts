@@ -4,8 +4,9 @@ import { cva } from "class-variance-authority";
 export const CARD_WRAPPER_STYLES = {
   wrapper: (link: boolean, className?: string) =>
     cn(
-      "relative bg-gray-800 border border-gray-700 rounded-lg p-[24px_16px]",
+      "relative bg-gray-800 border border-gray-700 rounded-[12px] p-[24px_16px] duration-200",
       "tablet:p-[20px_32px]",
+      "hover:scale-[.98]",
       { "p-0 tablet:p-0": link },
       className,
     ),
@@ -18,17 +19,17 @@ export const CARD_WRAPPER_STYLES = {
       },
       className,
     ),
-  group: cn("grid gap-y-[16px]", "tablet:gap-y-[20px]"),
+  group: cn("h-full grid gap-y-[16px] content-between", "tablet:gap-y-[20px]"),
 };
 
 export const CARD_BADGE_STYLES = {
   wrapper: cn("flex items-center gap-x-[4px] text-body-m"),
-  icon: cn("w-[16px] h-[16px] block mt-[-3px]", "mt-[-5px]"),
+  icon: cn("w-[16px] h-[16px] block mt-[-3px]", "tablet:mt-[-5px]"),
 };
 
 export const CARD_CONTENT_STYLES = {
   wrapper: cn("grid grid-cols-[auto_auto] justify-between items-start gap-x-[16px]"),
-  title: cn("min-h-[48px] text-body-l break-word line-clamp-2", "tablet:min-h-[56px]"),
+  title: cn("text-body-l break-word line-clamp-2", "tablet:min-h-[56px]"),
   image: {
     wrapper: cn(
       "relative w-[64px] h-[64px] rounded-[8px] overflow-hidden bg-gray-700 flex items-center justify-center border border-line-strong",
