@@ -77,6 +77,10 @@ export type ArticleFormFieldsProps = {
   type?: "create" | "edit";
 };
 
+export type ArticleEditFormProps = {
+  articleId: number;
+};
+
 export type ArticleFormFieldProps = {
   id: string;
   label: string;

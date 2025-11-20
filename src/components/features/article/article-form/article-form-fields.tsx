@@ -1,5 +1,5 @@
 import cn from "@/lib/cn";
-import { useFormContext, useController } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
 import { ArticleFormSchema } from "@/lib/schema";
 import { ArticleField, CreateSectionHeader } from "@/components/features/article/layout";
 import { Input, ImgUpload, Button } from "@/components/ui";
@@ -7,18 +7,17 @@ import { FILE_POLICY } from "@/constants/file_policy";
 import { ArticleFormFieldsProps } from "@/types/article";
 import { ARTICLE_FORM_STYLES } from "@/components/features/article/index.styles";
 
-export default function ArticleFormFields({ type = "create" }: ArticleFormFieldsProps) {
+export default function ArticleFormFields({
+  type = "create",
+  onImageChange,
+}: ArticleFormFieldsProps & {
+  onImageChange?: (fileOrUrl: File | string | null) => void;
+}) {
   const {
     register,
     control,
     formState: { errors, isValid },
   } = useFormContext<ArticleFormSchema>();
-
-  const { fieldState: imageFieldState } = useController({
-    name: "image",
-    control,
-  });
-
   const isEdit = type === "edit";
 
   return (
@@ -58,9 +57,23 @@ export default function ArticleFormFields({ type = "create" }: ArticleFormFields
         id="image"
         label="이미지"
         caption={`이미지 파일 최대 용량은 ${FILE_POLICY.MAX_IMAGE_SIZE_MB}MB입니다.`}
-        errorMsg={imageFieldState.error?.message}
+        errorMsg={errors.image?.message}
       >
-        <ImgUpload control={control} name="image" id="image" />
+        <Controller
+          control={control}
+          name="image"
+          render={({ field, fieldState }) => (
+            <ImgUpload
+              value={field.value}
+              onChange={val => {
+                field.onChange(val instanceof File ? "" : val);
+                onImageChange?.(val);
+              }}
+              id="image"
+              error={fieldState.error?.message}
+            />
+          )}
+        />
       </ArticleField>
     </>
   );

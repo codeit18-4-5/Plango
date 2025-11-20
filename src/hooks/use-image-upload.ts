@@ -4,7 +4,6 @@ import { useState } from "react";
 import { FILE_POLICY } from "@/constants/file_policy";
 
 interface ImagePreview {
-  id: string;
   image: string;
   name: string;
   type: string;
@@ -62,7 +61,6 @@ const useImageUpload = ({
 
     reader.onload = () => {
       setPreview({
-        id: crypto.randomUUID(),
         image: reader.result as string,
         name: file.name,
         type: file.type,
