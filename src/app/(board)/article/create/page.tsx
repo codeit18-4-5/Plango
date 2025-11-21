@@ -51,11 +51,6 @@ export default function CreateArticlesPage() {
         mode="onBlur"
         reValidateMode="onBlur"
         className={ARTICLE_FORM_STYLES.form.wrapper}
-        defaultValues={{
-          title: "",
-          content: "",
-          image: "",
-        }}
       >
         <ArticleFormFields type="create" onImageChange={handleImageChange} />
       </Form>

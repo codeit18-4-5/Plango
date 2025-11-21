@@ -20,19 +20,19 @@ import {
 
 export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const { data: article, isPending } = useQuery({
+  const { data: article } = useQuery({
     queryKey: ["article-edit", articleId],
     queryFn: () => getArticleDetail({ articleId }),
     enabled: !!articleId,
   });
 
-  const defaultValues: ArticleFormSchema | undefined = article
-    ? {
-        title: article.title,
-        content: article.content,
-        image: article.image ?? "",
-      }
-    : undefined;
+  if (!article) return null;
+
+  const defaultValues: ArticleFormSchema = {
+    title: article.title,
+    content: article.content,
+    image: article.image ?? "",
+  };
 
   const handleImageChange = (fileOrUrl: File | string | null) => {
     setSelectedFile(fileOrUrl instanceof File ? fileOrUrl : null);
@@ -57,8 +57,6 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
     };
     await patchArticle(articleId, patchBody);
   };
-
-  if (isPending || !defaultValues) return null;
 
   return (
     <Container as="main" className={cn(ARTICLE_COMMON_STYLES.main.wrapper, "pb-[120px]")}>
