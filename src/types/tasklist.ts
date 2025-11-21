@@ -4,7 +4,27 @@ import { Task } from "./task";
  * @author luli
  */
 
-export type Tasklist = {
+type Member = {
+  userId: number;
+  groupId: number;
+  userName: string;
+  userEmail: string;
+  userImage: string | null;
+  role: string;
+};
+
+export type GroupTaskList = {
+  id: number;
+  name: string;
+  image: string | null;
+  createdAt: string;
+  updatedAt: string;
+  teamId: string;
+  members: Member[];
+  taskLists: TaskList[];
+};
+
+export type TaskList = {
   id: number;
   name: string;
   createdAt: string;
