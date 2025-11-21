@@ -2,7 +2,7 @@
 
 import cn from "@/lib/cn";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import postImagesUpload from "@/api/image/post-images-upload";
 import patchArticle from "@/api/article/patch-article";
 import getArticleDetail from "@/api/article/get-article-detail";
@@ -20,19 +20,31 @@ import {
 
 export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const { data: article } = useQuery({
+  //const queryClient = useQueryClient();
+
+  const { data: article, isPending } = useQuery({
     queryKey: ["article-edit", articleId],
     queryFn: () => getArticleDetail({ articleId }),
     enabled: !!articleId,
   });
 
-  if (!article) return null;
+  // TODO: isSuccess, isError, error 처리는 추후 토스트로 처리 예정
+  const { mutate, isPending: isMutating } = useMutation({
+    mutationFn: async (patchBody: CreateArticleData) => {
+      return patchArticle(articleId, patchBody);
+    },
+    onSuccess: () => {
+      //TODO: 자유게시판 리스트/상세페이지 캐시 최신 데이터 반영
+    },
+  });
 
-  const defaultValues: ArticleFormSchema = {
-    title: article.title,
-    content: article.content,
-    image: article.image ?? "",
-  };
+  const defaultValues: ArticleFormSchema | undefined = article
+    ? {
+        title: article.title,
+        content: article.content,
+        image: article.image ?? "",
+      }
+    : undefined;
 
   const handleImageChange = (fileOrUrl: File | string | null) => {
     setSelectedFile(fileOrUrl instanceof File ? fileOrUrl : null);
@@ -55,8 +67,11 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
       content: values.content,
       ...(imageUrl && { image: imageUrl }),
     };
-    await patchArticle(articleId, patchBody);
+
+    mutate(patchBody);
   };
+
+  if (isPending || !defaultValues) return null;
 
   return (
     <Container as="main" className={cn(ARTICLE_COMMON_STYLES.main.wrapper, "pb-[120px]")}>
@@ -70,7 +85,11 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
           mode="onChange"
           reValidateMode="onChange"
         >
-          <ArticleFormFields type="edit" onImageChange={handleImageChange} />
+          <ArticleFormFields
+            type="edit"
+            onImageChange={handleImageChange}
+            isMutating={isMutating}
+          />
         </Form>
       </section>
     </Container>

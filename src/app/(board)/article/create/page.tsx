@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import postImagesUpload from "@/api/image/post-images-upload";
 import postArticle from "@/api/article/post-article";
 import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
@@ -17,28 +18,40 @@ import {
 
 export default function CreateArticlesPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  //const queryClient = useQueryClient();
+
+  // TODO: isSuccess, isError, error 처리는 추후 토스트로 처리 예정
+  const { mutate, isPending: isMutating } = useMutation({
+    mutationFn: async (data: ArticleFormSchema) => {
+      let imageUrl: string | undefined;
+
+      if (selectedFile) {
+        try {
+          const { url } = await postImagesUpload({ url: selectedFile });
+          imageUrl = url;
+        } catch {
+          imageUrl = undefined;
+        }
+      }
+
+      const postBody: CreateArticleData = {
+        title: data.title,
+        content: data.content,
+        ...(imageUrl && { image: imageUrl }),
+      };
+      return postArticle(postBody);
+    },
+    onSuccess: () => {
+      //TODO: 자유게시판 리스트페이지 캐시 최신 데이터 반영
+    },
+  });
 
   const handleImageChange = (fileOrUrl: File | string | null) => {
     setSelectedFile(fileOrUrl instanceof File ? fileOrUrl : null);
   };
 
-  const handleSubmit = async (data: ArticleFormSchema) => {
-    let imageUrl: string | undefined;
-    if (selectedFile) {
-      try {
-        const { url } = await postImagesUpload({ url: selectedFile });
-        imageUrl = url;
-      } catch {
-        imageUrl = undefined;
-      }
-    }
-
-    const postBody: CreateArticleData = {
-      title: data.title,
-      content: data.content,
-      ...(imageUrl && { image: imageUrl }),
-    };
-    await postArticle(postBody);
+  const handleSubmit = (data: ArticleFormSchema) => {
+    mutate(data);
   };
 
   return (
@@ -52,7 +65,11 @@ export default function CreateArticlesPage() {
         reValidateMode="onBlur"
         className={ARTICLE_FORM_STYLES.form.wrapper}
       >
-        <ArticleFormFields type="create" onImageChange={handleImageChange} />
+        <ArticleFormFields
+          type="create"
+          onImageChange={handleImageChange}
+          isMutating={isMutating}
+        />
       </Form>
     </Container>
   );

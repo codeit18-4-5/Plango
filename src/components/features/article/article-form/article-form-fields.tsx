@@ -10,8 +10,10 @@ import { ARTICLE_FORM_STYLES } from "@/components/features/article/index.styles"
 export default function ArticleFormFields({
   type = "create",
   onImageChange,
+  isMutating,
 }: ArticleFormFieldsProps & {
   onImageChange?: (fileOrUrl: File | string | null) => void;
+  isMutating?: boolean;
 }) {
   const {
     register,
@@ -34,7 +36,13 @@ export default function ArticleFormFields({
             full={true}
             className={ARTICLE_FORM_STYLES.section.heading.submit}
           >
-            {isEdit ? "수정" : "등록"}
+            {isMutating
+              ? type === "edit"
+                ? "게시글 수정 중..."
+                : "게시글 등록 중..."
+              : isEdit
+                ? "수정"
+                : "등록"}
           </Button>
         </div>
       </CreateSectionHeader>
