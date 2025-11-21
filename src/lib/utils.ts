@@ -209,7 +209,13 @@ export const isEmpty = (value: unknown): boolean => {
   if (value instanceof Date) return isNaN(value.getTime());
   if (typeof value === "string") return value.trim().length === 0;
   if (Array.isArray(value)) {
-    return value.length === 0 || value.every(item => isEmpty(item));
+    return (
+      value.length === 0 ||
+      value.every(item => {
+        if (item === 0 || item === "0") return false;
+        return isEmpty(item);
+      })
+    );
   }
   if (typeof value === "object") {
     return Object.keys(value).length === 0;

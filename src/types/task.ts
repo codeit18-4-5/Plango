@@ -19,7 +19,7 @@ export interface TaskDetailProps extends TaskCommonProps {
 export type TaskCommonValue = {
   id: number;
   name: string;
-  description: string;
+  description: string | null;
 };
 
 // tasklist 메인용 task
@@ -47,7 +47,7 @@ export type TaskDetail = Task & {
 export type Recurring = {
   id: number;
   name: string;
-  description: string;
+  description: string | null;
   createdAt: string;
   updatedAt: string;
   startDate: string;
