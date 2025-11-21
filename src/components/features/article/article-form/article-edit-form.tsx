@@ -1,6 +1,7 @@
 "use client";
 
 import cn from "@/lib/cn";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import postImagesUpload from "@/api/image/post-images-upload";
@@ -11,7 +12,7 @@ import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
 import { CreateArticleData } from "@/types/article";
 import { Container } from "@/components/layout";
 import { ArticleFormFields } from "@/components/features/article";
-import { Form } from "@/components/ui";
+import { Form, Button } from "@/components/ui";
 import { ArticleEditFormProps } from "@/types/article";
 import {
   ARTICLE_COMMON_STYLES,
@@ -19,9 +20,9 @@ import {
 } from "@/components/features/article/index.styles";
 
 export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
+  const router = useRouter();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   //const queryClient = useQueryClient();
-
   const { data: article, isPending } = useQuery({
     queryKey: ["article-edit", articleId],
     queryFn: () => getArticleDetail({ articleId }),
@@ -71,8 +72,22 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
     mutate(patchBody);
   };
 
-  if (isPending || !defaultValues) return null;
+  if (isPending) {
+    return (
+      <Container as="main" className={ARTICLE_COMMON_STYLES.empty.form}>
+        <div className="text-gray-400">게시글 정보를 불러오는 중...</div>
+      </Container>
+    );
+  }
 
+  if (!defaultValues) {
+    return (
+      <Container as="main" className={ARTICLE_COMMON_STYLES.empty.form}>
+        <div className="text-gray-400">게시글 정보를 찾을 수 없습니다.</div>
+        <Button onClick={() => router.back()}>이전 페이지로 이동</Button>
+      </Container>
+    );
+  }
   return (
     <Container as="main" className={cn(ARTICLE_COMMON_STYLES.main.wrapper, "pb-[120px]")}>
       <h2 className="visually-hidden">자유게시판</h2>

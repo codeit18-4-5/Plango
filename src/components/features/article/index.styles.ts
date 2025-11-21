@@ -19,6 +19,9 @@ export const ARTICLE_COMMON_STYLES = {
   card: {
     content: cn("tablet:min-h-[72px]"),
   },
+  empty: {
+    form: "flex h-dvh flex-col items-center justify-center gap-[30px]",
+  },
 };
 
 export const ARTICLE_LIST_STYLES = {
