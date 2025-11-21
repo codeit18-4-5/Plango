@@ -23,7 +23,7 @@ export const ImgUploadStory = () => {
   const methods = useForm();
   return (
     <FormProvider {...methods}>
-      <ImgUpload control={methods.control} name="image" id="image" />
+      <ImgUpload id="image" onChange={() => {}} />
     </FormProvider>
   );
 };
