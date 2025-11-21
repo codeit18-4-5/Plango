@@ -1,6 +1,6 @@
 export type GroupCreateRequest = {
   name: string;
-  url: string;
+  image?: string;
 };
 
 export type GroupCreateResponse = {

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { Button, Input } from "@/components/ui";
@@ -10,21 +10,22 @@ import IcProfile from "@/assets/icons/ic-image-circle.svg";
 import IcEdit from "@/assets/icons/ic-pencil-border.svg";
 
 export default function TeamCreatePage() {
-  const ref = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const [formData, setFormData] = useState<GroupCreateRequest>({
     name: "",
-    url: "",
   });
+
+  const [selectedImgFile, setSelectedImgFile] = useState<File | null | undefined>();
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    const reader = new FileReader();
     if (file) {
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = e => {
-        setFormData(prev => ({ ...prev, url: e.target?.result as string }));
+      reader.readAsDataURL(file);
+      reader.onloadend = () => {
+        formData.image = reader.result as string;
+        setSelectedImgFile(file);
       };
     }
   };
@@ -37,11 +38,11 @@ export default function TeamCreatePage() {
   const uploadImageMutate = useMutation({
     mutationFn: postImage,
     onSuccess: res => {
-      const imageUrl = res as string;
+      const imageUrl = res.url as string;
 
       createGroupMutate.mutate({
         ...formData,
-        url: imageUrl,
+        image: imageUrl,
       });
     },
     onError: error => console.log(error.message),
@@ -57,27 +58,29 @@ export default function TeamCreatePage() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    uploadImageMutate.mutate(formData.url);
+    if (selectedImgFile) {
+      uploadImageMutate.mutate({ url: selectedImgFile });
+    } else {
+      createGroupMutate.mutate(formData);
+    }
   };
   return (
     <div className="mx-auto mt-[72px] h-[460px] w-[343px] tablet:mt-[100px] tablet:w-[460px] desktop:mt-[140px]">
       <h2 className="mb-[24px] w-full text-center text-[24px] tablet:mb-[80px]">팀 생성하기</h2>
       <form method="POST" className="w-full" onSubmit={handleSubmit}>
-        <section className="relative mb-[24px] block w-[64px]">
-          <p className="mb-[12px] block">팀 프로필</p>
+        <section className="relative mb-[24px] w-[64px]">
+          <p className="mb-[12px]">팀 프로필</p>
           <label className="cursor-pointer" htmlFor="teamProfile">
             <input
               id="teamProfile"
               type="file"
               accept="image/*"
               className="hidden"
-              ref={ref}
               onChange={handleImageChange}
             />
-            {formData.url ? (
+            {formData.image ? (
               <img
-                src={formData.url}
+                src={formData.image}
                 className="inline-block h-[64px] w-full rounded-full border-[2px] border-line-strong"
               />
             ) : (
@@ -97,7 +100,12 @@ export default function TeamCreatePage() {
             onChange={handleNameChange}
           />
         </Input>
-        <Button as="button" type="submit" className="mb-[24px] h-[47px] w-full">
+        <Button
+          as="button"
+          type="submit"
+          className="mb-[24px] h-[47px] w-full"
+          disabled={createGroupMutate.isPending || uploadImageMutate.isPending}
+        >
           생성하기
         </Button>
       </form>
