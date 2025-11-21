@@ -1,5 +1,5 @@
 import cn from "@/lib/cn";
-import { getTimeAgo } from "@/lib/utils";
+import { getTimeAgo, formatDateToKorean } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
 import { Avatar } from "@/components/ui";
 import { CARD_INFO_STYLES } from "./index.styles";
@@ -27,15 +27,24 @@ export default function CardInfo({
       <div className={CARD_INFO_STYLES.meta.wrapper({ variant })}>
         <div className={CARD_INFO_STYLES.meta.writer({ variant })}>
           <Avatar image={image} className={CARD_INFO_STYLES.meta.avatar} />
+          <span className="visually-hidden">작성자</span>
           <span className={CARD_INFO_STYLES.meta.nickname}>{writer}</span>
         </div>
-        <span className={CARD_INFO_STYLES.meta.time({ variant })}>{getTimeAgo(createdAt)}</span>
+        <time
+          dateTime={createdAt}
+          title={formatDateToKorean(new Date(createdAt))}
+          aria-label={formatDateToKorean(new Date(createdAt))}
+          className={CARD_INFO_STYLES.meta.time({ variant })}
+        >
+          {getTimeAgo(createdAt)}
+        </time>
       </div>
       {likeCount !== undefined && (
         <div className={CARD_INFO_STYLES.like.wrapper}>
           <span className={CARD_INFO_STYLES.like.icon}>
             <ICLike />
           </span>
+          <span className="visually-hidden">좋아요</span>
           {likeCount > DISPLAY_LIMITS.MAX_LIKE_COUNT
             ? DISPLAY_LIMITS.MAX_LIKE_COUNT_TEXT
             : likeCount}

@@ -21,6 +21,7 @@ export default function CardActions({ actions, className, onStopPropagation }: C
       <Dropdown>
         <Dropdown.TriggerIcon intent="icon" className={CARD_ACTIONS_STYLES.icon}>
           <IcKebab />
+          <span className="visually-hidden">옵션 더보기</span>
         </Dropdown.TriggerIcon>
         <Dropdown.Menu size="md">
           {actions.map(action => (

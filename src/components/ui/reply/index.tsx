@@ -8,7 +8,7 @@ import ReplyActions from "./reply-actions";
 import { useEditable, useAutoResizeTextarea } from "@/hooks";
 import { replyWrapper, replyInner, replyTextarea, replyInfo, replyTimeStamp } from "./index.styles";
 import { Avatar, Button } from "@/components/ui";
-import { getTimeAgo } from "@/lib/utils";
+import { getTimeAgo, formatDateToKorean } from "@/lib/utils";
 
 type ReplyProps = {
   comment: CommentBase;
@@ -97,9 +97,17 @@ export default function Reply({
             <div className={replyInfo({ variant })}>
               <div className="flex items-center gap-x-3">
                 <Avatar image={comment.user.image} className="h-8 w-8" />
+                <span className="visually-hidden">작성자</span>
                 <span>{comment.user.nickname}</span>
               </div>
-              <span className={replyTimeStamp({ variant })}>{getTimeAgo(comment.createdAt)}</span>
+              <time
+                dateTime={comment.createdAt}
+                title={formatDateToKorean(new Date(comment.createdAt))}
+                aria-label={formatDateToKorean(new Date(comment.createdAt))}
+                className={replyTimeStamp({ variant })}
+              >
+                {getTimeAgo(comment.createdAt)}
+              </time>
             </div>
             {isAuthor && <ReplyActions actions={actions} />}
           </>

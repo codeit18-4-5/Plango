@@ -2,3 +2,5 @@ export { default as SearchBar } from "@/components/features/article/article-list
 export { default as BestArticleSection } from "@/components/features/article/article-list/best-article-section";
 export { default as AllArticleSection } from "@/components/features/article/article-list/all-article-section";
 export { default as ArticleListEmpty } from "@/components/features/article/article-list/article-list-empty";
+export { default as ArticleDetailInfo } from "@/components/features/article/article-detail/article-detail-info";
+export { default as ArticleCommentSection } from "@/components/features/article/article-detail/article-comment-section";

@@ -106,7 +106,7 @@ export default function AllArticleSection() {
           </ArticleListEmpty>
         )}
         {articles.map(article => (
-          <Card id={article.id} href={`/articles/${article.id}`} key={article.id}>
+          <Card id={article.id} href={`/article/${article.id}`} key={article.id}>
             <Card.Content title={article.title} image={article.image} />
             <Card.Info
               writer={article.writer.nickname}

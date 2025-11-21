@@ -47,7 +47,7 @@ export default function BestArticleSection() {
         {!isPending &&
           articles.length > 0 &&
           articles.slice(0, showCount).map(article => (
-            <Card id={article.id} href={`/articles/${article.id}`} key={article.id}>
+            <Card id={article.id} href={`/article/${article.id}`} key={article.id}>
               <Card.Badge />
               <Card.Content
                 title={article.title}
