@@ -8,8 +8,9 @@ import {
   SocialAuthButton,
   SignInFormFields,
 } from "@/components/features/auth";
+import ForgotPassword from "@/components/features/auth/forgot-password";
 import { Form } from "@/components/ui";
-import { useAuthSuccess } from "@/hooks";
+import { useAuthSuccess, useToggle } from "@/hooks";
 import { loginErrorHandler } from "@/lib/error";
 import { signInSchema, SignInSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +19,7 @@ const title = "로그인";
 
 export default function Signup() {
   const authSuccess = useAuthSuccess();
+  const { isOpen, setOpen, setClose } = useToggle();
 
   const handleSubmit = async (data: SignInSchema) => {
     const res = await postSignIn(data);
@@ -31,10 +33,13 @@ export default function Signup() {
         resolver={zodResolver(signInSchema)}
         onServerError={loginErrorHandler}
         mode="onBlur"
-        reValidateMode="onBlur"
+        reValidateMode="onChange"
       >
-        <SignInFormFields />
+        <SignInFormFields onModalOpen={setOpen} />
       </Form>
+
+      {isOpen && <ForgotPassword isOpen={isOpen} onClose={setClose} />}
+
       <AuthLink message="아직 계정이 없으신가요?" linkText="가입하기" href="/signup" />
       <AuthDivider />
       <SocialAuthButton title={title} />
