@@ -5,7 +5,7 @@ import patchUser from "@/api/user/patch-user";
 import { Button, Form, Input } from "@/components/ui";
 import { useLogout } from "@/hooks";
 import { nicknameErrorHandler } from "@/lib/error";
-import { nicknameSchema, NicknameSchema } from "@/lib/schema";
+import { changeProfileSchema, ChangeProfileSchema } from "@/lib/schema";
 import { useAuthStore } from "@/store/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -15,7 +15,7 @@ function ProfileUpdate() {
   const {
     register,
     formState: { errors },
-  } = useFormContext<NicknameSchema>();
+  } = useFormContext<ChangeProfileSchema>();
   return (
     <>
       <Input id="nickname" errorMsg={errors?.nickname?.message}>
@@ -49,7 +49,7 @@ export default function HomePage() {
     );
 
   const { id, image, email, teamId, nickname, memberships } = user;
-  const handleSubmit = async (data: NicknameSchema) => {
+  const handleSubmit = async (data: ChangeProfileSchema) => {
     const prev = useAuthStore.getState().user;
     const { updateUser } = useAuthStore.getState().actions;
 
@@ -82,10 +82,10 @@ export default function HomePage() {
       <p>현재 user email: {email ?? "없음"}</p>
       <p>현재 user teamId: {teamId ?? "없음"}</p>
       <p>현재 user memberships: {String(Boolean(memberships))}</p>
-      <Form<NicknameSchema>
+      <Form<ChangeProfileSchema>
         onSubmit={handleSubmit}
         onServerError={nicknameErrorHandler}
-        resolver={zodResolver(nicknameSchema)}
+        resolver={zodResolver(changeProfileSchema)}
         mode="onBlur"
         reValidateMode="onBlur"
       >
