@@ -627,7 +627,7 @@ h2.react-datepicker__current-month {
 .react-datepicker__quarter-text--disabled,
 .react-datepicker__year-text--disabled {
   cursor: default;
-  color: #ccc;
+  color: var(--gray-500);
 }
 .react-datepicker__day--disabled .overlay,
 .react-datepicker__month-text--disabled .overlay,

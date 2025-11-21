@@ -8,11 +8,13 @@ import { cuttingDayString, otherMonthIndicator } from "@/lib/utils";
 interface CustomSingleDatepickerProps {
   startDate: Date | null;
   onSingleChange?: (date: Date | null) => void;
+  useMinDate?: boolean;
 }
 
 export default function CustomSingleDatepicker({
   startDate,
   onSingleChange,
+  useMinDate = false,
 }: CustomSingleDatepickerProps) {
   const { currentMonth, currentYear, handleMonthChange } = useDatepickerDate();
 
@@ -26,6 +28,7 @@ export default function CustomSingleDatepicker({
       renderCustomHeader={CustomHeader}
       onMonthChange={handleMonthChange}
       dayClassName={date => otherMonthIndicator(date, currentMonth, currentYear)}
+      minDate={useMinDate ? new Date() : undefined}
     />
   );
 }
