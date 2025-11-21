@@ -2,18 +2,19 @@ import { ReactNode } from "react";
 import cn from "@/lib/cn";
 import IcKakao from "@/assets/icons/ic-kakao.svg";
 import Link from "next/link";
-import { Input } from "@/components/ui";
-interface AuthLinkProps {
+import { Input, Modal } from "@/components/ui";
+type AuthLinkProps = {
   message: string;
   linkText: string;
   href: string;
-}
-interface AuthFieldProps {
+};
+type AuthFieldProps = {
   id: string;
   errorMsg?: string;
   label: string;
   children: ReactNode;
-}
+};
+
 export function AuthTitle({ children }: { children: ReactNode }) {
   return <h2 className="mb-6 text-center text-heading-l tablet:mb-12">{children}</h2>;
 }
@@ -60,5 +61,20 @@ export function SocialAuthButton({ title, onClick }: { title: string; onClick: (
         <IcKakao />
       </button>
     </div>
+  );
+}
+
+export function AuthErrorModal({ message, onClose }: { message: string; onClose: () => void }) {
+  return (
+    <Modal isOpen={true} onClose={onClose}>
+      <Modal.HeaderWithClose title="" />
+      <Modal.Body>
+        <p className="text-center text-base">
+          {message} <br />
+          다시 시도해주세요.
+        </p>
+      </Modal.Body>
+      <Modal.FooterWithOnlyConfirm confirmButtonTitle="확인" onConfirm={onClose} />
+    </Modal>
   );
 }

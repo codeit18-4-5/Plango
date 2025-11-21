@@ -38,7 +38,9 @@ export default function Form<T extends FieldValues = FieldValues>({
       if (onServerError) {
         onServerError(error, setError);
       } else {
-        console.error(error);
+        if (process.env.NODE_ENV === "development") {
+          console.error(error);
+        }
         throw error;
       }
     }

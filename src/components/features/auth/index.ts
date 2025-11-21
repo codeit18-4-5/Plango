@@ -1,8 +1,9 @@
-export { SignUpFormFields, SignInFormFields } from "@/components/features/auth/formFields";
+export { SignUpFormFields, SignInFormFields } from "@/components/features/auth/form-fields";
 export {
   AuthTitle,
   AuthDivider,
   AuthLink,
   AuthField,
   SocialAuthButton,
-} from "@/components/features/auth/authPage";
+  AuthErrorModal,
+} from "@/components/features/auth/auth-page";
