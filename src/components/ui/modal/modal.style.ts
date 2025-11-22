@@ -1,10 +1,13 @@
 import { cva } from "class-variance-authority";
 
-export const modalOverlayStyle =
-  "fixed inset-0 z-[9000] flex items-center justify-center custom-dialog-backdrop bg-transparent";
+export const modalOverlayStyle = [
+  "fixed inset-0 z-[9000] flex items-center justify-center",
+  "custom-dialog-backdrop bg-transparent overflow-hidden",
+  "rounded-t-xl",
+].join(" ");
 
 export const modalContainerStyle = [
-  "w-[100vw] max-w-[384px] bg-gray-800 rounded-t-xl flex flex-col py-[24px] desktop:pt-[24px]",
+  "w-[100vw] max-w-[384px] bg-gray-800 rounded-t-xl flex flex-col desktop:pt-[24px]",
   "mobile:w-[380px] mobile:max-w-full",
   "fixed bottom-0 left-0 mobile:relative mobile:bottom-auto mobile:rounded-bl-0 mobile:rounded-b-xl",
 ].join(" ");

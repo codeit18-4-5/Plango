@@ -396,11 +396,37 @@ h2.react-datepicker__current-month {
   /* width: 1.9em;
   line-height: 1.9em;
   margin: 0.166rem; */
-  width: 39px;
+  /* width: 39px; */
+  width: clamp(20px, 10vw, 39px);
   height: 35px;
   line-height: 2.2em;
   margin: 2px 3px;
 }
+
+@media (max-width: 743px) {
+  .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: clamp(30px, 10vw, 41px);
+  }
+}
+
+@media (max-width: 415px) {
+  .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: clamp(20px, 9.5vw, 39px);
+  }
+}
+
+@media (max-width: 374px) {
+  .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: calc(100vw / 10);
+  }
+}
+
 .react-datepicker__day-name--disabled,
 .react-datepicker__day--disabled,
 .react-datepicker__time-name--disabled {

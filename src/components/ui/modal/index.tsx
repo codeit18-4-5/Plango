@@ -74,7 +74,7 @@ const FooterWithOnlyConfirm = ({
     <div className="relative">
       <div className={floatingButtonWrapperStyle}>
         <Button
-          className="w-[100%]"
+          className="mb-[24px] w-[100%]"
           onClick={!isSubmit ? onConfirm : undefined}
           type={isSubmit ? `submit` : `button`}
         >
