@@ -5,11 +5,13 @@ import { GroupTaskList } from "@/types/tasklist";
 import { redirect } from "next/navigation";
 import { getGroupTaskListsforServer, getTaskListForServer } from "@/api/tasklist/index-server";
 
-export default async function TasklistPage({ groupId }: { groupId: number }) {
-  if (isEmpty(groupId)) {
+export default async function TasklistPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  if (isEmpty(id)) {
     redirect("/");
   }
 
+  const groupId = Number(id);
   const queryClient = new QueryClient();
 
   const groupResult: GroupTaskList = await queryClient.fetchQuery({
@@ -18,6 +20,7 @@ export default async function TasklistPage({ groupId }: { groupId: number }) {
   });
 
   const currentDate = new Date();
+  const dateString = currentDate.toISOString().split("T")[0];
 
   let firstTaskListId: number | null = null;
   if (groupResult?.taskLists?.length) {
@@ -30,10 +33,10 @@ export default async function TasklistPage({ groupId }: { groupId: number }) {
   if (firstTaskListId !== null) {
     if (!isEmpty(firstTaskListId)) {
       await queryClient.prefetchQuery({
-        queryKey: ["taskList", groupId, firstTaskListId, currentDate],
+        queryKey: ["taskList", groupId, firstTaskListId, dateString],
         queryFn: () =>
           getTaskListForServer({
-            groupId: Number(groupId),
+            groupId: groupId,
             taskListId: firstTaskListId,
             date: currentDate.toString(),
           }),
