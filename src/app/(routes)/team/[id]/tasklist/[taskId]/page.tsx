@@ -1,6 +1,10 @@
 // import TaskDetailModal from "@/components/features/tasklist/task-detail-modal";
 
-export default async function TaskDetailPage({ params }: { params: { taskId: string } }) {
+export default async function TaskDetailPage({
+  params,
+}: {
+  params: Promise<{ taskId: string; id: string }>;
+}) {
   const { taskId } = await params;
 
   // 전체 페이지로 표시 (모달 아님)

@@ -3,7 +3,7 @@
 export default async function TaskDetailModalPage({
   params,
 }: {
-  params: Promise<{ taskId: number }>;
+  params: Promise<{ taskId: string; id: string }>;
 }) {
   const { taskId } = await params;
 
