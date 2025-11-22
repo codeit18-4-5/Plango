@@ -31,9 +31,8 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
 
   // TODO: isSuccess, isError, error 처리는 추후 토스트로 처리 예정
   const { mutate, isPending: isMutating } = useMutation({
-    mutationFn: async (patchBody: CreateArticleData) => {
-      return patchArticle(articleId, patchBody);
-    },
+    mutationFn: ({ articleId, patchBody }: { articleId: number; patchBody: CreateArticleData }) =>
+      patchArticle(articleId, patchBody),
     onSuccess: () => {
       //TODO: 자유게시판 리스트/상세페이지 캐시 최신 데이터 반영
     },
@@ -69,7 +68,7 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
       ...(imageUrl && { image: imageUrl }),
     };
 
-    mutate(patchBody);
+    mutate({ articleId, patchBody });
   };
 
   if (isPending) {
