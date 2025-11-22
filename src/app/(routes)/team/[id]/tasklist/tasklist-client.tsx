@@ -151,6 +151,7 @@ function TaskCardField({ groupData, taskListId, date }: TaskListPageProps) {
 
   const handleTaskClick = (id: number) => {
     sessionStorage.setItem("taskStorageProps", JSON.stringify(storageDatas));
+    sessionStorage.setItem("openDetailModal", "true");
     router.push(`/team/${groupId}/tasklist/${id}`);
   };
 

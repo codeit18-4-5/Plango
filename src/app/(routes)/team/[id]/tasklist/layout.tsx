@@ -1,34 +1,41 @@
 "use client";
 
-import { useSelectedLayoutSegment } from "next/navigation";
-import { memo } from "react";
+import { useEffect, useState } from "react";
+import { layoutStyle } from "./index.styles";
+import { usePathname } from "next/navigation";
 
 interface CommonProps {
   children: React.ReactNode;
-  modal: React.ReactNode;
+  detail: React.ReactNode;
 }
 
-const LayoutContent = memo<CommonProps>(({ children, modal }) => {
-  const detailSegment = useSelectedLayoutSegment("modal");
-  const hasDetail = !!detailSegment;
+export default function LayoutContent({ children, detail }: CommonProps) {
+  const pathname = usePathname();
+
+  const [isOpenDetailModal, setIsOpenDetailModal] = useState(false);
+
+  useEffect(() => {
+    const isClose = sessionStorage.getItem("closeDetailModal");
+    const isModal = sessionStorage.getItem("openDetailModal");
+
+    if (isModal) {
+      setIsOpenDetailModal(true);
+      sessionStorage.removeItem("openDetailModal");
+    } else if (isClose) {
+      setIsOpenDetailModal(false);
+      sessionStorage.removeItem("closeDetailModal");
+    }
+  }, [pathname]);
+
+  console.log("isOpenDetailModal:  ", isOpenDetailModal);
 
   return (
     <>
       <div className="relative h-[calc(100vh-72px)]">
-        <div className={hasDetail ? "h-full w-full" : "h-full w-full"}>{children}</div>
+        <div className="h-full w-full">{children}</div>
 
-        {hasDetail && (
-          <div className="fixed right-0 top-0 z-50 h-full w-full overflow-y-auto bg-gray-800 sm:w-[60%] lg:w-[779px]">
-            {modal}
-          </div>
-        )}
+        {isOpenDetailModal && <div className={layoutStyle}>{detail}</div>}
       </div>
     </>
   );
-});
-
-LayoutContent.displayName = "LayoutContent";
-
-export default function Layout({ children, modal }: CommonProps) {
-  return <LayoutContent children={children} modal={modal} />;
 }
