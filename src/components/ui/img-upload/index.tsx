@@ -68,7 +68,7 @@ export default function ImgUpload({ value, onChange, id, error }: ImgUploadProps
           id={id}
           name={id}
           type="file"
-          accept="image/*"
+          accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
           onChange={onInputChange}
           className={IMG_UPLOAD_STYLES.input}
         />

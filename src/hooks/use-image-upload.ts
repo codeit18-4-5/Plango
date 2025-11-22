@@ -39,11 +39,6 @@ const useImageUpload = ({
       return false;
     }
 
-    if (file.type === "image/svg+xml") {
-      setError("SVG 이미지는 지원하지 않습니다.");
-      return false;
-    }
-
     if (file.size > maxSize) {
       const msg = `파일 크기는 ${maxImageSizeMB}MB를 초과할 수 없습니다.`;
       setError(msg);
