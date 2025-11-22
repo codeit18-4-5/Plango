@@ -21,7 +21,6 @@ export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: Tas
   const [dayIndexArray, setDayIndexArray] = useState<number[]>([]);
 
   const handleSubmit: SubmitHandler<z4.infer<typeof taskSchema>> = submitData => {
-    console.log("form date: ", submitData);
     const transformedData = {
       ...submitData,
       description: submitData.description || "",
@@ -157,9 +156,6 @@ function FormField({
   };
 
   const handleDayClick = (dayIndex: number) => {
-    // setDayIndexArray(prev =>
-    //   prev.includes(dayIndex) ? prev.filter(item => item !== dayIndex) : [...prev, dayIndex],
-    // );
     setDayIndexArray(prev => {
       const newArray = prev.includes(dayIndex)
         ? prev.filter(item => item !== dayIndex)
@@ -258,7 +254,6 @@ function FormField({
                 className="bg-[#18212F]"
                 isIcon={true}
                 intent="select"
-                // selectedLabel={listForm.quantity.label}
                 selectedLabel={
                   frequencyTypeValue
                     ? selectOptions.find(option => option.value === frequencyTypeValue)?.label
