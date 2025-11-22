@@ -4,8 +4,6 @@ import { TaskDetailProps, TaskListProps } from "@/types/task";
 import axiosInstance from "@/lib/axios";
 
 export async function getGroupTaskLists(groupId: number) {
-  if (!groupId) return [];
-
   try {
     const res = await axiosInstance.get(`/groups/${groupId}`);
     return res.data;
@@ -16,8 +14,6 @@ export async function getGroupTaskLists(groupId: number) {
 }
 
 export async function getTaskList({ groupId, taskListId, date }: TaskListProps) {
-  if (!groupId || !taskListId || !date) return [];
-
   try {
     const params = new URLSearchParams();
     params.append("date", date);
@@ -33,8 +29,6 @@ export async function getTaskList({ groupId, taskListId, date }: TaskListProps) 
 }
 
 export async function getTaskDetail({ groupId, taskListId, taskId }: TaskDetailProps) {
-  if (!groupId || !taskListId || !taskId) return [];
-
   try {
     const res = await axiosInstance.get(
       `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
