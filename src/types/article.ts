@@ -55,3 +55,13 @@ export type ArticleEmptyProps = {
   children?: React.ReactNode;
   className?: string;
 };
+
+/**
+ * 자유게시판 상세 페이지 관련 타입 정의
+ * @author yeonsu
+ */
+export type ArticleDetail = Article & {
+  content: string;
+  commentCount: number;
+  isLiked: boolean;
+};

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ReplyInput, Reply } from "@/components/ui";
 import { CommentBase } from "@/types/comment-base";
+import { ARTICLE_COMMENT_STYLES } from "../index.styles";
 
 const mockComments: CommentBase[] = [
   {
@@ -46,9 +47,11 @@ export default function ArticleCommentSection() {
 
   return (
     <section>
-      <h4>댓글 달기</h4>
+      <h4 className={ARTICLE_COMMENT_STYLES.section.heading.title}>
+        댓글 <b>{mockComments.length}</b>
+      </h4>
       <ReplyInput />
-      <ul>
+      <ul className={ARTICLE_COMMENT_STYLES.replyList}>
         {comments.map(comment => (
           <li key={comment.id}>
             <Reply

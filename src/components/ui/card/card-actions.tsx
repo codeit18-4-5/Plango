@@ -19,9 +19,12 @@ export default function CardActions({ actions, className, onStopPropagation }: C
   return (
     <div onClick={onStopPropagation} className={cn(CARD_ACTIONS_STYLES.wrapper, className)}>
       <Dropdown>
-        <Dropdown.TriggerIcon intent="icon" className={CARD_ACTIONS_STYLES.icon}>
+        <Dropdown.TriggerIcon
+          intent="icon"
+          className={CARD_ACTIONS_STYLES.icon}
+          aria-label="옵션 더보기"
+        >
           <IcKebab />
-          <span className="visually-hidden">옵션 더보기</span>
         </Dropdown.TriggerIcon>
         <Dropdown.Menu size="md">
           {actions.map(action => (
