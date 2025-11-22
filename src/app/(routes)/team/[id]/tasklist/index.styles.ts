@@ -20,3 +20,5 @@ export const dateTitleStyle = ["text-body-xs text-gray-100", "mobile:text-body-s
 export const newListbuttonStyle = ["text-body-xs text-pink-400", "mobile:text-body-s"].join(" ");
 
 export const hiddenBrStyle = ["block", "mobile:hidden"].join(" ");
+
+export const addTaskListStyle = ["px-[20px]", "mobile:px-[36px]"].join(" ");
