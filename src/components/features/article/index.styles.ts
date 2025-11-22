@@ -19,6 +19,9 @@ export const ARTICLE_COMMON_STYLES = {
   card: {
     content: cn("tablet:min-h-[72px]"),
   },
+  empty: {
+    form: "flex h-dvh flex-col items-center justify-center gap-[30px]",
+  },
 };
 
 export const ARTICLE_LIST_STYLES = {
@@ -51,6 +54,31 @@ export const ARTICLE_LIST_STYLES = {
 
 export const ARTICLE_LIST_EMPTY_STYLES = {
   wrapper: "w-full p-[30px_0] text-center text-caption text-gray-500 tablet:p-[50px_0]",
+};
+
+export const ARTICLE_FORM_STYLES = {
+  section: {
+    heading: {
+      wrapper: cn(
+        "border-b border-gray-600 pb-[24px] text-gray-100",
+        "[&>h2]:text-heading-m [&>h3]:text-heading-s",
+        "tablet:pb-[32px]",
+        "desktop:pb-[40px] tablet:flex tablet:justify-between tablet:items-center",
+      ),
+      actions: cn(
+        "fixed bottom-0 left-0 w-full z-20 p-[0px_16px_30px_16px]",
+        "after:z-2 after:pointer-events-none after:content-[''] after:block after:absolute after:bottom-0 after:left-0 after:w-full after:h-[calc(100%_+_60px)] after:bg-[linear-gradient(0deg,var(--background)_54%,transparent_100%)]",
+        "tablet:relative tablet:p-0 tablet:after:hidden",
+      ),
+      submit: cn("relative z-10", "tablet:min-w-[184px]"),
+    },
+  },
+  form: {
+    wrapper: LAYOUT_GAP,
+    field: {
+      textarea: "h-[240px]",
+    },
+  },
 };
 
 export const ARTICLE_DETAIL_STYLES = {

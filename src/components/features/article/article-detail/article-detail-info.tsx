@@ -19,7 +19,7 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
 
   const { data: article } = useQuery({
     queryKey: ["getArticleDetail", articleId],
-    queryFn: () => getArticleDetail(articleId),
+    queryFn: () => getArticleDetail({ articleId }),
     enabled: !!articleId,
   });
 

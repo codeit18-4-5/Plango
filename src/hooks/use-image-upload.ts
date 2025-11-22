@@ -4,7 +4,6 @@ import { useState } from "react";
 import { FILE_POLICY } from "@/constants/file_policy";
 
 interface ImagePreview {
-  id: string;
   image: string;
   name: string;
   type: string;
@@ -39,6 +38,7 @@ const useImageUpload = ({
 
       return false;
     }
+
     if (file.size > maxSize) {
       const msg = `파일 크기는 ${maxImageSizeMB}MB를 초과할 수 없습니다.`;
       setError(msg);
@@ -54,6 +54,7 @@ const useImageUpload = ({
 
   const handleFile = (file: File) => {
     if (!validateFile(file)) {
+      setPreview(null);
       return false;
     }
 
@@ -61,7 +62,6 @@ const useImageUpload = ({
 
     reader.onload = () => {
       setPreview({
-        id: crypto.randomUUID(),
         image: reader.result as string,
         name: file.name,
         type: file.type,

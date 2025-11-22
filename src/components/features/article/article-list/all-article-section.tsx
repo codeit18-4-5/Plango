@@ -33,7 +33,7 @@ export default function AllArticleSection() {
     Article[],
     Error
   >({
-    queryKey: ["articles", debouncedOrderBy, debouncedQuery],
+    queryKey: ["getArticles", debouncedOrderBy, debouncedQuery],
     queryFn: ({ pageParam = 1 }) =>
       getArticles({
         orderBy: debouncedOrderBy,

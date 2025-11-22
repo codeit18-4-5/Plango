@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { ListSectionHeaderProps, ListSectionContentProps } from "@/types/article";
+import {
+  ListSectionHeaderProps,
+  ListSectionContentProps,
+  ArticleFormFieldProps,
+  CreateSectionHeaderProps,
+} from "@/types/article";
+import { Input } from "@/components/ui";
 import { ARTICLE_COMMON_STYLES, ARTICLE_LIST_STYLES } from "./index.styles";
 
 export function ListSectionHeader({ title, moreHref }: ListSectionHeaderProps) {
@@ -19,6 +25,39 @@ export function ListSectionContent({ gridType = "none", children }: ListSectionC
   return (
     <div className={ARTICLE_COMMON_STYLES.section.contents}>
       <div className={ARTICLE_LIST_STYLES.section.grid[gridType]}>{children}</div>
+    </div>
+  );
+}
+
+export function ArticleField({
+  id,
+  label,
+  errorMsg,
+  caption,
+  required = false,
+  children,
+}: ArticleFormFieldProps) {
+  return (
+    <Input id={id} errorMsg={errorMsg}>
+      <Input.Label label={label} caption={caption} size="md" required={required} />
+      {children}
+      <Input.Error />
+    </Input>
+  );
+}
+
+export function CreateSectionHeader({
+  title,
+  as = "h2",
+  className,
+  children,
+}: CreateSectionHeaderProps) {
+  const HeadingTag = as;
+
+  return (
+    <div className={className}>
+      <HeadingTag>{title}</HeadingTag>
+      <div>{children}</div>
     </div>
   );
 }
