@@ -49,7 +49,6 @@ export default function HomePage() {
     );
 
   const { id, image, email, teamId, nickname, memberships } = user;
-  console.log(user);
   const handleSubmit = async (data: NicknameSchema) => {
     const prev = useAuthStore.getState().user;
     const { updateUser } = useAuthStore.getState().actions;
