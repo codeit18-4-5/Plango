@@ -1,3 +1,6 @@
+import { NO_AUTH_GET, NO_AUTH_URLS } from "@/constants/url";
+import { AxiosRequestConfig } from "axios";
+
 /**
  * URL이 유효한 형식의 이미지 주소인지 검사
  * @author yeonsu
@@ -97,4 +100,39 @@ export const formatTimeToKorean = (date: Date): string => {
     hour: "numeric",
     minute: "2-digit",
   });
+};
+
+/**
+ * get 요청중 인증이 불필요한 패턴 필터
+ * @author sohyun
+ * @param pattern
+ * @param url
+ */
+export const matchPattern = (pattern: string | RegExp, url: string) => {
+  if (typeof pattern === "string") {
+    return url.startsWith(pattern);
+  }
+  return pattern.test(url);
+};
+
+/**
+ * axios config를 받아 인증이 불필요한 URL 필터
+ * @author sohyun
+ * @param config
+ */
+export const isNoAuthURL = (config: AxiosRequestConfig) => {
+  const url = config.url || "";
+  const method = (config.method || "get").toLowerCase();
+
+  // method 상관없이 인증 불필요한 URL
+  if (NO_AUTH_URLS.some(publicUrl => url.startsWith(publicUrl))) {
+    return true;
+  }
+
+  // get 요청 중 인증 불필요한 패턴
+  if (method === "get") {
+    return NO_AUTH_GET.some(pattern => matchPattern(pattern, url));
+  }
+
+  return false;
 };

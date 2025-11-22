@@ -34,3 +34,5 @@ export interface Membership {
 }
 
 export type UserSummary = Pick<User, "id" | "image" | "nickname">;
+
+export type UserUpdate = Partial<Pick<User, "image" | "nickname">>;

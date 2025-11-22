@@ -45,6 +45,14 @@ export const signInSchema = z.object({
 
 export type SignInSchema = z.infer<typeof signInSchema>;
 
+export const nicknameSchema = z.object({
+  nickname: z
+    .string()
+    .min(1, { error: "닉네임은 필수 입력입니다." })
+    .max(10, { error: "닉네임은 최대 10자까지 가능합니다." }),
+});
+export type NicknameSchema = z.infer<typeof nicknameSchema>;
+
 export const isInputEmpty = (value: string) => {
   return !value || (typeof value === "string" && value.trim().length === 0);
 };
