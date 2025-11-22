@@ -64,7 +64,7 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
     <>
       <Container className="h-full">
         <header className="mb-[24px]">
-          <h1 className="text-heading-s text-gray-100">할 일</h1>{" "}
+          <h1 className="text-heading-s text-gray-100">할 일</h1>
         </header>
         <main className="flex h-[95%] flex-col">
           <section className="mb-[24px] flex items-center justify-between">
