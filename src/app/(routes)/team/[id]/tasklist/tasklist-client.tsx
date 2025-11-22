@@ -84,8 +84,8 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
             </div>
             <button onClick={() => handleButtonClick("task")}>
               <span className={newListbuttonStyle}>
-                + 새로운 할 일<br className={hiddenBrStyle} />
-                그룹 추가하기
+                + 새로운 목록 <br className={hiddenBrStyle} />
+                추가하기
               </span>
             </button>
           </section>
