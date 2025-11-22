@@ -12,7 +12,7 @@ export default async function EditArticlePage({
 
   const queryClient = new QueryClient();
   const article = await getArticleDetail({ articleId: articleIdNum });
-  queryClient.setQueryData(["article-edit", articleIdNum], article);
+  queryClient.setQueryData(["getArticleDetail", articleIdNum], article);
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <ArticleEditForm articleId={articleIdNum} />

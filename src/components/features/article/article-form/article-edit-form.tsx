@@ -24,7 +24,7 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   //const queryClient = useQueryClient();
   const { data: article, isPending } = useQuery({
-    queryKey: ["article-edit", articleId],
+    queryKey: ["getArticleDetail", articleId],
     queryFn: () => getArticleDetail({ articleId }),
     enabled: !!articleId,
   });

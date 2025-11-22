@@ -33,7 +33,7 @@ export default function AllArticleSection() {
     Article[],
     Error
   >({
-    queryKey: ["articles", debouncedOrderBy, debouncedQuery],
+    queryKey: ["getArticles", debouncedOrderBy, debouncedQuery],
     queryFn: ({ pageParam = 1 }) =>
       getArticles({
         orderBy: debouncedOrderBy,
@@ -57,7 +57,7 @@ export default function AllArticleSection() {
 
   const setQueryParams = (newOrderBy: OrderByType) => {
     queryClient.removeQueries({
-      queryKey: ["articles", debouncedOrderBy, debouncedQuery],
+      queryKey: ["getArticles", debouncedOrderBy, debouncedQuery],
     });
 
     const params = new URLSearchParams(searchParams.toString());
