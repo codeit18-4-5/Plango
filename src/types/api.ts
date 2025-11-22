@@ -9,3 +9,7 @@ export type ServerErrorHandler<T extends FieldValues = FieldValues> = (
   error: unknown,
   setError: UseFormSetError<T>,
 ) => void;
+
+export type ImagesUpload = {
+  url: File;
+};

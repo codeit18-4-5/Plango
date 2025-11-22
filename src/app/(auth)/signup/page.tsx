@@ -38,8 +38,7 @@ export default function Signup() {
       </Form>
       <AuthLink message="이미 계정이 있으신가요?" linkText="로그인하기" href="/login" />
       <AuthDivider />
-      {/* @TODO 소셜 로그인 기능 추가 */}
-      <SocialAuthButton title={title} onClick={() => {}} />
+      <SocialAuthButton title={title} />
     </div>
   );
 }
