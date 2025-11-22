@@ -24,7 +24,7 @@ export default function DailyFrequencyOptions({
           <Button
             key={list.value}
             intent="tertiary"
-            className={cn("px-[13.8px]", isSelected ? "bg-pink-400 text-white" : "")}
+            className={cn("w-full px-[13px]", isSelected ? "bg-pink-400 text-white" : "")}
             onClick={() => onChange(list.value)}
           >
             {list.label}
