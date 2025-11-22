@@ -8,7 +8,7 @@ export async function getGroupTaskListsforServer(groupId: number) {
     const res = await serverAxios.get(`/groups/${groupId}`);
     return res.data;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     throw e;
   }
 }
@@ -25,7 +25,7 @@ export async function getTaskListForServer({ groupId, taskListId, date }: TaskLi
     );
     return res.data;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     throw e;
   }
 }

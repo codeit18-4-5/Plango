@@ -10,7 +10,7 @@ export async function getGroupTaskLists(groupId: number) {
     const res = await axiosInstance.get(`/groups/${groupId}`);
     return res.data;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     throw e;
   }
 }
@@ -27,7 +27,7 @@ export async function getTaskList({ groupId, taskListId, date }: TaskListProps) 
     );
     return res.data;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     throw e;
   }
 }
@@ -41,7 +41,7 @@ export async function getTaskDetail({ groupId, taskListId, taskId }: TaskDetailP
     );
     return res.data;
   } catch (e) {
-    console.log(e);
+    console.error(e);
     throw e;
   }
 }
