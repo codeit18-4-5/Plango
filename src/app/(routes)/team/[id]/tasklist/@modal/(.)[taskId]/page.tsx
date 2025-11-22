@@ -1,4 +1,4 @@
-import TaskDetailModal from "@/components/features/tasklist/task-detail-modal";
+// import TaskDetailModal from "@/components/features/tasklist/task-detail-modal";
 
 export default async function TaskDetailModalPage({
   params,
@@ -7,5 +7,6 @@ export default async function TaskDetailModalPage({
 }) {
   const { taskId } = await params;
 
-  return <TaskDetailModal taskId={Number(taskId)} />;
+  return <div>나중 페이지 들어감{taskId}</div>;
+  // <TaskDetailModal taskId={Number(taskId)} />;
 }
