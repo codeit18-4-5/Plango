@@ -21,16 +21,16 @@ export const POST = async () => {
       );
     }
 
-    // 백엔드 서버에 토큰 재발급 요청
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`, {
+    // 백엔드 서버에 accessToken 재발급 요청
+    const refreshTokenRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken }),
     });
 
-    const data = await res.json();
+    const data = await refreshTokenRes.json();
 
-    if (!res.ok || !data.accessToken) {
+    if (!refreshTokenRes.ok || !data.accessToken) {
       // refreshToken은 있지만 새 accessToken을 발급 실패한 경우
       return createErrorResponse(
         "refresh route : 백엔드 accessToken 발급에 실패",
@@ -38,6 +38,18 @@ export const POST = async () => {
         401,
       );
     }
+    console.log(data.accessToken);
+    // accessToken 쿠키설정
+    cookieStore.set({
+      name: "accessToken",
+      value: data.accessToken,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60, // 1시간
+      path: "/",
+      sameSite: "lax",
+    });
+
     // accessToken 반환
     return NextResponse.json({ accessToken: data.accessToken }, { status: 200 });
   } catch (error) {
