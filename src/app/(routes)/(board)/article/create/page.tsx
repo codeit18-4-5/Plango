@@ -6,7 +6,6 @@ import postImagesUpload from "@/api/image/post-images-upload";
 import postArticle from "@/api/article/post-article";
 import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { axiosErrorMsg } from "@/lib/error";
 import { CreateArticleData } from "@/types/article";
 import { Container } from "@/components/layout";
 import { ArticleFormFields } from "@/components/features/article";
@@ -59,7 +58,6 @@ export default function CreateArticlesPage() {
       <h2 className="visually-hidden">자유게시판</h2>
       <Form<ArticleFormSchema>
         onSubmit={handleSubmit}
-        onServerError={axiosErrorMsg}
         resolver={zodResolver(articleFormSchema)}
         mode="onBlur"
         reValidateMode="onBlur"
