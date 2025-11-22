@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { useAlert } from "@/providers/alert-provider";
 import { GroupTaskList } from "@/types/tasklist";
 import cn from "@/lib/cn";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { taskSchema } from "@/lib/schema";
 import z4 from "zod/v4";
 import { dateTitleStyle, hiddenBrStyle, newListbuttonStyle, tabButtonStyle } from "./index.styles";
@@ -69,7 +69,7 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
         <main className="flex h-[95%] flex-col">
           <section className="mb-[24px] flex items-center justify-between">
             <div className="flex gap-[12px]">
-              <span className={dateTitleStyle}>{`${currentDateStr}`}</span>
+              <span className={dateTitleStyle}>{currentDateStr}</span>
               <div className="flex gap-[4px]">
                 <div className="w-[16px]">
                   <LeftArrowIcon></LeftArrowIcon>
@@ -129,11 +129,13 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
 
 function TaskCardField({ groupData, taskListId, date }: TaskListPageProps) {
   const router = useRouter();
+  const pathname = usePathname();
+
   const groupId = groupData.id;
   const [activeTab, setActiveTab] = useState<number>(taskListId || 0);
   const tabs = groupData.taskLists
     .sort((a, b) => a.displayIndex - b.displayIndex)
-    .map(taskList => ({ id: taskList.id, lable: taskList.name }));
+    .map(taskList => ({ id: taskList.id, label: taskList.name }));
 
   const { data: taskListData } = useTaskList({
     groupId: groupId,
@@ -154,7 +156,6 @@ function TaskCardField({ groupData, taskListId, date }: TaskListPageProps) {
 
   // 탭이동시 상세보기 화면 닫기
   useEffect(() => {
-    const pathname = window.location.pathname;
     const pathParts = pathname.split("/").filter(Boolean);
     if (pathParts.length >= 4 && pathParts[2] === "tasklist") {
       router.back();
@@ -178,10 +179,10 @@ function TaskCardField({ groupData, taskListId, date }: TaskListPageProps) {
                       : tabButtonStyle({ variant: "inactive" }),
                     tabButtonStyle(),
                   )}
-                  title={tab.lable}
+                  title={tab.label}
                   onClick={() => setActiveTab(tab.id)}
                 >
-                  {tab.lable}
+                  {tab.label}
                 </button>
               );
             })}
