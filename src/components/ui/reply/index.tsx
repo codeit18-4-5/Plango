@@ -33,6 +33,11 @@ export default function Reply({
 
   const { editedContent, setEditedContent } = useEditable(comment.content, { textareaRef });
 
+  const handleCancelEdit = () => {
+    setEditedContent(comment.content);
+    onCancelEdit();
+  };
+
   useEffect(() => {
     if (isEditing) {
       resize();
@@ -68,7 +73,7 @@ export default function Reply({
             />
             <div className="flex justify-end gap-2">
               <Button
-                onClick={onCancelEdit}
+                onClick={handleCancelEdit}
                 size="sm"
                 intent="cancel"
                 className={cn(

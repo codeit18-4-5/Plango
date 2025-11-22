@@ -7,6 +7,7 @@ export const ALERT_TYPE = {
   Leave: "leave",
   Logout: "logout",
   Confirm: "confirm",
+  DeleteComment: "deleteComment",
 } as const;
 
 export type AlertType = (typeof ALERT_TYPE)[keyof typeof ALERT_TYPE];
@@ -44,6 +45,11 @@ const ALERT_PRESETS: Record<AlertType, Partial<AlertEssentialProps>> = {
   [ALERT_TYPE.Confirm]: {
     title: "",
     confirmText: "확인",
+  },
+  [ALERT_TYPE.DeleteComment]: {
+    title: "정말로 이 댓글을 삭제하시겠어요?",
+    descriptionMessage: "삭제한 댓글은 복구할 수 없습니다.",
+    confirmText: "댓글 삭제",
   },
 };
 

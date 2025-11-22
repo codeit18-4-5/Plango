@@ -18,7 +18,7 @@ export default function ArticleDetailPage() {
       <h2 className="visually-hidden">자유게시판</h2>
       <div className={ARTICLE_DETAIL_STYLES.wrapper}>
         <ArticleDetailInfo articleId={articleId} />
-        <ArticleCommentSection />
+        <ArticleCommentSection articleId={articleId} />
       </div>
       <Floating className="z-20">
         <ScrollTopButton />

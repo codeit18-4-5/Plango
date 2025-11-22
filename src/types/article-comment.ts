@@ -1,4 +1,4 @@
-import { UserSummary } from "@/types/user";
+import { Writer } from "@/types/article";
 
 /**
  * ArticleComment 관련 타입 정의
@@ -7,7 +7,7 @@ import { UserSummary } from "@/types/user";
 
 export interface ArticleComment {
   id: number;
-  writer: UserSummary;
+  writer: Writer;
   content: string;
   createdAt: string;
   updatedAt: string;
@@ -19,18 +19,24 @@ export interface ArticleComments {
   list: ArticleComment[];
 }
 
+export type GetArticleCommentParams = {
+  articleId: number;
+  limit: number;
+  cursor?: number;
+};
+
 // 403/404
 export interface ArticleCommentError {
   message: string;
 }
 
 // post 리퀘스트 바디(게시글 댓글 작성)
-export interface CreateArticleComment {
+export interface PostArticleComment {
   content: string;
 }
 
 // patch 리퀘스트 바디(댓글 수정)
-export interface UpdateArticleComment {
+export interface PatchArticleComment {
   content: string;
 }
 

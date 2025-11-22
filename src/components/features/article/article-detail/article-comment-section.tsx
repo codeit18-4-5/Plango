@@ -1,90 +1,183 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { useInfiniteQuery, useMutation, useQueryClient, InfiniteData } from "@tanstack/react-query";
+import getArticleComments from "@/api/article/comment/get-article-comments";
+import postArticleComment from "@/api/article/comment/post-article-comment";
+import deleteArticleComment from "@/api/article/comment/delete-article-comment";
+import patchArticleComment from "@/api/article/comment/patch-article-comment";
+import { ArticleComments, ArticleComment } from "@/types/article-comment";
+import { useInfiniteObserver } from "@/hooks";
 import { ReplyInput, Reply } from "@/components/ui";
-import { CommentBase } from "@/types/comment-base";
+import { useAlert } from "@/providers/alert-provider";
+
+import CardSkeleton from "@/components/skeleton-ui/card-skeleton";
 import { ARTICLE_COMMENT_STYLES } from "../index.styles";
 
-const mockComments: CommentBase[] = [
-  {
-    id: 1,
-    user: {
-      id: 1,
-      image: "/assets/images/img-test.jpeg",
-      nickname: "참깨",
-    },
-    content: "힘내요!!",
-    createdAt: "2025-11-09T10:30:00.000Z",
-    updatedAt: "2025-11-09T10:30:00.000Z",
-  },
-  {
-    id: 2,
-    user: {
-      id: 2,
-      image: "/assets/images/img-test.jpeg",
-      nickname: "참깨",
-    },
-    content: "힘내요!!",
-    createdAt: "2025-11-09T10:30:00.000Z",
-    updatedAt: "2025-11-09T10:30:00.000Z",
-  },
-  {
-    id: 3,
-    user: {
-      id: 123,
-      image: "",
-      nickname: "5팀",
-    },
-    content: "오늘의 할 일\n\n1. 회의하기 \n2. 컴포넌트 만들기\n3. 잠자기",
-    createdAt: "2025-11-09T08:15:00.000Z",
-    updatedAt: "2025-11-09T09:20:00.000Z",
-  },
-];
+const PAGE_SIZE = 4;
+const currentUserId = 2392;
 
-const currentUserId = 123;
-
-export default function ArticleCommentSection() {
+export default function ArticleCommentSection({ articleId }: { articleId: number }) {
+  const { showAlert } = useAlert();
+  const queryClient = useQueryClient();
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [comments, setComments] = useState<CommentBase[]>(mockComments);
+  const prevContentRef = useRef<string | null>(null);
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, isError } =
+    useInfiniteQuery<
+      ArticleComments,
+      Error,
+      InfiniteData<ArticleComments>,
+      [string, number],
+      number | null
+    >({
+      queryKey: ["getArticleComments", articleId],
+      queryFn: async ({ pageParam }) => {
+        const params =
+          pageParam != null
+            ? { articleId, limit: PAGE_SIZE, cursor: pageParam }
+            : { articleId, limit: PAGE_SIZE };
+        return await getArticleComments(params);
+      },
+      initialPageParam: null,
+      getNextPageParam: lastPage => (lastPage.nextCursor !== null ? lastPage.nextCursor : null),
+      staleTime: 60000,
+    });
+
+  const comments = data?.pages.flatMap(page => page.list) ?? [];
+
+  const ObserverRef = useInfiniteObserver({
+    onIntersect: () => {
+      if (hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
+    },
+    isEnabled: !!hasNextPage && !isFetchingNextPage,
+  });
+
+  const { mutate: createComment } = useMutation({
+    mutationFn: (payload: { content: string }) => postArticleComment(articleId, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getArticleComments", articleId] });
+      queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
+    },
+  });
+
+  const { mutate: updateComment } = useMutation({
+    mutationFn: ({ commentId, content }: { commentId: number; content: string }) =>
+      patchArticleComment(commentId, { content }),
+    onMutate: ({ commentId }) => {
+      const target = comments.find(current => current.id === commentId);
+      prevContentRef.current = target ? target.content : null;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getArticleComments", articleId] });
+      queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
+    },
+  });
+
+  const { mutate: removeComment } = useMutation({
+    mutationFn: ({ commentId }: { commentId: number }) => deleteArticleComment({ commentId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getArticleComments", articleId] });
+      queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
+    },
+  });
+
+  useEffect(() => {
+    if (editingId !== null) {
+      const editingComment = comments.find(comment => comment.id === editingId);
+      if (
+        editingComment &&
+        prevContentRef.current !== null &&
+        editingComment.content !== prevContentRef.current
+      ) {
+        setEditingId(null);
+        prevContentRef.current = null;
+      }
+    }
+  }, [comments, editingId]);
+
+  const handleAdd = (newContent: string) => {
+    if (!newContent.trim()) return;
+    createComment({ content: newContent });
+  };
+
+  const handleEditSave = (commentId: number, updatedContent: string) => {
+    updateComment({ commentId, content: updatedContent });
+  };
+
+  const handleCancelEdit = () => setEditingId(null);
+
+  const handleDelete = async (commentId: number) => {
+    const confirmed = await showAlert({
+      type: "deleteComment",
+    });
+    if (confirmed) {
+      removeComment({ commentId });
+    }
+  };
+
+  if (isPending)
+    return (
+      <div className={ARTICLE_COMMENT_STYLES.replyList}>
+        {Array.from({ length: PAGE_SIZE }).map((_, i) => (
+          <CardSkeleton key={i} />
+        ))}
+      </div>
+    );
+
+  if (isError)
+    return (
+      <section>
+        <p className="text-gray-400">댓글을 불러올 수 없습니다.</p>
+      </section>
+    );
 
   return (
     <section>
       <h4 className={ARTICLE_COMMENT_STYLES.section.heading.title}>
-        댓글 <b>{mockComments.length}</b>
+        댓글 <b>{comments.length}</b>
       </h4>
-      <ReplyInput />
+      <ReplyInput onSubmit={handleAdd} />
+
       <ul className={ARTICLE_COMMENT_STYLES.replyList}>
-        {comments.map(comment => (
-          <li key={comment.id}>
-            <Reply
-              comment={comment}
-              isEditing={editingId === comment.id}
-              onCancelEdit={() => setEditingId(null)}
-              onSaveEdit={updatedContent => {
-                setComments(prev =>
-                  prev.map(target =>
-                    target.id === comment.id ? { ...target, content: updatedContent } : target,
-                  ),
-                );
-                setEditingId(null);
-              }}
-              isAuthor={comment.user.id === currentUserId}
-              actions={
-                comment.user.id === currentUserId
-                  ? [
-                      {
-                        label: "수정하기",
-                        onClick: () => setEditingId(comment.id),
-                      },
-                      {
-                        label: "삭제하기",
-                        onClick: () => alert("삭제"),
-                      },
-                    ]
-                  : []
-              }
-            />
-          </li>
-        ))}
+        {comments.map((comment: ArticleComment) => {
+          const replyComment = {
+            ...comment,
+            user: {
+              ...comment.writer,
+              image: comment.writer.image ?? null,
+            },
+          };
+          return (
+            <li key={comment.id}>
+              <Reply
+                comment={replyComment}
+                isEditing={editingId === comment.id}
+                onSaveEdit={updatedContent => handleEditSave(comment.id, updatedContent)}
+                onCancelEdit={handleCancelEdit}
+                isAuthor={comment.writer.id === currentUserId}
+                actions={
+                  comment.writer.id === currentUserId
+                    ? [
+                        { label: "수정하기", onClick: () => setEditingId(comment.id) },
+                        { label: "삭제하기", onClick: () => handleDelete(comment.id) },
+                      ]
+                    : []
+                }
+              />
+            </li>
+          );
+        })}
+        {isFetchingNextPage &&
+          Array.from({ length: PAGE_SIZE }).map((_, i) => (
+            <li key={i}>
+              <CardSkeleton />
+            </li>
+          ))}
       </ul>
+      <div ref={ObserverRef} className="infinite-scroll-trigger" />
     </section>
   );
 }

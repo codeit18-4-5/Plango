@@ -100,7 +100,7 @@ export const ARTICLE_DETAIL_STYLES = {
       "before:content-[''] before:inline-block before:w-[1px] before:h-[12px] before:bg-gray-700 before:mr-4",
     ),
   },
-  content: "p-[50px_0] text-body-m text-gray-300",
+  content: "p-[50px_0] text-body-m text-gray-300 whitespace-pre-line",
   actions: {
     wrapper: "text-base flex items-center gap-x-[20px] justify-between",
     like: cn(
