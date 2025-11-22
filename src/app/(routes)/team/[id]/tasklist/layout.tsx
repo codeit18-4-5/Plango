@@ -1,6 +1,5 @@
 "use client";
 
-import Header from "@/components/layout/header/header";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { memo } from "react";
 
@@ -15,7 +14,6 @@ const LayoutContent = memo<CommonProps>(({ children, modal }) => {
 
   return (
     <>
-      <Header isLoginPage />
       <div className="relative h-[calc(100vh-72px)]">
         <div className={hasDetail ? "h-full w-full" : "h-full w-full"}>{children}</div>
 
