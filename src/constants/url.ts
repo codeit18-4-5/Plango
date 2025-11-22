@@ -8,7 +8,8 @@ export const NO_AUTH_URLS = [
   "/auth/signIn",
   "/auth/refresh-token",
   "/auth/signIn/KAKAO",
-  "/team",
+  "/groups",
+  "/tasks",
 ];
 // 인증이 필요없는 get url
 export const NO_AUTH_GET: (string | RegExp)[] = ["/articles", /^\/articles\/\d+\/comments$/];
