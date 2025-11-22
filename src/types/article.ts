@@ -8,6 +8,7 @@ export interface Writer {
   image?: string | null;
 }
 
+export type WriterSummary = Pick<Writer, "nickname" | "id">;
 export interface Article {
   id: number;
   updatedAt: string;
@@ -60,8 +61,15 @@ export type ArticleEmptyProps = {
  * 자유게시판 상세 페이지 관련 타입 정의
  * @author yeonsu
  */
-export type ArticleDetail = Article & {
+export interface ArticleDetail {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  likeCount: number;
+  writer: WriterSummary;
+  image?: string;
+  title: string;
   content: string;
   commentCount: number;
   isLiked: boolean;
-};
+}

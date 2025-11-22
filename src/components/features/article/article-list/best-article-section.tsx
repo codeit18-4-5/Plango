@@ -14,7 +14,7 @@ export default function BestArticleSection() {
   const [mounted, setMounted] = useState(false);
 
   const { data: articles = [], isPending } = useQuery<Article[], Error>({
-    queryKey: ["best-articles"],
+    queryKey: ["getArticles"],
     queryFn: () => getArticles({ page: 1, pageSize: 3, orderBy: "like" }).then(res => res.list),
     staleTime: 300000,
   });
