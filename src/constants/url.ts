@@ -7,5 +7,6 @@ export const NO_AUTH_URLS = [
   "/auth/signIn",
   "/auth/refresh-token",
   "/auth/signIn/KAKAO",
+  "/team",
 ];
 export const NO_AUTH_GET: (string | RegExp)[] = ["/articles", /^\/articles\/\d+\/comments$/];
