@@ -14,6 +14,11 @@ export const POST = async () => {
     maxAge: 0,
     path: "/",
   });
-
+  cookieStore.set({
+    name: "accessToken",
+    value: "",
+    maxAge: 0,
+    path: "/",
+  });
   return NextResponse.json({ success: true }, { status: 200 });
 };
