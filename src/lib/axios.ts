@@ -1,12 +1,13 @@
 import { useAuthStore } from "@/store/auth.store";
 import axios, { AxiosInstance } from "axios";
-import { isNoAuthURL } from "./utils";
+import { isNoAuthAxios } from "./utils";
 import { logoutDirect } from "./logout";
 
 /**
  * axios 인터셉터:  then 또는 catch로 처리되기 전에 요청과 응답을 가로채는 기능
  * @author sohyun
  */
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
 const axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -23,12 +24,11 @@ axiosInstance.interceptors.request.use(
     const accessToken = useAuthStore.getState().accessToken;
 
     // 토큰이 필요 없는 URL
-    if (isNoAuthURL(config)) return config;
+    if (isNoAuthAxios(config)) return config;
 
     // 인증이 필요한 요청 처리
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
-    }
+    if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
+
     return config;
   },
   err => Promise.reject(err),
@@ -50,7 +50,7 @@ axiosInstance.interceptors.response.use(
     config._retry = true;
 
     // refresh route 요청해서 새 accessToken 받아오기
-    const refreshRes = await fetch("/api/auth/refresh", {
+    const refreshRes = await fetch(`${APP_URL}/api/auth/refresh`, {
       method: "POST",
       credentials: "include",
     });
