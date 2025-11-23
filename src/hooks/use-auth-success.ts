@@ -13,7 +13,7 @@ type AuthSuccessPayload = {
   refreshToken: string;
   user: User;
 };
-
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 const useAuthSuccess = () => {
   const router = useRouter();
   const useAuthActions = () => useAuthStore(state => state.actions);
@@ -26,7 +26,7 @@ const useAuthSuccess = () => {
 
     try {
       // refreshToken을 HttpOnly 쿠키로 저장
-      const res = await fetch("/api/auth/set-refresh-token", {
+      const res = await fetch(`${APP_URL}/api/auth/set-refresh-token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),
