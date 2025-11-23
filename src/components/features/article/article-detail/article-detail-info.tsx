@@ -28,7 +28,7 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
       queryClient.invalidateQueries({ queryKey: ["getArticles"] });
-      router.push("/articles");
+      router.replace("/article");
     },
   });
 

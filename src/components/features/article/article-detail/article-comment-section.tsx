@@ -1,27 +1,35 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useInfiniteQuery, useMutation, useQueryClient, InfiniteData } from "@tanstack/react-query";
 import getArticleComments from "@/api/article/comment/get-article-comments";
 import postArticleComment from "@/api/article/comment/post-article-comment";
 import deleteArticleComment from "@/api/article/comment/delete-article-comment";
 import patchArticleComment from "@/api/article/comment/patch-article-comment";
+import { useAuthStore } from "@/store/auth.store";
 import { ArticleComments, ArticleComment } from "@/types/article-comment";
 import { useInfiniteObserver } from "@/hooks";
-import { ReplyInput, Reply } from "@/components/ui";
 import { useAlert } from "@/providers/alert-provider";
-
+import { ReplyInput, Reply } from "@/components/ui";
+import { ArticleConfirmModal } from "../layout";
 import CardSkeleton from "@/components/skeleton-ui/card-skeleton";
 import { ARTICLE_COMMENT_STYLES } from "../index.styles";
 
 const PAGE_SIZE = 4;
-const currentUserId = 2392;
+const useCurrentUser = () => {
+  return useAuthStore(state => state.user);
+};
 
 export default function ArticleCommentSection({ articleId }: { articleId: number }) {
-  const { showAlert } = useAlert();
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const currentUser = useCurrentUser();
+  const { showAlert } = useAlert();
   const [editingId, setEditingId] = useState<number | null>(null);
   const prevContentRef = useRef<string | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [comment, setComment] = useState("");
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, isError } =
     useInfiniteQuery<
@@ -55,7 +63,7 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
     isEnabled: !!hasNextPage && !isFetchingNextPage,
   });
 
-  const { mutate: createComment } = useMutation({
+  const { mutate: createComment, isPending: isMutating } = useMutation({
     mutationFn: (payload: { content: string }) => postArticleComment(articleId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getArticleComments", articleId] });
@@ -98,24 +106,22 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
     }
   }, [comments, editingId]);
 
-  const handleAdd = (newContent: string) => {
-    if (!newContent.trim()) return;
-    createComment({ content: newContent });
+  const handleAddComment = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!comment.trim()) return;
+    createComment({ content: comment });
+    setComment("");
   };
+
+  const handleRequireLogin = () => setShowLoginModal(true);
 
   const handleEditSave = (commentId: number, updatedContent: string) => {
     updateComment({ commentId, content: updatedContent });
   };
-
   const handleCancelEdit = () => setEditingId(null);
-
   const handleDelete = async (commentId: number) => {
-    const confirmed = await showAlert({
-      type: "deleteComment",
-    });
-    if (confirmed) {
-      removeComment({ commentId });
-    }
+    const confirmed = await showAlert({ type: "deleteComment" });
+    if (confirmed) removeComment({ commentId });
   };
 
   if (isPending)
@@ -139,8 +145,15 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
       <h4 className={ARTICLE_COMMENT_STYLES.section.heading.title}>
         댓글 <b>{comments.length}</b>
       </h4>
-      <ReplyInput onSubmit={handleAdd} />
-
+      <form onSubmit={handleAddComment}>
+        <ReplyInput
+          value={comment}
+          onChange={setComment}
+          isLoggedIn={!!currentUser}
+          isPending={isMutating}
+          onRequireLogin={handleRequireLogin}
+        />
+      </form>
       <ul className={ARTICLE_COMMENT_STYLES.replyList}>
         {comments.map((comment: ArticleComment) => {
           const replyComment = {
@@ -157,9 +170,9 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
                 isEditing={editingId === comment.id}
                 onSaveEdit={updatedContent => handleEditSave(comment.id, updatedContent)}
                 onCancelEdit={handleCancelEdit}
-                isAuthor={comment.writer.id === currentUserId}
+                isAuthor={comment.writer.id === currentUser?.id}
                 actions={
-                  comment.writer.id === currentUserId
+                  comment.writer.id === currentUser?.id
                     ? [
                         { label: "수정하기", onClick: () => setEditingId(comment.id) },
                         { label: "삭제하기", onClick: () => handleDelete(comment.id) },
@@ -172,12 +185,22 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
         })}
         {isFetchingNextPage &&
           Array.from({ length: PAGE_SIZE }).map((_, i) => (
-            <li key={i}>
+            <li key={`skeleton-${i}`}>
               <CardSkeleton />
             </li>
           ))}
       </ul>
       <div ref={ObserverRef} className="infinite-scroll-trigger" />
+
+      {showLoginModal && (
+        <ArticleConfirmModal
+          title="로그인이 필요합니다."
+          message="댓글을 작성하려면 로그인이 필요합니다."
+          confirmButtonTitle="로그인"
+          handleClose={() => setShowLoginModal(false)}
+          onClick={() => router.replace("/login")}
+        />
+      )}
     </section>
   );
 }

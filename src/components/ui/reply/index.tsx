@@ -113,6 +113,9 @@ export default function Reply({
               >
                 {getTimeAgo(comment.createdAt)}
               </time>
+              {comment.createdAt !== comment.updatedAt && (
+                <span className="text-xs text-gray-500">(수정됨)</span>
+              )}
             </div>
             {isAuthor && <ReplyActions actions={actions} />}
           </>
