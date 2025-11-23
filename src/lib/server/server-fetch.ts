@@ -44,6 +44,13 @@ const serverFetch = async <T = unknown>(path: string, options: RequestInit = {})
 
   const res = await request(accessTokenCookie);
 
+  // 요청 성공
+  if (res.ok) return res.json() as T;
+
+  // accessToken 만료인데 refreshToken도 없음
+  if (res.status === 401 && !refreshTokenCookie)
+    throw new serverFetchErrorHandler("로그인이 필요합니다", res.status);
+
   // 액세스 토큰 만료시 재발급
   if (res.status === 401 && refreshTokenCookie) {
     const refreshRes = await fetch(`${BASE_URL}/auth/refresh-token`, {
@@ -69,13 +76,8 @@ const serverFetch = async <T = unknown>(path: string, options: RequestInit = {})
     // 토큰 재발급 성공 및 반환
     return retry.json();
   }
-  if (res.status === 401 && !refreshTokenCookie) {
-    throw new serverFetchErrorHandler("로그인이 필요합니다", res.status);
-  }
-  if (!res.ok) {
-    throw new serverFetchErrorHandler("요청 실패", res.status);
-  }
-  return res.json() as T;
+
+  throw new serverFetchErrorHandler("요청 실패", res.status);
 };
 
 export default serverFetch;
