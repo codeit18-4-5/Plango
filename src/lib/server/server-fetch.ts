@@ -13,7 +13,7 @@ import { serverFetchErrorHandler } from "./error";
 type Token = string | null;
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const serverFetch = async (path: string, options: RequestInit = {}) => {
+const serverFetch = async <T = unknown>(path: string, options: RequestInit = {}): Promise<T> => {
   const cookieStore = await cookies();
   const refreshTokenCookie = cookieStore.get("refreshToken")?.value ?? null;
   const accessTokenCookie = cookieStore.get("accessToken")?.value ?? null;
@@ -32,7 +32,6 @@ const serverFetch = async (path: string, options: RequestInit = {}) => {
     // 인증이 필요한 요청 처리
     const originHeaders = {
       ...headers,
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(!noAuth && token ? { Authorization: `Bearer ${token}` } : {}),
     };
     // 원래 요청 인증 붙여서 처리
@@ -65,18 +64,18 @@ const serverFetch = async (path: string, options: RequestInit = {}) => {
     // 재발급된 accessToken으로 기존 요청 재시도
     const retry = await request(newAccessToken);
     if (!retry.ok) {
-      throw new Error(`요청 실패: ${retry.status}`);
+      throw new serverFetchErrorHandler("요청 실패", retry.status);
     }
     // 토큰 재발급 성공 및 반환
     return retry.json();
   }
   if (res.status === 401 && !refreshTokenCookie) {
-    throw new serverFetchErrorHandler("로그인 상태가 아닙니다", res.status);
+    throw new serverFetchErrorHandler("로그인이 필요합니다", res.status);
   }
   if (!res.ok) {
-    throw new Error(`요청 실패: ${res.status}`);
+    throw new serverFetchErrorHandler("요청 실패", res.status);
   }
-  return res.json();
+  return res.json() as T;
 };
 
 export default serverFetch;
