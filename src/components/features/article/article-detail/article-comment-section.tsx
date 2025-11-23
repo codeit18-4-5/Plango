@@ -1,27 +1,27 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
+import getArticleDetail from "@/api/article/get-article-detail";
 import { useRouter } from "next/navigation";
 import { useInfiniteQuery, useMutation, useQueryClient, InfiniteData } from "@tanstack/react-query";
 import getArticleComments from "@/api/article/comment/get-article-comments";
 import postArticleComment from "@/api/article/comment/post-article-comment";
 import deleteArticleComment from "@/api/article/comment/delete-article-comment";
 import patchArticleComment from "@/api/article/comment/patch-article-comment";
+import ArticleCommentList from "./article-comment-list";
 import { useAuthStore } from "@/store/auth.store";
-import { ArticleComments, ArticleComment } from "@/types/article-comment";
+import { ArticleComments } from "@/types/article-comment";
 import { useInfiniteObserver } from "@/hooks";
 import { useAlert } from "@/providers/alert-provider";
-import { ReplyInput, Reply } from "@/components/ui";
-import { ArticleListEmpty } from "@/components/features/article";
+import { ReplyInput } from "@/components/ui";
 import { ArticleConfirmModal } from "../layout";
-import ReplySkeleton from "@/components/skeleton-ui/reply-skeleton";
 import { ARTICLE_COMMENT_STYLES } from "../index.styles";
+import { NEXT_CURSOR } from "./article-comment-list";
 
-const PAGE_SIZE = 4;
 const useCurrentUser = () => {
   return useAuthStore(state => state.user);
 };
-
 export default function ArticleCommentSection({ articleId }: { articleId: number }) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -31,6 +31,14 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
   const prevContentRef = useRef<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [comment, setComment] = useState("");
+
+  const { data: articleDetail } = useQuery({
+    queryKey: ["getArticleDetail", articleId],
+    queryFn: () => getArticleDetail({ articleId }),
+    enabled: !!articleId,
+  });
+
+  const handleRequireLogin = () => setShowLoginModal(true);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending, isError } =
     useInfiniteQuery<
@@ -44,8 +52,8 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
       queryFn: async ({ pageParam }) => {
         const params =
           pageParam != null
-            ? { articleId, limit: PAGE_SIZE, cursor: pageParam }
-            : { articleId, limit: PAGE_SIZE };
+            ? { articleId, limit: NEXT_CURSOR, cursor: pageParam }
+            : { articleId, limit: NEXT_CURSOR };
         return await getArticleComments(params);
       },
       initialPageParam: null,
@@ -54,7 +62,6 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
     });
 
   const comments = data?.pages.flatMap(page => page.list) ?? [];
-
   const ObserverRef = useInfiniteObserver({
     onIntersect: () => {
       if (hasNextPage && !isFetchingNextPage) {
@@ -64,12 +71,14 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
     isEnabled: !!hasNextPage && !isFetchingNextPage,
   });
 
+  const invalidateAllQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ["getArticleComments", articleId] });
+    queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
+  };
+
   const { mutate: createComment, isPending: isMutating } = useMutation({
     mutationFn: (payload: { content: string }) => postArticleComment(articleId, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getArticleComments", articleId] });
-      queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
-    },
+    onSuccess: invalidateAllQueries,
   });
 
   const { mutate: updateComment } = useMutation({
@@ -79,18 +88,12 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
       const target = comments.find(current => current.id === commentId);
       prevContentRef.current = target ? target.content : null;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getArticleComments", articleId] });
-      queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
-    },
+    onSuccess: invalidateAllQueries,
   });
 
   const { mutate: removeComment } = useMutation({
     mutationFn: ({ commentId }: { commentId: number }) => deleteArticleComment({ commentId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getArticleComments", articleId] });
-      queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
-    },
+    onSuccess: invalidateAllQueries,
   });
 
   useEffect(() => {
@@ -107,32 +110,32 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
     }
   }, [comments, editingId]);
 
-  const handleAddComment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!comment.trim()) return;
-    createComment({ content: comment });
-    setComment("");
-  };
+  const handleAddComment = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!comment.trim()) return;
+      createComment({ content: comment });
+      setComment("");
+    },
+    [comment, createComment],
+  );
 
-  const handleRequireLogin = () => setShowLoginModal(true);
+  const handleEditSave = useCallback(
+    (commentId: number, updatedContent: string) => {
+      updateComment({ commentId, content: updatedContent });
+    },
+    [updateComment],
+  );
 
-  const handleEditSave = (commentId: number, updatedContent: string) => {
-    updateComment({ commentId, content: updatedContent });
-  };
-  const handleCancelEdit = () => setEditingId(null);
-  const handleDelete = async (commentId: number) => {
-    const confirmed = await showAlert({ type: "deleteComment" });
-    if (confirmed) removeComment({ commentId });
-  };
+  const handleCancelEdit = useCallback(() => setEditingId(null), []);
 
-  if (isPending)
-    return (
-      <div className={ARTICLE_COMMENT_STYLES.replyList}>
-        {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-          <ReplySkeleton key={i} />
-        ))}
-      </div>
-    );
+  const handleDelete = useCallback(
+    async (commentId: number) => {
+      const confirmed = await showAlert({ type: "deleteComment" });
+      if (confirmed) removeComment({ commentId });
+    },
+    [showAlert, removeComment],
+  );
 
   if (isError)
     return (
@@ -142,61 +145,33 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
     );
 
   return (
-    <section>
-      <h4 className={ARTICLE_COMMENT_STYLES.section.heading.title}>
-        댓글 <b>{comments.length}</b>
-      </h4>
-      <form onSubmit={handleAddComment}>
-        <ReplyInput
-          value={comment}
-          onChange={setComment}
-          isLoggedIn={!!currentUser}
-          isPending={isMutating}
-          onRequireLogin={handleRequireLogin}
+    <>
+      <section>
+        <h4 className={ARTICLE_COMMENT_STYLES.section.heading.title}>
+          댓글 <b>{articleDetail?.commentCount ?? 0}</b>
+        </h4>
+        <form onSubmit={handleAddComment}>
+          <ReplyInput
+            value={comment}
+            onChange={setComment}
+            isLoggedIn={!!currentUser}
+            isPending={isMutating}
+            onRequireLogin={handleRequireLogin}
+          />
+        </form>
+        <ArticleCommentList
+          comments={comments}
+          isPending={isPending}
+          isFetchingNextPage={isFetchingNextPage}
+          ObserverRef={ObserverRef}
+          editingId={editingId}
+          currentUser={currentUser}
+          handleEditSave={handleEditSave}
+          handleCancelEdit={handleCancelEdit}
+          handleDelete={handleDelete}
+          handleEditStart={setEditingId}
         />
-      </form>
-      {comments.length === 0 ? (
-        <ArticleListEmpty>작성된 댓글이 없습니다.</ArticleListEmpty>
-      ) : (
-        <ul className={ARTICLE_COMMENT_STYLES.replyList}>
-          {comments.map((comment: ArticleComment) => {
-            const replyComment = {
-              ...comment,
-              user: {
-                ...comment.writer,
-                image: comment.writer.image ?? null,
-              },
-            };
-            return (
-              <li key={comment.id}>
-                <Reply
-                  comment={replyComment}
-                  isEditing={editingId === comment.id}
-                  onSaveEdit={updatedContent => handleEditSave(comment.id, updatedContent)}
-                  onCancelEdit={handleCancelEdit}
-                  isAuthor={comment.writer.id === currentUser?.id}
-                  actions={
-                    comment.writer.id === currentUser?.id
-                      ? [
-                          { label: "수정하기", onClick: () => setEditingId(comment.id) },
-                          { label: "삭제하기", onClick: () => handleDelete(comment.id) },
-                        ]
-                      : []
-                  }
-                />
-              </li>
-            );
-          })}
-          {isFetchingNextPage &&
-            Array.from({ length: PAGE_SIZE }).map((_, i) => (
-              <li key={`skeleton-${i}`}>
-                <ReplySkeleton />
-              </li>
-            ))}
-        </ul>
-      )}
-      <div ref={ObserverRef} className="infinite-scroll-trigger" />
-
+      </section>
       {showLoginModal && (
         <ArticleConfirmModal
           title="로그인이 필요합니다."
@@ -206,6 +181,6 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
           onClick={() => router.replace("/login")}
         />
       )}
-    </section>
+    </>
   );
 }
