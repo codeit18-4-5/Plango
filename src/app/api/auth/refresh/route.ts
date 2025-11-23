@@ -38,7 +38,6 @@ export const POST = async () => {
         401,
       );
     }
-    console.log(data.accessToken);
     // accessToken 쿠키설정
     cookieStore.set({
       name: "accessToken",
