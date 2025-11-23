@@ -29,7 +29,7 @@ const useAuthSuccess = () => {
       const res = await fetch(`${APP_URL}/api/auth/set-refresh-token`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refreshToken }),
+        body: JSON.stringify({ refreshToken, accessToken }),
       });
 
       if (!res.ok) {
