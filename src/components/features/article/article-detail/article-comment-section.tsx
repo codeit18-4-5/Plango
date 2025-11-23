@@ -13,7 +13,7 @@ import { useInfiniteObserver } from "@/hooks";
 import { useAlert } from "@/providers/alert-provider";
 import { ReplyInput, Reply } from "@/components/ui";
 import { ArticleConfirmModal } from "../layout";
-import CardSkeleton from "@/components/skeleton-ui/card-skeleton";
+import ReplySkeleton from "@/components/skeleton-ui/reply-skeleton";
 import { ARTICLE_COMMENT_STYLES } from "../index.styles";
 
 const PAGE_SIZE = 4;
@@ -128,7 +128,7 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
     return (
       <div className={ARTICLE_COMMENT_STYLES.replyList}>
         {Array.from({ length: PAGE_SIZE }).map((_, i) => (
-          <CardSkeleton key={i} />
+          <ReplySkeleton key={i} />
         ))}
       </div>
     );
@@ -186,7 +186,7 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
         {isFetchingNextPage &&
           Array.from({ length: PAGE_SIZE }).map((_, i) => (
             <li key={`skeleton-${i}`}>
-              <CardSkeleton />
+              <ReplySkeleton />
             </li>
           ))}
       </ul>
