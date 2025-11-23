@@ -2,7 +2,6 @@
 import { isNoAuthURL } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { ServerFetchError } from "./error";
-import { redirect } from "next/navigation";
 import getNewAccessToken from "@/api/auth/get-new-access-token";
 
 /**
@@ -76,32 +75,4 @@ export const serverFetch = async <T = unknown>(
   }
 
   throw new ServerFetchError("요청 실패", res.status);
-};
-
-/**
- * server fetch 함수의 인증 실패 시 자동 로그아웃 함수
- * @author sohyun
- * @example 
- * return serverApi(() =>
-    serverFetch<Type>(`/user/history`, {
-      method: "GET",
-    })
-  );
- */
-
-export const serverApi = async <T>(apiFn: () => Promise<T>): Promise<T> => {
-  try {
-    return await apiFn();
-  } catch (err) {
-    if (err instanceof ServerFetchError && err.status === 401) {
-      // 인증 실패시 로그아웃 처리 (쿠키 삭제 및 로그인 페이지)
-      const cookieStore = await cookies();
-      cookieStore.set("refreshToken", "", { maxAge: 0, path: "/" });
-      cookieStore.set("accessToken", "", { maxAge: 0, path: "/" });
-
-      redirect("/login?expired=true");
-    }
-
-    throw err;
-  }
 };

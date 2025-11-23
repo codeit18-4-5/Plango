@@ -12,25 +12,12 @@ import { Form } from "@/components/ui";
 import { useAuthSuccess } from "@/hooks";
 import { loginErrorHandler } from "@/lib/error";
 import { signInSchema, SignInSchema } from "@/lib/schema";
-import { useAuthStore, useUIStore } from "@/store/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
 const title = "로그인";
 
 export default function Signup() {
   const authSuccess = useAuthSuccess();
-  const params = useSearchParams();
-  const expired = params.get("expired");
-  const setAuthError = useUIStore(state => state.setAuthError);
-
-  useEffect(() => {
-    if (expired) {
-      useAuthStore.getState().actions.clearAuth();
-      setAuthError("로그인이 만료되었습니다.");
-    }
-  }, [expired]);
 
   const handleSubmit = async (data: SignInSchema) => {
     const res = await postSignIn(data);
