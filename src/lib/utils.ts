@@ -120,9 +120,9 @@ export const matchPattern = (pattern: string | RegExp, url: string) => {
  * @author sohyun
  * @param config
  */
-export const isNoAuthURL = (config: AxiosRequestConfig) => {
-  const url = config.url || "";
-  const method = (config.method || "get").toLowerCase();
+
+export const isNoAuthURL = (url: string, method = "get") => {
+  const apiMethod = method.toLowerCase();
 
   // method 상관없이 인증 불필요한 URL
   if (NO_AUTH_URLS.some(publicUrl => url.startsWith(publicUrl))) {
@@ -130,9 +130,15 @@ export const isNoAuthURL = (config: AxiosRequestConfig) => {
   }
 
   // get 요청 중 인증 불필요한 패턴
-  if (method === "get") {
+  if (apiMethod === "get") {
     return NO_AUTH_GET.some(pattern => matchPattern(pattern, url));
   }
 
   return false;
+};
+
+export const isNoAuthAxios = (config: AxiosRequestConfig) => {
+  const url = config.url || "";
+  const method = (config.method || "get").toLowerCase();
+  return isNoAuthURL(url, method);
 };
