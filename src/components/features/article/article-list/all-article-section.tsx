@@ -1,3 +1,5 @@
+"use client";
+
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import getArticles from "@/api/article/get-articles";

@@ -1,5 +1,8 @@
+"use client";
+
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import getArticleDetail from "@/api/article/get-article-detail";
 import deleteArticle from "@/api/article/delete-article";
 import Image from "next/image";
@@ -17,7 +20,7 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const { data: article } = useQuery({
+  const { data: article, isError } = useQuery({
     queryKey: ["getArticleDetail", articleId],
     queryFn: () => getArticleDetail({ articleId }),
     enabled: !!articleId,
@@ -32,9 +35,13 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
     },
   });
 
-  if (!article) {
-    return <section>게시글 불러오는 중...</section>;
-  }
+  useEffect(() => {
+    if (isError) {
+      router.replace("/404");
+    }
+  }, [isError, router]);
+
+  if (isError || !article) return null;
 
   const DATE_TIME = article.createdAt;
 
@@ -122,7 +129,7 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
           </span>
         </div>
         <Button
-          as="a"
+          as={Link}
           href="/article"
           size="sm"
           intent="tertiary"

@@ -1,6 +1,5 @@
-"use client";
-
-import { useParams } from "next/navigation";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import getArticleDetail from "@/api/article/get-article-detail";
 import { Container } from "@/components/layout";
 import { Floating, ScrollTopButton } from "@/components/ui";
 import { ArticleDetailInfo, ArticleCommentSection } from "@/components/features/article";
@@ -9,20 +8,30 @@ import {
   ARTICLE_DETAIL_STYLES,
 } from "@/components/features/article/index.styles";
 
-export default function ArticleDetailPage() {
-  const params = useParams();
-  const articleId = Number(params.articleId);
+export default async function ArticleDetailPage({
+  params,
+}: {
+  params: Promise<{ articleId: string }>;
+}) {
+  const { articleId } = await params;
+  const articleIdNum = Number(articleId);
+
+  const queryClient = new QueryClient();
+  const article = await getArticleDetail({ articleId: articleIdNum });
+  queryClient.setQueryData(["getArticleDetail", articleIdNum], article);
 
   return (
-    <Container as="main" className={ARTICLE_COMMON_STYLES.main.wrapper}>
-      <h2 className="visually-hidden">자유게시판</h2>
-      <div className={ARTICLE_DETAIL_STYLES.wrapper}>
-        <ArticleDetailInfo articleId={articleId} />
-        <ArticleCommentSection articleId={articleId} />
-      </div>
-      <Floating className="z-20">
-        <ScrollTopButton />
-      </Floating>
-    </Container>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <Container as="main" className={ARTICLE_COMMON_STYLES.main.wrapper}>
+        <h2 className="visually-hidden">자유게시판</h2>
+        <div className={ARTICLE_DETAIL_STYLES.wrapper}>
+          <ArticleDetailInfo articleId={articleIdNum} />
+          <ArticleCommentSection articleId={articleIdNum} />
+        </div>
+        <Floating className="z-20">
+          <ScrollTopButton />
+        </Floating>
+      </Container>
+    </HydrationBoundary>
   );
 }

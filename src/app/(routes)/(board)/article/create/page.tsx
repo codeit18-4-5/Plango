@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import postImagesUpload from "@/api/image/post-images-upload";
 import postArticle from "@/api/article/post-article";
 import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
@@ -17,7 +17,7 @@ import {
 
 export default function CreateArticlesPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  //const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   // TODO: isSuccess, isError, error 처리는 추후 토스트로 처리 예정
   const { mutate, isPending: isMutating } = useMutation({
@@ -41,7 +41,7 @@ export default function CreateArticlesPage() {
       return postArticle(postBody);
     },
     onSuccess: () => {
-      //TODO: 자유게시판 리스트페이지 캐시 최신 데이터 반영
+      queryClient.invalidateQueries({ queryKey: ["getArticles"] });
     },
   });
 
