@@ -6,8 +6,9 @@ type SSRUserPayload = {
   accessToken: string | null;
 };
 const INIT_PAYLOAD = { user: null, accessToken: null };
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
 const getUserFromRefresh = async (refreshToken?: string): Promise<SSRUserPayload> => {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
   if (!refreshToken) return INIT_PAYLOAD;
 
   try {
