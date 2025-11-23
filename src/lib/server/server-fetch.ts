@@ -2,6 +2,7 @@
 import { isNoAuthURL } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { ServerFetchError } from "./error";
+import { redirect } from "next/navigation";
 
 /**
  * server fetch 헬퍼 함수
@@ -13,7 +14,10 @@ import { ServerFetchError } from "./error";
 type Token = string | null;
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-const serverFetch = async <T = unknown>(path: string, options: RequestInit = {}): Promise<T> => {
+export const serverFetch = async <T = unknown>(
+  path: string,
+  options: RequestInit = {},
+): Promise<T> => {
   const cookieStore = await cookies();
   const refreshTokenCookie = cookieStore.get("refreshToken")?.value ?? null;
   const accessTokenCookie = cookieStore.get("accessToken")?.value ?? null;
@@ -80,4 +84,30 @@ const serverFetch = async <T = unknown>(path: string, options: RequestInit = {})
   throw new ServerFetchError("요청 실패", res.status);
 };
 
-export default serverFetch;
+/**
+ * server fetch 함수의 인증 실패 시 자동 로그아웃 함수
+ * @author sohyun
+ * @example 
+ * return serverApi(() =>
+    serverFetch<Type>(`/user/history`, {
+      method: "GET",
+    })
+  );
+ */
+
+export const serverApi = async <T>(apiFn: () => Promise<T>): Promise<T> => {
+  try {
+    return await apiFn();
+  } catch (err) {
+    if (err instanceof ServerFetchError && err.status === 401) {
+      // 인증 실패시 로그아웃 처리 (쿠키 삭제 및 로그인 페이지)
+      const cookieStore = await cookies();
+      cookieStore.set("refreshToken", "", { maxAge: 0, path: "/" });
+      cookieStore.set("accessToken", "", { maxAge: 0, path: "/" });
+
+      redirect("/login?expired=true");
+    }
+
+    throw err;
+  }
+};
