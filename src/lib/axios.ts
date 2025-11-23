@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/store/auth.store";
 import axios, { AxiosInstance } from "axios";
 import { isNoAuthAxios } from "./utils";
-import { logoutDirect } from "./logout";
+import { logoutDirect } from "@/hooks/use-logout";
 
 /**
  * axios 인터셉터:  then 또는 catch로 처리되기 전에 요청과 응답을 가로채는 기능
