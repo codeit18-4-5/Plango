@@ -15,3 +15,15 @@ export function createErrorResponse(devMessage: string, userMessage: string, sta
 
   return NextResponse.json({ message: userMessage }, { status });
 }
+/**
+ * server fetch 헬퍼함수 에러처리
+ * @author sohyun
+ */
+export const serverFetchErrorHandler = class ServerFetchError extends Error {
+  status: number;
+  constructor(message = "로그인이 만료되었습니다.", status = 401) {
+    super(message);
+    this.name = "ServerFetchError";
+    this.status = status;
+  }
+};
