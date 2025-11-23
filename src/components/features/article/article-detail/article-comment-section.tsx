@@ -12,6 +12,7 @@ import { ArticleComments, ArticleComment } from "@/types/article-comment";
 import { useInfiniteObserver } from "@/hooks";
 import { useAlert } from "@/providers/alert-provider";
 import { ReplyInput, Reply } from "@/components/ui";
+import { ArticleListEmpty } from "@/components/features/article";
 import { ArticleConfirmModal } from "../layout";
 import ReplySkeleton from "@/components/skeleton-ui/reply-skeleton";
 import { ARTICLE_COMMENT_STYLES } from "../index.styles";
@@ -154,42 +155,46 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
           onRequireLogin={handleRequireLogin}
         />
       </form>
-      <ul className={ARTICLE_COMMENT_STYLES.replyList}>
-        {comments.map((comment: ArticleComment) => {
-          const replyComment = {
-            ...comment,
-            user: {
-              ...comment.writer,
-              image: comment.writer.image ?? null,
-            },
-          };
-          return (
-            <li key={comment.id}>
-              <Reply
-                comment={replyComment}
-                isEditing={editingId === comment.id}
-                onSaveEdit={updatedContent => handleEditSave(comment.id, updatedContent)}
-                onCancelEdit={handleCancelEdit}
-                isAuthor={comment.writer.id === currentUser?.id}
-                actions={
-                  comment.writer.id === currentUser?.id
-                    ? [
-                        { label: "수정하기", onClick: () => setEditingId(comment.id) },
-                        { label: "삭제하기", onClick: () => handleDelete(comment.id) },
-                      ]
-                    : []
-                }
-              />
-            </li>
-          );
-        })}
-        {isFetchingNextPage &&
-          Array.from({ length: PAGE_SIZE }).map((_, i) => (
-            <li key={`skeleton-${i}`}>
-              <ReplySkeleton />
-            </li>
-          ))}
-      </ul>
+      {comments.length === 0 ? (
+        <ArticleListEmpty>작성된 댓글이 없습니다.</ArticleListEmpty>
+      ) : (
+        <ul className={ARTICLE_COMMENT_STYLES.replyList}>
+          {comments.map((comment: ArticleComment) => {
+            const replyComment = {
+              ...comment,
+              user: {
+                ...comment.writer,
+                image: comment.writer.image ?? null,
+              },
+            };
+            return (
+              <li key={comment.id}>
+                <Reply
+                  comment={replyComment}
+                  isEditing={editingId === comment.id}
+                  onSaveEdit={updatedContent => handleEditSave(comment.id, updatedContent)}
+                  onCancelEdit={handleCancelEdit}
+                  isAuthor={comment.writer.id === currentUser?.id}
+                  actions={
+                    comment.writer.id === currentUser?.id
+                      ? [
+                          { label: "수정하기", onClick: () => setEditingId(comment.id) },
+                          { label: "삭제하기", onClick: () => handleDelete(comment.id) },
+                        ]
+                      : []
+                  }
+                />
+              </li>
+            );
+          })}
+          {isFetchingNextPage &&
+            Array.from({ length: PAGE_SIZE }).map((_, i) => (
+              <li key={`skeleton-${i}`}>
+                <ReplySkeleton />
+              </li>
+            ))}
+        </ul>
+      )}
       <div ref={ObserverRef} className="infinite-scroll-trigger" />
 
       {showLoginModal && (
