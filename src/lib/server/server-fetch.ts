@@ -3,6 +3,7 @@ import { isNoAuthURL } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { ServerFetchError } from "./error";
 import { redirect } from "next/navigation";
+import getNewAccessToken from "@/api/auth/get-new-access-token";
 
 /**
  * server fetch 헬퍼 함수
@@ -55,21 +56,13 @@ export const serverFetch = async <T = unknown>(
   if (res.status === 401 && !refreshTokenCookie)
     throw new ServerFetchError("로그인이 필요합니다", res.status);
 
-  // 액세스 토큰 만료시 재발급
+  // accessToken만 만료시 재발급
   if (res.status === 401 && refreshTokenCookie) {
-    const refreshRes = await fetch(`${BASE_URL}/auth/refresh-token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken: refreshTokenCookie }),
-      cache: "no-store",
-    });
+    const newAccessToken = await getNewAccessToken(refreshTokenCookie);
 
-    const { accessToken: newAccessToken } = await refreshRes.json();
-
-    // 토큰 재발급 실패
-    if (!refreshRes.ok || !newAccessToken) {
-      // refreshToken은 있지만 새 accessToken을 발급 실패한 경우
-      throw new ServerFetchError("refresh 토큰 재발급 실패", refreshRes.status);
+    // refreshToken은 있지만 새 accessToken을 발급 실패한 경우
+    if (!newAccessToken) {
+      throw new ServerFetchError("refresh 토큰 재발급 실패", 401);
     }
 
     // 재발급된 accessToken으로 기존 요청 재시도
@@ -77,6 +70,7 @@ export const serverFetch = async <T = unknown>(
     if (!retry.ok) {
       throw new ServerFetchError("요청 실패", retry.status);
     }
+
     // 토큰 재발급 성공 및 반환
     return retry.json();
   }
