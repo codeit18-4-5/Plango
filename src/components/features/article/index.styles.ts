@@ -88,7 +88,7 @@ export const ARTICLE_DETAIL_STYLES = {
       "pt-[24px] flex justify-between border-b border-gray-600 pb-[16px] mb-[16px] gap-x-4",
     ),
     title: cn("text-[16px]", "tablet:text-[18px]"),
-    kebab: "w-[24px] h-[24px] text-gray-500 block",
+    kebab: cn("w-[24px] h-[24px] text-gray-500 block text-body-s", "tablet:text-base"),
   },
   meta: {
     wrapper: cn("flex flex-wrap items-center justify-between text-body-s gap-2"),

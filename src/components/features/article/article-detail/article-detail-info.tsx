@@ -6,11 +6,12 @@ import getArticleDetail from "@/api/article/get-article-detail";
 import deleteArticle from "@/api/article/delete-article";
 import Image from "next/image";
 import Link from "next/link";
+import { useAuthStore } from "@/store/auth.store";
 import { getTimeAgo, formatDateToKorean } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
-import { Dropdown, Button } from "@/components/ui";
+import { Button } from "@/components/ui";
+import KebabMenu from "@/components/features/article/actions/kebab-menu";
 import { ARTICLE_DETAIL_STYLES } from "../index.styles";
-import IcKebab from "@/assets/icons/ic-kebab.svg";
 import IcComment from "@/assets/icons/ic-comment.svg";
 import IcHeart from "@/assets/icons/ic-heart.svg";
 import IcLiked from "@/assets/icons/ic-heart-color.svg";
@@ -18,6 +19,7 @@ import IcLiked from "@/assets/icons/ic-heart-color.svg";
 export default function ArticleDetailInfo({ articleId }: { articleId: number }) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const currentUser = useAuthStore(state => state.user);
 
   const { data: article, isError } = useQuery({
     queryKey: ["getArticleDetail", articleId],
@@ -43,23 +45,22 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
       <h3 className="visually-hidden">게시글 상세 정보</h3>
       <div className={ARTICLE_DETAIL_STYLES.heading.wrapper}>
         <h4 className={ARTICLE_DETAIL_STYLES.heading.title}>{article.title}</h4>
-        <Dropdown className={ARTICLE_DETAIL_STYLES.heading.kebab}>
-          <Dropdown.TriggerIcon
-            intent="icon"
-            className="duration-200 hover:text-gray-400 focus:text-gray-200 active:text-gray-300"
-            aria-label="옵션 더보기"
-          >
-            <IcKebab />
-          </Dropdown.TriggerIcon>
-          <Dropdown.Menu size="md">
-            <Dropdown.Option align="center" as={Link} href={`/article/${article.id}/edit`}>
-              수정하기
-            </Dropdown.Option>
-            <Dropdown.Option align="center" onClick={() => deleteArticleMutate()}>
-              삭제하기
-            </Dropdown.Option>
-          </Dropdown.Menu>
-        </Dropdown>
+        {currentUser?.id === article.writer.id && (
+          <KebabMenu
+            className={ARTICLE_DETAIL_STYLES.heading.kebab}
+            options={[
+              {
+                label: "수정하기",
+                as: Link,
+                href: `/article/${article.id}/edit`,
+              },
+              {
+                label: "삭제하기",
+                onClick: () => deleteArticleMutate(),
+              },
+            ]}
+          />
+        )}
       </div>
       <div className={ARTICLE_DETAIL_STYLES.meta.wrapper}>
         <div className={ARTICLE_DETAIL_STYLES.meta.authorInfo}>

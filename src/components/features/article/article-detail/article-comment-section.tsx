@@ -19,13 +19,10 @@ import { ArticleConfirmModal } from "../layout";
 import { ARTICLE_COMMENT_STYLES } from "../index.styles";
 import { NEXT_CURSOR } from "./article-comment-list";
 
-const useCurrentUser = () => {
-  return useAuthStore(state => state.user);
-};
 export default function ArticleCommentSection({ articleId }: { articleId: number }) {
   const queryClient = useQueryClient();
   const router = useRouter();
-  const currentUser = useCurrentUser();
+  const currentUser = useAuthStore(state => state.user);
   const { showAlert } = useAlert();
   const [editingId, setEditingId] = useState<number | null>(null);
   const prevContentRef = useRef<string | null>(null);
@@ -178,7 +175,9 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
           message="댓글을 작성하려면 로그인이 필요합니다."
           confirmButtonTitle="로그인"
           handleClose={() => setShowLoginModal(false)}
-          onClick={() => router.replace("/login")}
+          onClick={() =>
+            router.replace(`/login?redirect=${encodeURIComponent(`/article/${articleId}`)}`)
+          }
         />
       )}
     </>
