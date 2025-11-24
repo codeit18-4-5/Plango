@@ -3,6 +3,8 @@
  * @author sohyun
  */
 
+import { useAuthStore } from "@/store/auth.store";
+
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 const isBrowser = typeof document !== "undefined";
 // 쿠키에서 accessToken 가져오기
@@ -31,5 +33,14 @@ export const requestNewAccessToken = async (): Promise<string | null> => {
     return accessToken ?? null;
   } catch {
     return null;
+  }
+};
+
+// 로그아웃 시 쿠키 삭제
+export const logoutDirect = async () => {
+  try {
+    await fetch(`${APP_URL}/api/auth/logout`, { method: "POST" });
+  } finally {
+    useAuthStore.getState().actions.clearAuth();
   }
 };

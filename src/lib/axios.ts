@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from "axios";
 import { isNoAuthAxios } from "./utils";
-import { logoutDirect } from "@/hooks/use-logout";
-import { getAccessToken, requestNewAccessToken } from "./token";
+
+import { getAccessToken, logoutDirect, requestNewAccessToken } from "./token";
 
 /**
  * axios 요청시 헤더에 토큰 추가 및 토큰 만료시 재발급
