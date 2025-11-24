@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "../button/button";
 import cn from "@/lib/cn";
+import { isEmpty } from "@/lib/utils";
 
 const TIME_PERIOD = {
   AM: "오전",
@@ -26,27 +27,35 @@ export default function CustomTimePicker({ selectedTime, onTimeChange }: CustomT
     return { hour, minute, label: `${hour}:${minute.toString().padStart(2, "0")}` };
   });
 
+  const isInitialLoaded = useRef(false);
+
   useEffect(() => {
-    if (selectedTime) {
+    if (!selectedTime) return;
+
+    if (!isInitialLoaded.current) {
       const hour = selectedTime.getHours();
-      const minute = selectedTime.getMinutes();
       const isPM = hour >= 12;
       setPeriod(isPM ? TIME_PERIOD.PM : TIME_PERIOD.AM);
-
-      const displayHour = hour % 12 === 0 ? 12 : hour % 12;
-      const idx = times.findIndex(
-        t => t.hour === displayHour && t.minute === (minute >= 30 ? 30 : 0),
-      );
-      setSelectedIndex(idx);
+      isInitialLoaded.current = true;
     }
+
+    const hour = selectedTime.getHours();
+    const minute = selectedTime.getMinutes();
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+
+    const idx = times.findIndex(
+      t => t.hour === displayHour && t.minute === (minute >= 30 ? 30 : 0),
+    );
+    setSelectedIndex(idx);
   }, [selectedTime]);
 
-  const handleTimeClick = (index: number) => {
+  const handleTimeClick = (index: number, newPeriod?: TimePeriod) => {
+    if (isEmpty(newPeriod)) newPeriod = TIME_PERIOD.AM;
     setSelectedIndex(index);
     const time = times[index];
     let hour = time.hour % 12;
-    if (period === TIME_PERIOD.PM) hour += 12;
-    if (period === TIME_PERIOD.AM && hour === 12) hour = 0;
+    if (newPeriod === TIME_PERIOD.PM) hour += 12;
+    if (newPeriod === TIME_PERIOD.AM && hour === 12) hour = 0;
 
     const newTime = new Date();
     newTime.setHours(hour, time.minute, 0, 0);
@@ -55,7 +64,7 @@ export default function CustomTimePicker({ selectedTime, onTimeChange }: CustomT
 
   const handlePeriodChange = (newPeriod: TimePeriod) => {
     setPeriod(newPeriod);
-    if (selectedIndex !== null) handleTimeClick(selectedIndex);
+    if (selectedIndex !== null) handleTimeClick(selectedIndex, newPeriod);
   };
 
   return (

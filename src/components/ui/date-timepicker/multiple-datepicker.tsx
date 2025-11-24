@@ -1,7 +1,7 @@
 "use client";
 
 import Datepicker from "react-datepicker";
-import { useDatepickerDate } from "@/hooks/use-datepicker-date";
+import { useDatepickerDate } from "@/hooks";
 import CustomHeader from "./custom-datepicker-header";
 import { cuttingDayString, otherMonthIndicator } from "@/lib/utils";
 

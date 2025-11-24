@@ -34,14 +34,13 @@
 
 .react-datepicker {
   /* font-size로 캘린더 크기 조정 */
-  /* font-size: 2em; */
   font-size: var(--fs-body-s);
   color: var(--white);
   font-weight: 600;
   display: inline-block;
   position: relative;
   line-height: initial;
-  background-color: var(--background);
+  background-color: var(--gray-800);
 }
 
 .react-datepicker--time-only .react-datepicker__time-container {
@@ -73,7 +72,7 @@
 
 .react-datepicker__header {
   text-align: center;
-  background-color: var(--background);
+  background-color: var(--gray-800);
   position: relative;
 }
 .react-datepicker__header--time {
@@ -397,11 +396,37 @@ h2.react-datepicker__current-month {
   /* width: 1.9em;
   line-height: 1.9em;
   margin: 0.166rem; */
-  width: 47px;
+  /* width: 39px; */
+  width: clamp(20px, 10vw, 39px);
   height: 35px;
   line-height: 2.2em;
   margin: 2px 3px;
 }
+
+@media (max-width: 743px) {
+  .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: clamp(30px, 10vw, 41px);
+  }
+}
+
+@media (max-width: 415px) {
+  .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: clamp(20px, 9.5vw, 39px);
+  }
+}
+
+@media (max-width: 374px) {
+  .react-datepicker__day-name,
+  .react-datepicker__day,
+  .react-datepicker__time-name {
+    width: calc(100vw / 10);
+  }
+}
+
 .react-datepicker__day-name--disabled,
 .react-datepicker__day--disabled,
 .react-datepicker__time-name--disabled {
@@ -628,7 +653,7 @@ h2.react-datepicker__current-month {
 .react-datepicker__quarter-text--disabled,
 .react-datepicker__year-text--disabled {
   cursor: default;
-  color: #ccc;
+  color: var(--gray-500);
 }
 .react-datepicker__day--disabled .overlay,
 .react-datepicker__month-text--disabled .overlay,

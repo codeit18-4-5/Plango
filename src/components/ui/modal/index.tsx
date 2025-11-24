@@ -64,14 +64,20 @@ const Body = ({ children }: ModalBodyProps) => {
 const FooterWithOnlyConfirm = ({
   confirmButtonTitle,
   onConfirm,
+  isSubmit = false,
 }: {
   confirmButtonTitle: string;
-  onConfirm: () => void;
+  onConfirm?: () => void;
+  isSubmit?: boolean;
 }) => {
   return (
     <div className="relative">
       <div className={floatingButtonWrapperStyle}>
-        <Button className="w-[100%]" onClick={onConfirm}>
+        <Button
+          className="mb-[24px] w-[100%]"
+          onClick={!isSubmit ? onConfirm : undefined}
+          type={isSubmit ? `submit` : `button`}
+        >
           {confirmButtonTitle}
         </Button>
       </div>
@@ -82,9 +88,11 @@ const FooterWithOnlyConfirm = ({
 const FooterWithButtons = ({
   confirmButtonTitle,
   onConfirm,
+  isSubmit = false,
 }: {
   confirmButtonTitle: string;
-  onConfirm: () => void;
+  onConfirm?: () => void;
+  isSubmit?: boolean;
 }) => {
   const { onClose } = useModalContext();
 
@@ -93,7 +101,11 @@ const FooterWithButtons = ({
       <Button className="w-[136px]" intent="secondary" onClick={onClose}>
         닫기
       </Button>
-      <Button className="w-[136px]" onClick={onConfirm}>
+      <Button
+        className="w-[136px]"
+        onClick={!isSubmit ? onConfirm : undefined}
+        type={isSubmit ? `submit` : `button`}
+      >
         {confirmButtonTitle}
       </Button>
     </div>
