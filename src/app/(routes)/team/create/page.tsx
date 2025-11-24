@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { Button, Input } from "@/components/ui";
 import { GroupCreateRequest } from "@/types/group";
-import postImage from "@/api/images";
+import postImagesUpload from "@/api/image/post-images-upload";
 import postGroups from "@/api/team/post-gruops";
 import IcProfile from "@/assets/icons/ic-image-circle.svg";
 import IcEdit from "@/assets/icons/ic-pencil-border.svg";
@@ -36,7 +37,7 @@ export default function TeamCreatePage() {
   };
 
   const uploadImageMutate = useMutation({
-    mutationFn: postImage,
+    mutationFn: postImagesUpload,
     onSuccess: res => {
       const imageUrl = res.url as string;
 
@@ -79,8 +80,9 @@ export default function TeamCreatePage() {
               onChange={handleImageChange}
             />
             {formData.image ? (
-              <img
+              <Image
                 src={formData.image}
+                alt="팀 프로필 사진"
                 className="inline-block h-[64px] w-full rounded-full border-[2px] border-line-strong"
               />
             ) : (
