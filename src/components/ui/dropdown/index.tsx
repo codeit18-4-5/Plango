@@ -18,8 +18,8 @@ export default function Dropdown({ size, children, className, onSelect, options 
 
   return (
     <DropdownContext.Provider value={{ isOpen, toggle, size, onSelect, options }}>
-      <div ref={dropdownRef}>
-        <div className={cn(dropDownStyle({ size, className }))}>{children}</div>
+      <div ref={dropdownRef} className={cn(dropDownStyle({ size, className }))}>
+        {children}
       </div>
     </DropdownContext.Provider>
   );
