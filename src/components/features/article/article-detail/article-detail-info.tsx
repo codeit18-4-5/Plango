@@ -2,7 +2,6 @@
 
 import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import getArticleDetail from "@/api/article/get-article-detail";
 import deleteArticle from "@/api/article/delete-article";
 import Image from "next/image";
@@ -34,12 +33,6 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
       router.replace("/article");
     },
   });
-
-  useEffect(() => {
-    if (isError) {
-      router.replace("/404");
-    }
-  }, [isError, router]);
 
   if (isError || !article) return null;
 

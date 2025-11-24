@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import postImagesUpload from "@/api/image/post-images-upload";
 import postArticle from "@/api/article/post-article";
@@ -18,6 +19,7 @@ import {
 export default function CreateArticlesPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   // TODO: isSuccess, isError, error 처리는 추후 토스트로 처리 예정
   const { mutate, isPending: isMutating } = useMutation({
@@ -42,6 +44,7 @@ export default function CreateArticlesPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getArticles"] });
+      router.replace("/article");
     },
   });
 

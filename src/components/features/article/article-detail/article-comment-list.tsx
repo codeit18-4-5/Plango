@@ -36,7 +36,7 @@ export default function ArticleCommentList({
   if (isPending) {
     return (
       <div className={ARTICLE_COMMENT_STYLES.replyList}>
-        {Array.from({ length: NEXT_CURSOR }).map((_, i) => (
+        {Array.from({ length: 2 }).map((_, i) => (
           <ReplySkeleton key={i} />
         ))}
       </div>

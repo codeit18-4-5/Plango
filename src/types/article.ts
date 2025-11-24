@@ -10,27 +10,6 @@ export interface Writer {
 
 export type WriterSummary = Pick<Writer, "nickname" | "id">;
 
-export interface CreateArticleData {
-  title: string;
-  content: string;
-  image?: string;
-}
-
-export type EditArticleData = CreateArticleData;
-
-export type Article = CreateArticleData & {
-  id: number;
-  updatedAt: string;
-  createdAt: string;
-  likeCount: number;
-  writer: Writer;
-};
-
-export interface ArticleListResponse {
-  totalCount: number;
-  list: Article[];
-}
-
 /**
  * 자유게시판 리스트 페이지 관련 타입 정의
  * @author yeonsu
@@ -69,6 +48,27 @@ export type ArticleEmptyProps = {
  * 자유게시판 작성/수정 페이지 관련 타입 정의
  * @author yeonsu
  */
+
+export interface CreateArticleData {
+  title: string;
+  content: string;
+  image?: string | null;
+}
+
+export type EditArticleData = CreateArticleData;
+
+export type Article = CreateArticleData & {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  likeCount: number;
+  writer: Writer;
+};
+
+export interface ArticleListResponse {
+  totalCount: number;
+  list: Article[];
+}
 
 export type ArticleFormFieldsProps = {
   type?: "create" | "edit";
