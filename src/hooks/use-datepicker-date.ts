@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function useDatepickerDate() {
+export default function useDatepickerDate() {
   const [currentMonth, setCurrentMonth] = useState<number>(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState<number>(new Date().getFullYear());
 
