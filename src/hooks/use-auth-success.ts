@@ -1,6 +1,6 @@
 import { useAuthStore, useUIStore } from "@/store/auth.store";
 import { User } from "@/types/user";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useLogout from "./use-logout";
 
 /**
@@ -16,6 +16,9 @@ type AuthSuccessPayload = {
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 const useAuthSuccess = () => {
   const router = useRouter();
+  const params = useSearchParams();
+  const redirectTo = params.get("redirect");
+
   const { setUser } = useAuthStore(state => state.actions);
   const setAuthError = useUIStore(state => state.setAuthError);
   const logout = useLogout();
@@ -38,10 +41,11 @@ const useAuthSuccess = () => {
         return;
       }
 
-      //  유저 정보 저장
+      // 유저 정보 저장
       setUser(user);
 
-      router.replace("/");
+      // 쿼리 파라미터 이동
+      router.replace(redirectTo ?? "/");
     } catch {
       await logout({ isRedirect: false });
       setAuthError("네트워크 오류가 발생했습니다");
