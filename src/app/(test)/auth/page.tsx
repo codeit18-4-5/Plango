@@ -79,12 +79,12 @@ export default function HomePage() {
 
   const getGroup = async () => {
     const res = await axiosInstance.get("/user/groups");
-    console.log(res.data);
+    // console.log(res.data);
     return res.data;
   };
   const getMemberships = async () => {
     const res = await axiosInstance.get("/user/memberships");
-    console.log(res.data);
+    // console.log(res.data);
     return res.data;
   };
 
