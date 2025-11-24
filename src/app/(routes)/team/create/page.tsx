@@ -84,6 +84,8 @@ export default function TeamCreatePage() {
                 src={formData.image}
                 alt="팀 프로필 사진"
                 className="inline-block h-[64px] w-full rounded-full border-[2px] border-line-strong"
+                width={64}
+                height={64}
               />
             ) : (
               <IcProfile className="h-[64px] w-full" />
