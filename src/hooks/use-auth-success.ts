@@ -1,3 +1,5 @@
+"use client";
+
 import { useAuthStore, useUIStore } from "@/store/auth.store";
 import { User } from "@/types/user";
 import { useRouter, useSearchParams } from "next/navigation";
