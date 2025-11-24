@@ -288,3 +288,17 @@ svg circle {
   height: 1px;
   margin-top: 20px;
 }
+
+.full-scroll-h {
+  min-height: calc(100dvh - 60px);
+}
+@media (min-width: 744px) {
+  .full-scroll-h {
+    min-height: calc(100dvh - 64px);
+  }
+}
+@media (min-width: 1200px) {
+  .full-scroll-h {
+    min-height: calc(100dvh - 72px);
+  }
+}
