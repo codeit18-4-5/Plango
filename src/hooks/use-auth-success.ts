@@ -16,8 +16,7 @@ type AuthSuccessPayload = {
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 const useAuthSuccess = () => {
   const router = useRouter();
-  const useAuthActions = () => useAuthStore(state => state.actions);
-  const { setAccessToken, setUser } = useAuthActions();
+  const { setAccessToken, setUser } = useAuthStore(state => state.actions);
   const setAuthError = useUIStore(state => state.setAuthError);
   const logout = useLogout();
 

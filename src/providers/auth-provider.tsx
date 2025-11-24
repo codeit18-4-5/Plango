@@ -18,18 +18,17 @@ export default function AuthProvider({
   initialUser,
   initialAccessToken,
 }: AuthProviderProps) {
-  const useAuthActions = () => useAuthStore(state => state.actions);
-  const { setAccessToken, setUser, setInitialized } = useAuthActions();
+  const { setAccessToken, setUser, setInitialized } = useAuthStore(state => state.actions);
 
   useEffect(() => {
+    console.log(initialAccessToken);
     // SSR 기반 로그인
-    if (initialUser && initialAccessToken) {
-      setUser(initialUser);
-      setAccessToken(initialAccessToken);
-    }
+    if (initialUser) setUser(initialUser);
+
+    if (initialAccessToken) setAccessToken(initialAccessToken);
 
     setInitialized(true);
-  }, []);
+  }, [initialUser, initialAccessToken]);
 
   return <>{children}</>;
 }
