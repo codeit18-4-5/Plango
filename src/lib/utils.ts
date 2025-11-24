@@ -1,3 +1,8 @@
+import { NO_AUTH_GET, NO_AUTH_URLS } from "@/constants/url";
+import { AxiosRequestConfig } from "axios";
+
+import { DateFullProps, DateTimeProps, FrequencyOptions } from "@/types/date-format-type";
+
 /**
  * URL이 유효한 형식의 이미지 주소인지 검사
  * @author yeonsu
@@ -75,26 +80,154 @@ export const otherMonthIndicator = (date: Date, currentMonth: number, currentYea
 };
 
 /**
- * datepicker 넘어간 date를 `YYYY년 MM월 DD일` 형식으로 포맷 -> input용
+ * date를 `MM월 DD일 (day)` 형식으로 포맷
  * @author luli
  * @param date
  */
-export const formatDateToKorean = (date: Date): string => {
-  return date.toLocaleDateString("ko-KR", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+export const formatDateForToMonthAndDays = (date: Date | string | undefined): string => {
+  if (isEmpty(date)) return "";
+
+  const resultDate = strToDate(date as Date | string);
+  return resultDate
+    .toLocaleDateString("ko-KR", {
+      month: "long",
+      day: "numeric",
+      weekday: "short",
+    })
+    .replace("요일", "");
 };
 
 /**
- * 시간을 "HH:mm" 형식으로 포맷
+ * date를 문자열 형식으로 포맷. 년월일
  * @author luli
  * @param date
  */
-export const formatTimeToKorean = (date: Date): string => {
-  return date.toLocaleTimeString("ko-KR", {
-    hour: "numeric",
-    minute: "2-digit",
-  });
+export const formatDateToFullStr = ({ date, type = "korean" }: DateFullProps): string => {
+  if (isEmpty(date)) return "";
+
+  const resultDate = strToDate(date as Date | string);
+  let resultDateStr = "";
+  if (type === "korean") {
+    // `YYYY년 MM월 DD일`
+    resultDateStr = resultDate.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } else if (type === "dot") {
+    // `YYYY.MM.DD`
+    resultDateStr = resultDate
+      .toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/\//g, ".");
+  }
+  return resultDateStr;
+};
+
+/**
+ * get 요청중 인증이 불필요한 패턴 필터
+ * @author sohyun
+ * @param pattern
+ * @param url
+ */
+export const matchPattern = (pattern: string | RegExp, url: string) => {
+  if (typeof pattern === "string") {
+    return url.startsWith(pattern);
+  }
+  return pattern.test(url);
+};
+
+/**
+ * axios config를 받아 인증이 불필요한 URL 필터
+ * @author sohyun
+ * @param config
+ */
+export const isNoAuthURL = (config: AxiosRequestConfig) => {
+  const url = config.url || "";
+  const method = (config.method || "get").toLowerCase();
+
+  // method 상관없이 인증 불필요한 URL
+  if (NO_AUTH_URLS.some(publicUrl => url.startsWith(publicUrl))) {
+    return true;
+  }
+
+  // get 요청 중 인증 불필요한 패턴
+  if (method === "get") {
+    return NO_AUTH_GET.some(pattern => matchPattern(pattern, url));
+  }
+
+  return false;
+};
+
+/**
+ * Date를 문자열 형식으로 포맷. 시간
+ * @author luli
+ * @param date
+ */
+export const formatTimeToStr = ({ date, type = "colon" }: DateTimeProps): string => {
+  if (isEmpty(date)) return "";
+
+  const resultDate = strToDate(date as Date | string);
+  let resultTimeStr = "";
+  if (type === "colon") {
+    // "HH:mm"
+    resultTimeStr = resultDate.toLocaleTimeString("ko-KR", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  } else if (type === "meridiem") {
+    // 오전 or 오후 HH:mm
+    resultTimeStr = resultDate.toLocaleTimeString("ko-KR", {
+      hour12: true,
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  }
+  return resultTimeStr;
+};
+
+/**
+ * 넘어온 값 string check후 Date반환
+ * @author luli
+ * @param str
+ */
+export const strToDate = (str: Date | string): Date => {
+  if (str instanceof Date) return str;
+  return new Date(str);
+};
+
+/**
+ * 간단한 비어있는값 체크. 객체, 배열, string, Date체크 가능
+ * @author luli
+ * @param value
+ */
+export const isEmpty = (value: unknown): boolean => {
+  if (value === null || value === undefined) return true;
+  if (value instanceof Date) return isNaN(value.getTime());
+  if (typeof value === "string") return value.trim().length === 0;
+  if (Array.isArray(value)) {
+    return (
+      value.length === 0 ||
+      value.every(item => {
+        if (item === 0 || item === "0") return false;
+        return isEmpty(item);
+      })
+    );
+  }
+  if (typeof value === "object") {
+    return Object.keys(value).length === 0;
+  }
+  return false;
+};
+
+/**
+ * tasklist 반복설정 해당 값에 맞는 한글로 변환
+ * @author luli
+ * @param value
+ */
+export const getFrequencyLabel = (frequency: string): string => {
+  return FrequencyOptions.find(fo => fo.value === frequency)?.label ?? "";
 };

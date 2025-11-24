@@ -1,32 +1,35 @@
 "use client";
 
-import PostSignUp from "@/api/auth/post-signup";
+import postSignUp from "@/api/auth/post-signup";
 import {
   AuthDivider,
   AuthTitle,
   SocialAuthButton,
   SignUpFormFields,
 } from "@/components/features/auth";
-import { AuthLink } from "@/components/features/auth/authPage";
+import { AuthLink } from "@/components/features/auth/auth-page";
 import { Form } from "@/components/ui";
-import { axiosErrorMsg } from "@/lib/error";
+import { useAuthSuccess } from "@/hooks";
+import { signUpErrorHandler } from "@/lib/error";
+
 import { signUpSchema, SignUpSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const title = "회원가입";
 
 export default function Signup() {
+  const authSuccess = useAuthSuccess();
+
   const handleSubmit = async (data: SignUpSchema) => {
-    const res = await PostSignUp(data);
-    // @TODO 회원가입 성공처리 : 토큰저장, 가입 후 자동 로그인 , 페이지 이동
-    console.log(res.data);
+    const res = await postSignUp(data);
+    await authSuccess(res);
   };
   return (
     <div>
       <AuthTitle>{title}</AuthTitle>
       <Form<SignUpSchema>
         onSubmit={handleSubmit}
-        onServerError={axiosErrorMsg}
+        onServerError={signUpErrorHandler}
         resolver={zodResolver(signUpSchema)}
         mode="onBlur"
         reValidateMode="onBlur"
@@ -35,8 +38,7 @@ export default function Signup() {
       </Form>
       <AuthLink message="이미 계정이 있으신가요?" linkText="로그인하기" href="/login" />
       <AuthDivider />
-      {/* @TODO 소셜 로그인 기능 추가 */}
-      <SocialAuthButton title={title} onClick={() => {}} />
+      <SocialAuthButton title={title} />
     </div>
   );
 }
