@@ -1,15 +1,17 @@
 import cn from "@/lib/cn";
-import { getTimeAgo, formatDateToKorean } from "@/lib/utils";
+import { getTimeAgo, formatDateToKorean, clampText } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
 import { Avatar } from "@/components/ui";
 import { CARD_INFO_STYLES } from "./index.styles";
-import ICLike from "@/assets/icons/ic-heart.svg";
+import IcComment from "@/assets/icons/ic-comment.svg";
+import IcLike from "@/assets/icons/ic-heart.svg";
 
 type CardInfoProps = {
   image?: string | null;
   writer: string;
   createdAt: string;
-  likeCount?: number;
+  likeCount: number;
+  commentCount: number;
   className?: string;
   variant?: "primary" | "secondary";
 };
@@ -19,6 +21,7 @@ export default function CardInfo({
   writer,
   createdAt,
   likeCount,
+  commentCount,
   className,
   variant = "primary",
 }: CardInfoProps) {
@@ -39,17 +42,18 @@ export default function CardInfo({
           {getTimeAgo(createdAt)}
         </time>
       </div>
-      {likeCount !== undefined && (
-        <div className={CARD_INFO_STYLES.like.wrapper}>
-          <span className={CARD_INFO_STYLES.like.icon}>
-            <ICLike />
-          </span>
+      <div className={CARD_INFO_STYLES.stats.wrapper}>
+        <span>
+          <IcComment className={CARD_INFO_STYLES.stats.icon} />
+          <span className="visually-hidden">댓글</span>
+          {clampText(commentCount, DISPLAY_LIMITS.MAX_COMMENT_COUNT)}
+        </span>
+        <span>
+          <IcLike className={CARD_INFO_STYLES.stats.icon} />
           <span className="visually-hidden">좋아요</span>
-          {likeCount > DISPLAY_LIMITS.MAX_LIKE_COUNT
-            ? DISPLAY_LIMITS.MAX_LIKE_COUNT_TEXT
-            : likeCount}
-        </div>
-      )}
+          {clampText(likeCount, DISPLAY_LIMITS.MAX_LIKE_COUNT)}
+        </span>
+      </div>
     </div>
   );
 }

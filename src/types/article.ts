@@ -62,6 +62,7 @@ export type Article = CreateArticleData & {
   updatedAt: string;
   createdAt: string;
   likeCount: number;
+  commentCount: number;
   writer: Writer;
 };
 

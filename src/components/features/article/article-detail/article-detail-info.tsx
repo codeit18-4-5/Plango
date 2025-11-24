@@ -7,7 +7,7 @@ import deleteArticle from "@/api/article/delete-article";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth.store";
-import { getTimeAgo, formatDateToKorean } from "@/lib/utils";
+import { getTimeAgo, formatDateToKorean, clampText, formatSocialCount } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
 import { Button } from "@/components/ui";
 import KebabMenu from "@/components/features/article/actions/kebab-menu";
@@ -79,16 +79,12 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
           <span>
             <IcComment className={ARTICLE_DETAIL_STYLES.meta.icon} />
             <span className="visually-hidden">댓글</span>
-            {article.commentCount > DISPLAY_LIMITS.MAX_COMMENT_COUNT
-              ? DISPLAY_LIMITS.MAX_COMMENT_COUNT_TEXT
-              : article.commentCount}
+            {clampText(article.commentCount, DISPLAY_LIMITS.MAX_COMMENT_COUNT)}
           </span>
           <span>
             <IcHeart className={ARTICLE_DETAIL_STYLES.meta.icon} />
             <span className="visually-hidden">좋아요</span>
-            {article.likeCount > DISPLAY_LIMITS.MAX_LIKE_COUNT
-              ? DISPLAY_LIMITS.MAX_LIKE_COUNT_TEXT
-              : article.likeCount}
+            {clampText(article.likeCount, DISPLAY_LIMITS.MAX_LIKE_COUNT)}
           </span>
         </div>
       </div>
@@ -116,11 +112,7 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
           >
             <IcLiked />
           </Button>
-          <span>
-            {article.likeCount > DISPLAY_LIMITS.MAX_LIKE_COUNT
-              ? DISPLAY_LIMITS.MAX_LIKE_COUNT_TEXT
-              : article.likeCount}
-          </span>
+          <span>{formatSocialCount(article.likeCount)}</span>
         </div>
         <Button
           as={Link}

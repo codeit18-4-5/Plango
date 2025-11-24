@@ -136,3 +136,19 @@ export const isNoAuthURL = (config: AxiosRequestConfig) => {
 
   return false;
 };
+
+/**
+ * 숫자를 제한값 이상이면 "9999+" 형태로 변환
+ */
+export function clampText(value: number, limit: number, suffix = "+") {
+  return value > limit ? `${limit}${suffix}` : value;
+}
+
+/**
+ * 좋아요 숫자 SNS 표기 형식 단위로 포맷팅
+ */
+export function formatSocialCount(value: number): string {
+  if (value < 10000) return value.toLocaleString();
+  if (value / 10000 < 10000) return (value / 10000).toFixed(1).replace(/\.0$/, "") + "만";
+  return (value / 100000000).toFixed(1).replace(/\.0$/, "") + "억";
+}

@@ -60,6 +60,7 @@ export default function BestArticleSection() {
                 writer={article.writer.nickname}
                 createdAt={article.createdAt}
                 likeCount={article.likeCount}
+                commentCount={article.commentCount}
                 image={article.writer.image}
                 variant="secondary"
               />

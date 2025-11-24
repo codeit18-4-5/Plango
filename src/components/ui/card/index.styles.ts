@@ -40,17 +40,20 @@ export const CARD_CONTENT_STYLES = {
 };
 
 export const CARD_INFO_STYLES = {
-  wrapper: cva("grid grid-cols-[auto_65px] gap-x-[12px] items-end justify-between", {
-    variants: {
-      variant: {
-        primary: "tablet:items-center",
-        secondary: "tablet:items-end",
+  wrapper: cva(
+    "grid grid-cols-[auto_60px] gap-x-[12px] items-end justify-between tablet:grid-cols-[auto_130px]",
+    {
+      variants: {
+        variant: {
+          primary: "tablet:items-center",
+          secondary: "tablet:items-end",
+        },
+      },
+      defaultVariants: {
+        variant: "primary",
       },
     },
-    defaultVariants: {
-      variant: "primary",
-    },
-  }),
+  ),
   meta: {
     wrapper: cva("grid", {
       variants: {
@@ -91,18 +94,18 @@ export const CARD_INFO_STYLES = {
       },
     ),
   },
-  like: {
+  stats: {
     wrapper: cn(
-      "relative flex items-center justify-end text-[12px] gap-x-[4px] text-gray-400 top-[-7px] ",
-      "tablet:text-[14px] tablet:top-0",
+      "grid items-center justify-end gap-x-[8px] [&>span]:text-gray-400 text-[12px] gap-[3px_0]",
+      "tablet:gap-[0_16px] tablet:text-[14px] tablet:flex",
     ),
-    icon: cn("w-[16px] h-[16px] block"),
+    icon: "mt-[-2px] w-[16px] h-[16px] inline-block align-middle mr-[4px]",
   },
 };
 
 export const CARD_ACTIONS_STYLES = {
   wrapper: cn(
-    "absolute right-[16px] bottom-[31px] text-body-s p-0 z-[5]",
+    "absolute right-[16px] bottom-[24px] text-body-s p-0 z-[5]",
     "tablet:text-base tablet:top-[22px] tablet:right-[32px] tablet:bottom-auto",
   ),
   icon: cn(
