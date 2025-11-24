@@ -3,31 +3,44 @@
 import { ReactNode, useEffect } from "react";
 import { useAuthStore } from "@/store/auth.store";
 import { User } from "@/types/user";
+import { getAccessToken } from "@/lib/token";
 
 /**
  * 최초 렌더링 시 SSR 기반 로그인
  * @author sohyun
  */
 type AuthProviderProps = {
-  initialAccessToken: string | null;
   initialUser: User | null;
   children: ReactNode;
 };
-export default function AuthProvider({
-  children,
-  initialUser,
-  initialAccessToken,
-}: AuthProviderProps) {
-  const { setAccessToken, setUser, setInitialized } = useAuthStore(state => state.actions);
+export default function AuthProvider({ children, initialUser }: AuthProviderProps) {
+  const { setUser, setInitialized } = useAuthStore(state => state.actions);
 
   useEffect(() => {
     // SSR 기반 로그인
     if (initialUser) setUser(initialUser);
 
-    if (initialAccessToken) setAccessToken(initialAccessToken);
+    const accessToken = getAccessToken();
 
-    setInitialized(true);
-  }, [initialUser, initialAccessToken]);
+    // accessToken 있으면 refresh 안함
+    if (accessToken) {
+      setInitialized(true);
+      return;
+    }
+    const accessTokenCookie = async () => {
+      try {
+        // refreshToken이 있으면 accessToken 재발급, 없으면 401만 떨어지고 무시
+        await fetch("/api/auth/refresh", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+      } finally {
+        setInitialized(true);
+      }
+    };
+
+    accessTokenCookie();
+  }, []);
 
   return <>{children}</>;
 }

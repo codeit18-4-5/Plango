@@ -16,7 +16,7 @@ type AuthSuccessPayload = {
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 const useAuthSuccess = () => {
   const router = useRouter();
-  const { setAccessToken, setUser } = useAuthStore(state => state.actions);
+  const { setUser } = useAuthStore(state => state.actions);
   const setAuthError = useUIStore(state => state.setAuthError);
   const logout = useLogout();
 
@@ -38,8 +38,7 @@ const useAuthSuccess = () => {
         return;
       }
 
-      // accessToken, 유저 정보 저장
-      setAccessToken(accessToken);
+      //  유저 정보 저장
       setUser(user);
 
       router.replace("/");

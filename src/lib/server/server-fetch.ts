@@ -46,7 +46,8 @@ export const serverFetch = async <T = unknown>(
     return originRes;
   };
 
-  const res = await request(accessTokenCookie);
+  const initialToken = noAuth ? null : accessTokenCookie;
+  const res = await request(initialToken);
 
   // 요청 성공
   if (res.ok) return res.json() as T;

@@ -33,7 +33,7 @@ export const POST = async (req: NextRequest) => {
     cookieStore.set({
       name: "accessToken",
       value: accessToken,
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       maxAge: 60 * 60, // 1시간
       path: "/",
