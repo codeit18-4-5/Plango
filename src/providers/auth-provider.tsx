@@ -21,7 +21,6 @@ export default function AuthProvider({
   const { setAccessToken, setUser, setInitialized } = useAuthStore(state => state.actions);
 
   useEffect(() => {
-    console.log(initialAccessToken);
     // SSR 기반 로그인
     if (initialUser) setUser(initialUser);
 
