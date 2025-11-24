@@ -1,19 +1,20 @@
 import { ReactNode } from "react";
 import cn from "@/lib/cn";
-import IcKakao from "@/assets/icons/ic-kakao.svg";
 import Link from "next/link";
-import { Input } from "@/components/ui";
-interface AuthLinkProps {
+import { Input, Modal } from "@/components/ui";
+import KakaoLogin from "./kakao-login";
+type AuthLinkProps = {
   message: string;
   linkText: string;
   href: string;
-}
-interface AuthFieldProps {
+};
+type AuthFieldProps = {
   id: string;
   errorMsg?: string;
   label: string;
   children: ReactNode;
-}
+};
+
 export function AuthTitle({ children }: { children: ReactNode }) {
   return <h2 className="mb-6 text-center text-heading-l tablet:mb-12">{children}</h2>;
 }
@@ -52,13 +53,26 @@ export function AuthField({ id, label, errorMsg, children }: AuthFieldProps) {
   );
 }
 
-export function SocialAuthButton({ title, onClick }: { title: string; onClick: () => void }) {
+export function SocialAuthButton({ title }: { title: string }) {
   return (
     <div className="flex flex-nowrap items-center justify-between text-base">
       간편 {title}하기
-      <button type="button" onClick={onClick} className="h-11 w-11">
-        <IcKakao />
-      </button>
+      <KakaoLogin />
     </div>
+  );
+}
+
+export function AuthErrorModal({ message, onClose }: { message: string; onClose: () => void }) {
+  return (
+    <Modal isOpen={true} onClose={onClose}>
+      <Modal.HeaderWithClose title="" />
+      <Modal.Body>
+        <p className="text-center text-base">
+          {message} <br />
+          다시 시도해주세요.
+        </p>
+      </Modal.Body>
+      <Modal.FooterWithOnlyConfirm confirmButtonTitle="확인" onConfirm={onClose} />
+    </Modal>
   );
 }

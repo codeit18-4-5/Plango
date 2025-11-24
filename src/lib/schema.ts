@@ -45,9 +45,35 @@ export const signInSchema = z.object({
 
 export type SignInSchema = z.infer<typeof signInSchema>;
 
+export const nicknameSchema = z.object({
+  nickname: z
+    .string()
+    .min(1, { error: "닉네임은 필수 입력입니다." })
+    .max(10, { error: "닉네임은 최대 10자까지 가능합니다." }),
+});
+export type NicknameSchema = z.infer<typeof nicknameSchema>;
+
 export const isInputEmpty = (value: string) => {
   return !value || (typeof value === "string" && value.trim().length === 0);
 };
 export const validateRequired = (value: string, label = "필수 항목") => {
   return isInputEmpty(value) ? `${label} 입력해주세요.` : true;
 };
+
+export const articleFormSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(1, "제목을 입력해주세요.")
+    .max(200, "제목은 최대 200자까지 가능합니다.")
+    .transform(val => val.replace(/\s+/g, " ")),
+  content: z
+    .string()
+    .trim()
+    .min(1, "내용을 입력해주세요.")
+    .max(500, "내용은 최대 500자까지 가능합니다.")
+    .transform(val => val.replace(/ +/g, " ")),
+  image: z.string().optional(),
+});
+
+export type ArticleFormSchema = z.infer<typeof articleFormSchema>;

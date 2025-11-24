@@ -1,7 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta } from "@storybook/react";
+import { useForm, FormProvider } from "react-hook-form";
 import { ImgUpload } from "@/components/ui";
 
-const meta = {
+const meta: Meta<typeof ImgUpload> = {
   title: "UI/ImgUpload",
   component: ImgUpload,
   tags: ["autodocs"],
@@ -14,13 +15,15 @@ const meta = {
     },
   },
   argTypes: {},
-} satisfies Meta<typeof ImgUpload>;
+};
 
 export default meta;
 
-type Story = StoryObj<typeof ImgUpload>;
-
-export const Default: Story = {
-  name: "Default",
-  args: {},
+export const ImgUploadStory = () => {
+  const methods = useForm();
+  return (
+    <FormProvider {...methods}>
+      <ImgUpload id="image" onChange={() => {}} />
+    </FormProvider>
+  );
 };
