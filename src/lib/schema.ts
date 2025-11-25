@@ -70,10 +70,12 @@ export const taskSchema = z
   .object({
     name: z
       .string()
+      .trim()
       .min(1, { error: "제목은 필수 입력입니다." })
       .max(30, { error: "제목은 최대 30자까지 가능합니다." }),
     startDate: z
       .string()
+      .trim()
       .min(1, { error: "시작 날짜와 시간은 필수 입력입니다.." })
       .refine(val => !isNaN(new Date(val).getTime()), { error: "유효한 날짜 형식이 아닙니다." })
       .refine(val => new Date(val) > new Date(), {
@@ -81,12 +83,14 @@ export const taskSchema = z
       }),
     frequencyType: z
       .string()
+      .trim()
       .min(1, { error: "반복 설정 값은 필수 값입니다." })
       .refine(val => frequency.includes(val), { error: "유효한 반복 설정 값이 아닙니다." }),
     weekDays: z.array(z.number()).optional(),
     monthDay: z.number().optional(),
     description: z
       .string()
+      .trim()
       .refine(val => val.length <= 255, { error: "메모는 최대 255자까지 가능합니다." }),
   })
   .refine(
@@ -108,7 +112,6 @@ export const taskSchema = z
       }
       return true;
     },
-
     { error: "반복 날짜는 1~31일 사이로 선택하여야 합니다.", path: ["frequencyType"] },
   );
 
