@@ -10,6 +10,7 @@ export interface TaskCommonProps {
 
 export interface TaskListProps extends TaskCommonProps {
   date: string;
+  dateString?: string;
 }
 
 export interface TaskDetailProps extends TaskCommonProps {
