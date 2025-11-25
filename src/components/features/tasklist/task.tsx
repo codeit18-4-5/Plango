@@ -11,10 +11,17 @@ import { formatDateToFullStr, getFrequencyLabel } from "@/lib/utils";
 
 interface TaskProps {
   task: TaskType;
+  onKebabClick: ({ taskId, type }: { taskId: number; type: KebabType }) => void;
 }
 
-export default function Task({ task }: TaskProps) {
+export type KebabType = "update" | "delete";
+
+export default function Task({ task, onKebabClick }: TaskProps) {
   const [checked, setChecked] = useState(false);
+
+  const handleKebabClick = (type: KebabType) => {
+    onKebabClick({ taskId: task.id, type });
+  };
 
   return (
     <div className="flex h-[74px] w-full items-center justify-between rounded-lg bg-gray-800 py-[12px] pl-[14px] pr-[12px]">
@@ -54,10 +61,10 @@ export default function Task({ task }: TaskProps) {
             <KebabIcon className="mt-[5px] w-[16px]" />
           </Dropdown.TriggerIcon>
           <Dropdown.Menu size="md">
-            <Dropdown.Option as="a" href="/" align="center">
+            <Dropdown.Option align="center" onClick={() => handleKebabClick("update")}>
               수정하기
             </Dropdown.Option>
-            <Dropdown.Option as="a" href="/" align="center">
+            <Dropdown.Option align="center" onClick={() => handleKebabClick("delete")}>
               삭제하기
             </Dropdown.Option>
           </Dropdown.Menu>
