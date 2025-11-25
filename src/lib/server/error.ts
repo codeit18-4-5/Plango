@@ -15,3 +15,17 @@ export function createErrorResponse(devMessage: string, userMessage: string, sta
 
   return NextResponse.json({ message: userMessage }, { status });
 }
+
+/**
+ * server fetch 헬퍼함수 에러처리
+ * @author sohyun
+ */
+export class ServerFetchError extends Error {
+  status: number;
+  response?: Response;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ServerFetchError";
+    this.status = status;
+  }
+}

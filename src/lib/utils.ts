@@ -128,41 +128,6 @@ export const formatDateToFullStr = ({ date, type = "korean" }: DateFullProps): s
 };
 
 /**
- * get 요청중 인증이 불필요한 패턴 필터
- * @author sohyun
- * @param pattern
- * @param url
- */
-export const matchPattern = (pattern: string | RegExp, url: string) => {
-  if (typeof pattern === "string") {
-    return url.startsWith(pattern);
-  }
-  return pattern.test(url);
-};
-
-/**
- * axios config를 받아 인증이 불필요한 URL 필터
- * @author sohyun
- * @param config
- */
-export const isNoAuthURL = (config: AxiosRequestConfig) => {
-  const url = config.url || "";
-  const method = (config.method || "get").toLowerCase();
-
-  // method 상관없이 인증 불필요한 URL
-  if (NO_AUTH_URLS.some(publicUrl => url.startsWith(publicUrl))) {
-    return true;
-  }
-
-  // get 요청 중 인증 불필요한 패턴
-  if (method === "get") {
-    return NO_AUTH_GET.some(pattern => matchPattern(pattern, url));
-  }
-
-  return false;
-};
-
-/**
  * Date를 문자열 형식으로 포맷. 시간
  * @author luli
  * @param date
@@ -230,6 +195,52 @@ export const isEmpty = (value: unknown): boolean => {
  */
 export const getFrequencyLabel = (frequency: string): string => {
   return FrequencyOptions.find(fo => fo.value === frequency)?.label ?? "";
+};
+
+/**
+ * get 요청중 인증이 불필요한 패턴 필터
+ * @author sohyun
+ * @param pattern
+ * @param url
+ */
+export const matchPattern = (pattern: string | RegExp, url: string) => {
+  if (typeof pattern === "string") {
+    return url.startsWith(pattern);
+  }
+  return pattern.test(url);
+};
+
+/**
+ * server fetch 에서 사용할 인증이 불필요한 URL 필터
+ * @author sohyun
+ * @param config
+ */
+
+export const isNoAuthURL = (url: string, method = "get") => {
+  const apiMethod = method.toLowerCase();
+
+  // method 상관없이 인증 불필요한 URL
+  if (NO_AUTH_URLS.some(publicUrl => url.startsWith(publicUrl))) {
+    return true;
+  }
+
+  // get 요청 중 인증 불필요한 패턴
+  if (apiMethod === "get") {
+    return NO_AUTH_GET.some(pattern => matchPattern(pattern, url));
+  }
+
+  return false;
+};
+
+/**
+ * axios config를 받아 인증이 불필요한 URL 필터
+ * @author sohyun
+ * @param config
+ */
+export const isNoAuthAxios = (config: AxiosRequestConfig) => {
+  const url = config.url || "";
+  const method = (config.method || "get").toLowerCase();
+  return isNoAuthURL(url, method);
 };
 
 /**
