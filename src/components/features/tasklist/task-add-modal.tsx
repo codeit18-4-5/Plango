@@ -7,16 +7,21 @@ import { ChangeEvent, useState } from "react";
 interface TaskAddProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (value: string) => void;
+  onSubmit: (value: string) => Promise<void>;
 }
 
 export default function TaskAddTemplate({ isOpen, onClose, onSubmit }: TaskAddProps) {
   const [taskName, setTaskName] = useState("");
 
-  const handleMakeClick = () => {
-    onSubmit(taskName);
-    setTaskName("");
-    onClose();
+  const handleMakeClick = async () => {
+    const resultName = taskName.trim() ?? "";
+
+    try {
+      await onSubmit(resultName);
+      onClose();
+    } catch (error) {
+      console.error("제출 실패", error);
+    }
   };
 
   return (

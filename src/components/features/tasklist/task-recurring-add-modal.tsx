@@ -4,7 +4,7 @@ import { DropdownOption } from "@/types/option";
 import { useEffect, useRef, useState } from "react";
 import { Controller, SubmitHandler, useFormContext } from "react-hook-form";
 import IcDropdown from "@/assets/icons/ic-dropdown.svg";
-import { FrequencyOptions } from "@/types/date-format-type";
+import { FrequencyOptions, FrequencyType } from "@/types/date-format-type";
 import CustomSingleDatepicker from "@/components/ui/date-timepicker/single-datepicker";
 import DailyFrequencyOptions from "./daily-frequency-options";
 import z4 from "zod/v4";
@@ -21,10 +21,25 @@ export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: Tas
   const [dayIndexArray, setDayIndexArray] = useState<number[]>([]);
 
   const handleSubmit: SubmitHandler<z4.infer<typeof taskSchema>> = submitData => {
+    if (submitData.frequencyType !== FrequencyType.Weekly) {
+      delete submitData.weekDays;
+    }
+
+    if (submitData.frequencyType !== FrequencyType.Monthly) {
+      delete submitData.monthDay;
+    }
+
+    let monthDayResult;
+    if (submitData.frequencyType === FrequencyType.Monthly) {
+      const date = new Date(submitData.startDate).getDate();
+      monthDayResult = parseInt(date.toString());
+    }
+
     const transformedData = {
       ...submitData,
       description: submitData.description || "",
-      weekDays: dayIndexArray,
+      ...(submitData.frequencyType === FrequencyType.Monthly && { monthDay: monthDayResult }),
+      ...(submitData.frequencyType === FrequencyType.Weekly && { weekDays: dayIndexArray }),
     };
     onSubmit(transformedData);
   };
@@ -32,7 +47,7 @@ export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: Tas
   const defaultValues = {
     name: "",
     description: "",
-    frequencyType: "ONCE",
+    frequencyType: FrequencyType.Once,
     monthDay: 1,
     startDate: "",
     weekDays: [],
@@ -62,7 +77,6 @@ function FormField({
   setDayIndexArray: React.Dispatch<React.SetStateAction<number[]>>;
 }) {
   const {
-    register,
     setValue,
     control,
     formState: { errors },
@@ -90,7 +104,7 @@ function FormField({
 
     setValue("frequencyType", option.value, { shouldValidate: true });
 
-    if (option.value === "WEEKLY") {
+    if (option.value === FrequencyType.Weekly) {
       setIsWeekpickerOpen(true);
     } else {
       setIsWeekpickerOpen(false);
@@ -249,29 +263,36 @@ function FormField({
           <Input.Label label="반복 설정" />
           <Input.Error />
           <div>
-            <Dropdown size="md" onSelect={handleSelectValue} {...register("frequencyType")}>
-              <Dropdown.TriggerSelect
-                className="bg-[#18212F]"
-                isIcon={true}
-                intent="select"
-                selectedLabel={
-                  frequencyTypeValue
-                    ? selectOptions.find(option => option.value === frequencyTypeValue)?.label
-                    : ""
-                }
-              >
-                <span className="w-[24px]">
-                  <IcDropdown />
-                </span>
-              </Dropdown.TriggerSelect>
-              <Dropdown.Menu>
-                {selectOptions.map(option => (
-                  <Dropdown.Option key={option.value} option={option}>
-                    {option.label}
-                  </Dropdown.Option>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
+            <Controller
+              name="frequencyType"
+              control={control}
+              render={({ field }) => (
+                <Dropdown size="md" onSelect={handleSelectValue}>
+                  <Dropdown.TriggerSelect
+                    className="bg-[#18212F]"
+                    isIcon={true}
+                    intent="select"
+                    {...field}
+                    selectedLabel={
+                      frequencyTypeValue
+                        ? selectOptions.find(option => option.value === frequencyTypeValue)?.label
+                        : ""
+                    }
+                  >
+                    <span className="w-[24px]">
+                      <IcDropdown />
+                    </span>
+                  </Dropdown.TriggerSelect>
+                  <Dropdown.Menu>
+                    {selectOptions.map(option => (
+                      <Dropdown.Option key={option.value} option={option}>
+                        {option.label}
+                      </Dropdown.Option>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              )}
+            />
           </div>
         </Input>
         {isWeekpickerOpen && (
