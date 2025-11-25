@@ -5,7 +5,7 @@ import {
   ArticleFormFieldProps,
   CreateSectionHeaderProps,
 } from "@/types/article";
-import { Input } from "@/components/ui";
+import { Input, Modal } from "@/components/ui";
 import { ARTICLE_COMMON_STYLES, ARTICLE_LIST_STYLES } from "./index.styles";
 
 export function ListSectionHeader({ title, moreHref }: ListSectionHeaderProps) {
@@ -59,5 +59,36 @@ export function CreateSectionHeader({
       <HeadingTag>{title}</HeadingTag>
       <div>{children}</div>
     </div>
+  );
+}
+
+type ArticleConfirmModalProps = {
+  title: string;
+  message: string;
+  confirmButtonTitle: string;
+  onClick?: () => void;
+  handleClose: () => void;
+};
+
+export function ArticleConfirmModal({
+  title,
+  message,
+  confirmButtonTitle,
+  onClick,
+  handleClose,
+}: ArticleConfirmModalProps) {
+  return (
+    <Modal isOpen={true} onClose={handleClose}>
+      <div className="p-[16px_0_8px]">
+        <Modal.HeaderWithOnlyTitle title={title} />
+        <div className="pb-[24px]">
+          <p className="text-center text-caption text-gray-300">{message}</p>
+        </div>
+        <Modal.FooterWithButtons
+          confirmButtonTitle={confirmButtonTitle}
+          onConfirm={onClick ?? (() => {})}
+        />
+      </div>
+    </Modal>
   );
 }

@@ -3,3 +3,5 @@ export { default as BestArticleSection } from "@/components/features/article/art
 export { default as AllArticleSection } from "@/components/features/article/article-list/all-article-section";
 export { default as ArticleListEmpty } from "@/components/features/article/article-list/article-list-empty";
 export { default as ArticleFormFields } from "@/components/features/article/article-form/article-form-fields";
+export { default as ArticleDetailInfo } from "@/components/features/article/article-detail/article-detail-info";
+export { default as ArticleCommentSection } from "@/components/features/article/article-detail/article-comment-section";

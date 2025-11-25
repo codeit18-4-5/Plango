@@ -38,7 +38,7 @@ export const replyInputTextarea = cva(
 export const replyInputSubmit = cva("block", {
   variants: {
     variant: {
-      primary: ["px-6", "tablet:h-12 tablet:min-w-44 tablet:text-body-m"],
+      primary: ["px-6 min-w-[98px]", "tablet:h-12 tablet:min-w-[176px] tablet:text-body-m"],
       secondary: ["h-6 w-6 !bg-transparent text-pink-400", "hover:text-pink-500"],
     },
   },
