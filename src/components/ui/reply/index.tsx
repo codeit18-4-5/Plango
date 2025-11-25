@@ -8,7 +8,7 @@ import ReplyActions from "./reply-actions";
 import { useEditable, useAutoResizeTextarea } from "@/hooks";
 import { replyWrapper, replyInner, replyTextarea, replyInfo, replyTimeStamp } from "./index.styles";
 import { Avatar, Button } from "@/components/ui";
-import { getTimeAgo, formatDateToKorean } from "@/lib/utils";
+import { getTimeAgo, formatDateToFullStr } from "@/lib/utils";
 
 type ReplyProps = {
   comment: CommentBase;
@@ -107,8 +107,8 @@ export default function Reply({
               </div>
               <time
                 dateTime={comment.createdAt}
-                title={formatDateToKorean(new Date(comment.createdAt))}
-                aria-label={formatDateToKorean(new Date(comment.createdAt))}
+                title={formatDateToFullStr({ date: comment.createdAt })}
+                aria-label={formatDateToFullStr({ date: comment.createdAt })}
                 className={replyTimeStamp({ variant })}
               >
                 {getTimeAgo(comment.createdAt)}

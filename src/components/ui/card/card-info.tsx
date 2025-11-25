@@ -1,5 +1,5 @@
 import cn from "@/lib/cn";
-import { getTimeAgo, formatDateToKorean, clampText } from "@/lib/utils";
+import { getTimeAgo, formatDateToFullStr, clampText } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
 import { Avatar } from "@/components/ui";
 import { CARD_INFO_STYLES } from "./index.styles";
@@ -35,8 +35,8 @@ export default function CardInfo({
         </div>
         <time
           dateTime={createdAt}
-          title={formatDateToKorean(new Date(createdAt))}
-          aria-label={formatDateToKorean(new Date(createdAt))}
+          title={formatDateToFullStr({ date: createdAt })}
+          aria-label={formatDateToFullStr({ date: createdAt })}
           className={CARD_INFO_STYLES.meta.time({ variant })}
         >
           {getTimeAgo(createdAt)}

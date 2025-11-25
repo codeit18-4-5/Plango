@@ -7,7 +7,7 @@ import deleteArticle from "@/api/article/delete-article";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth.store";
-import { getTimeAgo, formatDateToKorean, clampText, formatSocialCount } from "@/lib/utils";
+import { getTimeAgo, formatDateToFullStr, clampText, formatSocialCount } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
 import { Button } from "@/components/ui";
 import KebabMenu from "@/components/features/article/actions/kebab-menu";
@@ -68,8 +68,8 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
           <span>{article.writer.nickname}</span>
           <time
             dateTime={DATE_TIME}
-            title={formatDateToKorean(new Date(DATE_TIME))}
-            aria-label={formatDateToKorean(new Date(DATE_TIME))}
+            title={formatDateToFullStr({ date: DATE_TIME })}
+            aria-label={formatDateToFullStr({ date: DATE_TIME })}
             className={ARTICLE_DETAIL_STYLES.meta.timeStamp}
           >
             {getTimeAgo(DATE_TIME)}
