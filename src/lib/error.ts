@@ -1,7 +1,7 @@
 import { isAxiosError } from "axios";
 import { UseFormSetError, FieldValues, Path } from "react-hook-form";
 import type { ServerErrorHandler, ServerErrorMsg } from "@/types/api";
-import { NicknameSchema, SignInSchema } from "./schema";
+import { ChangeProfileSchema, SendEmailSchema, SignInSchema } from "./schema";
 
 /**
  * 회원 가입 시 서버에서 전달된 에러 내용을 RHF의 setError에 연결해주는 함수
@@ -42,10 +42,19 @@ export const loginErrorHandler: ServerErrorHandler<SignInSchema> = (error, setEr
 };
 
 /**
- * 로그인 실패시 서버 에러 처리
+ * 닉네임 중복시 서버 에러 처리
  * @author sohyun
  */
-export const nicknameErrorHandler: ServerErrorHandler<NicknameSchema> = (error, setError) => {
+export const nicknameErrorHandler: ServerErrorHandler<ChangeProfileSchema> = (error, setError) => {
   if (!isAxiosError(error)) return;
   setError("nickname", { message: "이미 사용중인 닉네임입니다." });
+};
+
+/**
+ * 비밀번호 재설정 에러
+ * @author sohyun
+ */
+export const sendEmailErrorHandler: ServerErrorHandler<SendEmailSchema> = (error, setError) => {
+  if (!isAxiosError(error)) return;
+  setError("sendEmail", { message: "가입되지 않은 회원정보 입니다." });
 };
