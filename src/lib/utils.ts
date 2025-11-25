@@ -85,9 +85,9 @@ export const otherMonthIndicator = (date: Date, currentMonth: number, currentYea
  * @param date
  */
 export const formatDateForToMonthAndDays = (date: Date | string | undefined): string => {
-  if (isEmpty(date)) return "";
+  if (!date) return "";
 
-  const resultDate = strToDate(date as Date | string);
+  const resultDate = strToDate(date);
   return resultDate
     .toLocaleDateString("ko-KR", {
       month: "long",
@@ -103,9 +103,9 @@ export const formatDateForToMonthAndDays = (date: Date | string | undefined): st
  * @param date
  */
 export const formatDateToFullStr = ({ date, type = "korean" }: DateFullProps): string => {
-  if (isEmpty(date)) return "";
+  if (!date) return "";
 
-  const resultDate = strToDate(date as Date | string);
+  const resultDate = strToDate(date);
   let resultDateStr = "";
   if (type === "korean") {
     // `YYYY년 MM월 DD일`
@@ -168,9 +168,9 @@ export const isNoAuthURL = (config: AxiosRequestConfig) => {
  * @param date
  */
 export const formatTimeToStr = ({ date, type = "colon" }: DateTimeProps): string => {
-  if (isEmpty(date)) return "";
+  if (!date) return "";
 
-  const resultDate = strToDate(date as Date | string);
+  const resultDate = strToDate(date);
   let resultTimeStr = "";
   if (type === "colon") {
     // "HH:mm"
@@ -179,7 +179,7 @@ export const formatTimeToStr = ({ date, type = "colon" }: DateTimeProps): string
       minute: "2-digit",
     });
   } else if (type === "meridiem") {
-    // 오전 or 오후 HH:mm
+    // 오전 or 오후 hh:mm
     resultTimeStr = resultDate.toLocaleTimeString("ko-KR", {
       hour12: true,
       hour: "numeric",
@@ -230,4 +230,16 @@ export const isEmpty = (value: unknown): boolean => {
  */
 export const getFrequencyLabel = (frequency: string): string => {
   return FrequencyOptions.find(fo => fo.value === frequency)?.label ?? "";
+};
+
+/**
+ * Date 시간타입 korea locale 적용한 ISO date로 변환.
+ * @author luli
+ * @param date
+ */
+export const formatDateToISOString = (date: Date | string) => {
+  const resultDate = strToDate(date);
+  const tzOffset = 9 * 60;
+  const localDate = new Date(resultDate.getTime() + tzOffset * 60 * 1000);
+  return localDate.toISOString().replace("Z", "+09:00");
 };
