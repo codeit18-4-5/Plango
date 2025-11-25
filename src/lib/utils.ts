@@ -242,6 +242,8 @@ export const isNoAuthAxios = (config: AxiosRequestConfig) => {
   const method = (config.method || "get").toLowerCase();
   return isNoAuthURL(url, method);
 };
+
+/**
  * 숫자를 제한값 이상이면 "9999+" 형태로 변환
  */
 export function clampText(value: number, limit: number, suffix = "+") {
