@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import getArticles from "@/api/article/get-articles";
@@ -47,7 +49,7 @@ export default function BestArticleSection() {
         {!isPending &&
           articles.length > 0 &&
           articles.slice(0, showCount).map(article => (
-            <Card id={article.id} href={`/articles/${article.id}`} key={article.id}>
+            <Card id={article.id} href={`/article/${article.id}`} key={article.id}>
               <Card.Badge />
               <Card.Content
                 title={article.title}
@@ -58,6 +60,7 @@ export default function BestArticleSection() {
                 writer={article.writer.nickname}
                 createdAt={article.createdAt}
                 likeCount={article.likeCount}
+                commentCount={article.commentCount}
                 image={article.writer.image}
                 variant="secondary"
               />

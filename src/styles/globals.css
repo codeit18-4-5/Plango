@@ -58,7 +58,7 @@
   --purple-400: #a855f7;
 
   --black: var(--gray-900);
-  --white: #ffffff;
+  --white: var(--gray-100);
 
   --background: var(--black);
 
@@ -134,7 +134,7 @@
   --red-600: #cc1020;
   --red-400: #a0020f;
   /* Base colors */
-  --black: #ffffff;
+  --black: var(--gray-900);
   --white: var(--gray-100);
 
   --skeleton-base: #cbd5e1;
@@ -271,7 +271,8 @@ svg {
 }
 
 svg,
-svg circle {
+svg circle,
+svg path {
   color: inherit;
 }
 

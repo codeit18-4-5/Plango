@@ -37,9 +37,20 @@ export default function Alert({
   return (
     <div className={alertOverlayStyle} onClick={onCancel}>
       <div className={alertContainerStyle()} onClick={e => e.stopPropagation()}>
-        {type === ALERT_TYPE.Leave && <AlertIcon className={alertIcon} alt="Alert Icon" />}
+        {(type === ALERT_TYPE.Leave ||
+          type === ALERT_TYPE.DeleteComment ||
+          type === ALERT_TYPE.DeleteArticle) && (
+          <AlertIcon className={alertIcon} alt="Alert Icon" />
+        )}
         <div
-          className={textContainer({ spacing: type === ALERT_TYPE.Leave ? "leave" : "default" })}
+          className={textContainer({
+            spacing:
+              type === ALERT_TYPE.Leave ||
+              type === ALERT_TYPE.DeleteComment ||
+              type === ALERT_TYPE.DeleteArticle
+                ? "leave"
+                : "default",
+          })}
         >
           {title && (
             <p

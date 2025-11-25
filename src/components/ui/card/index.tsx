@@ -1,6 +1,7 @@
 "use client";
 
 import cn from "@/lib/cn";
+import Link from "next/link";
 import { ReactNode, createContext, useContext, MouseEvent } from "react";
 import CardBadge from "./card-badge";
 import CardContent from "./card-content";
@@ -26,7 +27,7 @@ const CardContext = createContext<CardContextType>({ hasActions: false });
 export const useCardContext = () => useContext(CardContext);
 
 function Card({ id, children, className, href, actions = [] }: CardProps) {
-  const hasLink = Boolean(href);
+  const hasLink = typeof href === "string" && href.length > 0;
   const hasActions = actions.length > 0;
 
   const handleActionClick = (e: MouseEvent) => {
@@ -37,8 +38,8 @@ function Card({ id, children, className, href, actions = [] }: CardProps) {
     <CardContext.Provider value={{ hasActions }}>
       <div key={id} className={CARD_WRAPPER_STYLES.wrapper(hasLink, className)}>
         {hasLink ? (
-          <a
-            href={href}
+          <Link
+            href={href!}
             className={cn(
               CARD_WRAPPER_STYLES.inner,
               CARD_WRAPPER_STYLES.group,
@@ -46,7 +47,7 @@ function Card({ id, children, className, href, actions = [] }: CardProps) {
             )}
           >
             {children}
-          </a>
+          </Link>
         ) : (
           <div className={cn(CARD_WRAPPER_STYLES.group, CARD_WRAPPER_STYLES.spacing(hasActions))}>
             {children}
