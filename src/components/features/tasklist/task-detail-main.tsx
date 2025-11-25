@@ -1,23 +1,42 @@
 import KebabIcon from "@/assets/icons/ic-kebab.svg";
-import { Avatar } from "@/components/ui";
+import { Avatar, Dropdown } from "@/components/ui";
 import { formatDateToFullStr, formatTimeToStr, getFrequencyLabel } from "@/lib/utils";
 import CalendarIcon from "@/assets/icons/ic-calendar.svg";
 import RepeatIcon from "@/assets/icons/ic-repeat.svg";
 import TimeIcon from "@/assets/icons/ic-time.svg";
 import { TaskDetail } from "@/types/task";
+import { KebabType } from "./task";
 
 interface TaskDetailProps {
   taskDetail: TaskDetail;
+  onKebabClick: ({ taskId, type }: { taskId: number; type: KebabType }) => void;
 }
 
-export default function TaskDetailMain({ taskDetail }: TaskDetailProps) {
+export default function TaskDetailMain({ taskDetail, onKebabClick }: TaskDetailProps) {
+  const handleKebabClick = (type: KebabType) => {
+    onKebabClick({ taskId: taskDetail.id, type });
+  };
+
   return (
     <>
       <div className="mb-[16px] flex justify-between">
         <h1 className="text-heading-s text-gray-100">{taskDetail.name}</h1>
-        <button className="w-[24px]">
-          <KebabIcon fill="var(--gray-500)" />
-        </button>
+        <Dropdown>
+          <Dropdown.TriggerIcon
+            intent="icon"
+            className="rounded px-[2px] py-[3px] hover:bg-gray-700"
+          >
+            <KebabIcon className="w-[24px]" />
+          </Dropdown.TriggerIcon>
+          <Dropdown.Menu size="md">
+            <Dropdown.Option align="center" onClick={() => handleKebabClick("update")}>
+              수정하기
+            </Dropdown.Option>
+            <Dropdown.Option align="center" onClick={() => handleKebabClick("delete")}>
+              삭제하기
+            </Dropdown.Option>
+          </Dropdown.Menu>
+        </Dropdown>
       </div>
       <div className="mb-[16px] flex items-center justify-between">
         <div className="flex items-center gap-[12px]">

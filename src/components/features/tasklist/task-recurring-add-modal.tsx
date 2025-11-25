@@ -8,19 +8,19 @@ import { FrequencyOptions, FrequencyType } from "@/types/date-format-type";
 import CustomSingleDatepicker from "@/components/ui/date-timepicker/single-datepicker";
 import DailyFrequencyOptions from "./daily-frequency-options";
 import z4 from "zod/v4";
-import { taskSchema } from "@/lib/schema";
+import { taskDetailSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 interface TaskRecurringProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (value: z4.infer<typeof taskSchema>) => void;
+  onSubmit: (value: z4.infer<typeof taskDetailSchema>) => void;
 }
 
 export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: TaskRecurringProps) {
   const [dayIndexArray, setDayIndexArray] = useState<number[]>([]);
 
-  const handleSubmit: SubmitHandler<z4.infer<typeof taskSchema>> = submitData => {
+  const handleSubmit: SubmitHandler<z4.infer<typeof taskDetailSchema>> = submitData => {
     if (submitData.frequencyType !== FrequencyType.Weekly) {
       delete submitData.weekDays;
     }
@@ -57,8 +57,8 @@ export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: Tas
     <Modal isOpen={isOpen} onClose={onClose}>
       <Form
         onSubmit={handleSubmit}
-        resolver={zodResolver(taskSchema)}
-        mode="onChange"
+        resolver={zodResolver(taskDetailSchema)}
+        mode="onSubmit"
         defaultValues={defaultValues}
       >
         <Modal.HeaderWithClose title="할 일 만들기" />
@@ -82,7 +82,7 @@ function FormField({
     formState: { errors },
     clearErrors,
     watch,
-  } = useFormContext<z4.infer<typeof taskSchema>>();
+  } = useFormContext<z4.infer<typeof taskDetailSchema>>();
 
   const [isDatepickerOpen, setIsDatepickerOpen] = useState(false);
   const [isTimepickerOpen, setIsTimepickerOpen] = useState(false);
