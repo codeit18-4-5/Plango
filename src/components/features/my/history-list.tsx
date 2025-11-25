@@ -31,7 +31,7 @@ export default function HistoryList({ tasksDone }: UserHistoryList) {
           <h3
             className={cn(
               "text-center tracking-wider",
-              "before:block before:translate-y-3 before:border before:border-dashed before:border-gray-600 before:content-['']",
+              "before:block before:translate-y-3 before:border before:border-gray-600 before:content-['']",
             )}
           >
             <span className="relative inline-block bg-black px-6 text-sm text-gray-400">
