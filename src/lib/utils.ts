@@ -270,3 +270,30 @@ export const formatDateToISOString = (date: Date | string) => {
   const localDate = new Date(resultDate.getTime() + tzOffset * 60 * 1000);
   return localDate.toISOString().replace("Z", "+09:00");
 };
+
+/**
+ * taskList 변경값만 추출
+ * @author luli
+ * @param
+ */
+export const extractChangedFields = (
+  values: { name?: string; description?: string },
+  currentName: string,
+  currentDescription?: string,
+) => {
+  const result: { name?: string; description?: string } = {};
+
+  if (values.name !== undefined && values.name !== currentName) {
+    result.name = values.name;
+  }
+
+  if (
+    currentDescription !== undefined &&
+    values.description !== undefined &&
+    values.description !== currentDescription
+  ) {
+    result.description = values.description;
+  }
+
+  return result;
+};

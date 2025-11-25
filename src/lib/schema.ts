@@ -80,12 +80,24 @@ export const validateRequired = (value: string, label = "필수 항목") => {
 };
 
 /**
+ * task
+ */
+
+export const taskSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, { error: "목록 이름은 필수 입력입니다." })
+    .max(30, { error: "목록 명은 최대 30자까지 가능합니다." }),
+});
+
+/**
  * taskSchema
  * @author luli
  * */
 const frequency = ["ONCE", "DAILY", "WEEKLY", "MONTHLY"];
 
-export const taskSchema = z
+export const taskDetailSchema = z
   .object({
     name: z
       .string()
@@ -133,6 +145,49 @@ export const taskSchema = z
     },
     { error: "반복 날짜는 1~31일 사이로 선택하여야 합니다.", path: ["frequencyType"] },
   );
+
+export const taskDetailUpdateSchema = (currentName: string, currentDescription?: string) => {
+  const hasDescription = currentDescription !== undefined;
+
+  const baseSchema = z.object({
+    name: z
+      .string()
+      .trim()
+      .min(1, { message: "제목은 필수 입력입니다." })
+      .max(30, { message: "제목은 최대 30자까지 가능합니다." })
+      .optional(),
+    description: z
+      .string()
+      .trim()
+      .max(255, { message: "메모는 최대 255자까지 가능합니다." })
+      .optional(),
+  });
+
+  if (hasDescription) {
+    return baseSchema.refine(
+      values => {
+        const nameChanged = values.name && values.name !== currentName;
+        const descChanged =
+          values.description !== undefined && values.description !== currentDescription;
+        return nameChanged || descChanged;
+      },
+      {
+        message: "제목 또는 메모 중 최소 하나는 변경되어야 합니다.",
+        path: ["name"],
+      },
+    );
+  } else {
+    return baseSchema.refine(
+      values => {
+        return values.name && values.name !== currentName;
+      },
+      {
+        message: "같은 값으로는 수정할 수 없습니다.",
+        path: ["name"],
+      },
+    );
+  }
+};
 
 export const articleFormSchema = z.object({
   title: z
