@@ -11,3 +11,4 @@ export {
 export { default as Login } from "@/components/features/auth/login";
 export { default as Signup } from "@/components/features/auth/signup";
 export { default as KakaoRedirect } from "@/components/features/auth/kakao-redirect";
+export { default as ResetPassword } from "@/components/features/auth/reset-password";

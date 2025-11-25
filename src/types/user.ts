@@ -37,6 +37,20 @@ export type UserSummary = Pick<User, "id" | "image" | "nickname">;
 
 export type UserUpdate = Partial<Pick<User, "image" | "nickname">>;
 
+export type UserPassword = {
+  passwordConfirmation: string;
+  password: string;
+};
+
+export type UserResetPassword = {
+  token: string;
+} & UserPassword;
+
+export type UserSendResetPasswordEmail = {
+  email: string;
+  redirectUrl: string;
+};
+
 export type UserHistory = {
   id: number;
   updatedAt: string;
