@@ -7,29 +7,36 @@ import deleteArticle from "@/api/article/delete-article";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth.store";
-import { getTimeAgo, formatDateToFullStr, clampText, formatSocialCount } from "@/lib/utils";
+import { getTimeAgo, formatDateToFullStr, clampText } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
+import { ArticleDetail } from "@/types/article";
 import { Button } from "@/components/ui";
+import ArticleLike from "@/components/features/article/actions/article-like";
 import KebabMenu from "@/components/features/article/actions/kebab-menu";
 import { ARTICLE_DETAIL_STYLES } from "../index.styles";
 import IcComment from "@/assets/icons/ic-comment.svg";
 import IcHeart from "@/assets/icons/ic-heart.svg";
 
-export default function ArticleDetailInfo({ articleId }: { articleId: number }) {
+interface ArticleDetailInfoProps {
+  articleId: number;
+  initialArticle: ArticleDetail;
+}
+
+export default function ArticleDetailInfo({ articleId, initialArticle }: ArticleDetailInfoProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const currentUser = useAuthStore(state => state.user);
 
-  const { data: article, isError } = useQuery({
+  const { data: article, isError } = useQuery<ArticleDetail>({
     queryKey: ["getArticleDetail", articleId],
     queryFn: () => getArticleDetail({ articleId }),
     enabled: !!articleId,
+    initialData: initialArticle,
   });
 
   const { mutate: deleteArticleMutate } = useMutation({
     mutationFn: () => deleteArticle({ articleId }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
       queryClient.invalidateQueries({ queryKey: ["getArticles"] });
       router.replace("/article");
     },
@@ -104,7 +111,12 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
       </div>
       <div className={ARTICLE_DETAIL_STYLES.actions.wrapper}>
         <div className={ARTICLE_DETAIL_STYLES.actions.like}>
-          <span>{formatSocialCount(article.likeCount)}</span>
+          <ArticleLike
+            isLogin={!!currentUser}
+            isLiked={article.isLiked}
+            articleId={article.id}
+            likeCount={article.likeCount}
+          />
         </div>
         <Button
           as={Link}

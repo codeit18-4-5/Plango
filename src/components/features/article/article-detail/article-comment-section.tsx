@@ -11,6 +11,7 @@ import deleteArticleComment from "@/api/article/comment/delete-article-comment";
 import patchArticleComment from "@/api/article/comment/patch-article-comment";
 import ArticleCommentList from "./article-comment-list";
 import { useAuthStore } from "@/store/auth.store";
+import { ArticleDetail } from "@/types/article";
 import { ArticleComments } from "@/types/article-comment";
 import { useInfiniteObserver } from "@/hooks";
 import { useAlert } from "@/providers/alert-provider";
@@ -19,7 +20,13 @@ import { ArticleConfirmModal } from "../layout";
 import { ARTICLE_COMMENT_STYLES } from "../index.styles";
 import { NEXT_CURSOR } from "./article-comment-list";
 
-export default function ArticleCommentSection({ articleId }: { articleId: number }) {
+export default function ArticleCommentSection({
+  articleId,
+  initialArticle,
+}: {
+  articleId: number;
+  initialArticle: ArticleDetail;
+}) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const currentUser = useAuthStore(state => state.user);
@@ -29,10 +36,11 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [comment, setComment] = useState("");
 
-  const { data: articleDetail } = useQuery({
+  const { data: articleDetail } = useQuery<ArticleDetail>({
     queryKey: ["getArticleDetail", articleId],
     queryFn: () => getArticleDetail({ articleId }),
     enabled: !!articleId,
+    initialData: initialArticle,
   });
 
   const handleRequireLogin = () => setShowLoginModal(true);

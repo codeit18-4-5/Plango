@@ -104,3 +104,9 @@ export interface ArticleDetail extends Omit<Article, "writer"> {
   commentCount: number;
   isLiked: boolean;
 }
+export type ArticleLikeProps = {
+  isLogin: boolean;
+  isLiked: boolean;
+  articleId: number;
+  likeCount: number;
+};
