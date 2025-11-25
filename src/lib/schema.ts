@@ -60,6 +60,58 @@ export const validateRequired = (value: string, label = "필수 항목") => {
   return isInputEmpty(value) ? `${label} 입력해주세요.` : true;
 };
 
+/**
+ * taskSchema
+ * @author luli
+ * */
+const frequency = ["ONCE", "DAILY", "WEEKLY", "MONTHLY"];
+
+export const taskSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, { error: "제목은 필수 입력입니다." })
+      .max(30, { error: "제목은 최대 30자까지 가능합니다." }),
+    startDate: z
+      .string()
+      .min(1, { error: "시작 날짜와 시간은 필수 입력입니다.." })
+      .refine(val => !isNaN(new Date(val).getTime()), { error: "유효한 날짜 형식이 아닙니다." })
+      .refine(val => new Date(val) > new Date(), {
+        error: "오늘 이전 범위의 날짜, 시간은 선택할 수 없습니다.",
+      }),
+    frequencyType: z
+      .string()
+      .min(1, { error: "반복 설정 값은 필수 값입니다." })
+      .refine(val => frequency.includes(val), { error: "유효한 반복 설정 값이 아닙니다." }),
+    weekDays: z.array(z.number()).optional(),
+    monthDay: z.number().optional(),
+    description: z
+      .string()
+      .refine(val => val.length <= 255, { error: "메모는 최대 255자까지 가능합니다." }),
+  })
+  .refine(
+    values => {
+      if (values.frequencyType === "WEEKLY") {
+        return values.weekDays != null && values.weekDays.length > 0;
+      }
+      return true;
+    },
+    {
+      error: "주간 반복 설정시 요일은 필수 입력입니다.",
+      path: ["frequencyType"],
+    },
+  )
+  .refine(
+    values => {
+      if (values.frequencyType === "MONTHLY") {
+        return values.monthDay != null && values.monthDay >= 1 && values.monthDay <= 31;
+      }
+      return true;
+    },
+
+    { error: "반복 날짜는 1~31일 사이로 선택하여야 합니다.", path: ["frequencyType"] },
+  );
+
 export const articleFormSchema = z.object({
   title: z
     .string()
