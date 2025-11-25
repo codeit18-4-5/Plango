@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef, useId } from "react";
 import { useImageUpload, useFileDrop } from "@/hooks";
 import { IMG_UPLOAD_STYLES } from "./index.styles";
 import Image from "next/image";
@@ -9,60 +8,98 @@ import IcPlus from "@/assets/icons/ic-plus.svg";
 
 /**
  * 이미지 업로드 컴포넌트
- * 미리보기, 드래그앤드롭, 파일 선택
+ * 파일 선택 시 onChange로 file 객체 전달, 삭제 시 null 전달
+ * value로 기존 이미지 URL 전달
  * @author yeonsu
  */
 
-export default function ImgUpload() {
-  const { preview, error, handleFile, clearPreview } = useImageUpload();
-  const { onDragOver, onDragLeave, onDrop } = useFileDrop({
-    onFiles: files => handleFile(files[0]),
+export type ImgUploadProps = {
+  value?: string | null;
+  onChange: (file: File | string | null) => void;
+  id: string;
+  error?: string;
+};
+
+export default function ImgUpload({ value, onChange, id, error }: ImgUploadProps) {
+  const { preview, error: uploadError, handleFile, clearPreview } = useImageUpload();
+
+  const handleUploadAndChange = (file: File) => {
+    const isValid = handleFile(file);
+    if (!isValid) {
+      onChange(null);
+      return;
+    }
+    onChange(file);
+  };
+
+  const handleFileInput = (file: File | undefined) => {
+    if (file) handleUploadAndChange(file);
+  };
+
+  const onFilesDrop = (files: File[]) => {
+    handleFileInput(files[0]);
+  };
+
+  const { isDragActive, onDragOver, onDragLeave, onDrop } = useFileDrop({
+    onFiles: onFilesDrop,
   });
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    handleFile(file);
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleFileInput(e.target.files?.[0]);
     e.target.value = "";
   };
 
-  const inputId = useId();
+  const clearAll = () => {
+    clearPreview();
+    onChange(null);
+  };
+
+  const showPreview = preview?.image || value;
+  const previewUrl = preview?.image || (typeof value === "string" ? value : "");
+  const previewName = preview?.name || "첨부 이미지";
 
   return (
     <>
       <div
-        className={IMG_UPLOAD_STYLES.wrapper(!preview, !!error)}
+        className={IMG_UPLOAD_STYLES.wrapper(!showPreview, !!error, isDragActive)}
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
       >
         <input
-          ref={inputRef}
-          id={inputId}
+          id={id}
+          name={id}
           type="file"
-          accept="image/*"
-          onChange={onChange}
+          accept="image/png, image/jpeg, image/jpg, image/gif, image/webp"
+          onChange={onInputChange}
           className={IMG_UPLOAD_STYLES.input}
         />
-        {!preview ? (
-          <label htmlFor={inputId} className={IMG_UPLOAD_STYLES.label}>
-            <IcPlus className={IMG_UPLOAD_STYLES.icon.plus} />
-            <span>이미지 등록</span>
+        {!showPreview ? (
+          <label htmlFor={id} className={IMG_UPLOAD_STYLES.label(isDragActive)}>
+            <IcPlus className={IMG_UPLOAD_STYLES.icon.plus(isDragActive)} />
+            <span className="text-center">
+              {isDragActive ? (
+                "이미지를 여기에 드롭하세요."
+              ) : (
+                <>
+                  여기로 이미지를 드래그하거나 <br /> 클릭해서 업로드하세요.
+                </>
+              )}
+            </span>
           </label>
         ) : (
           <>
             <Image
-              src={preview.image}
-              alt={preview.name}
+              src={previewUrl}
+              alt={previewName}
               fill
               className={IMG_UPLOAD_STYLES.image}
+              priority
+              sizes="100vw"
             />
             <button
               type="button"
-              onClick={clearPreview}
+              onClick={clearAll}
               aria-label="등록 이미지 삭제"
               className={IMG_UPLOAD_STYLES.button}
             >
@@ -71,9 +108,9 @@ export default function ImgUpload() {
           </>
         )}
       </div>
-      {error && (
+      {(uploadError || error) && (
         <span className={IMG_UPLOAD_STYLES.errorMsg} role="alert">
-          {error}
+          {uploadError || error}
         </span>
       )}
     </>

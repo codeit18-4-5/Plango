@@ -8,7 +8,7 @@ import ReplyActions from "./reply-actions";
 import { useEditable, useAutoResizeTextarea } from "@/hooks";
 import { replyWrapper, replyInner, replyTextarea, replyInfo, replyTimeStamp } from "./index.styles";
 import { Avatar, Button } from "@/components/ui";
-import { getTimeAgo } from "@/lib/utils";
+import { getTimeAgo, formatDateToFullStr } from "@/lib/utils";
 
 type ReplyProps = {
   comment: CommentBase;
@@ -32,6 +32,11 @@ export default function Reply({
   const { textareaRef, onChange, resize } = useAutoResizeTextarea();
 
   const { editedContent, setEditedContent } = useEditable(comment.content, { textareaRef });
+
+  const handleCancelEdit = () => {
+    setEditedContent(comment.content);
+    onCancelEdit();
+  };
 
   useEffect(() => {
     if (isEditing) {
@@ -68,7 +73,7 @@ export default function Reply({
             />
             <div className="flex justify-end gap-2">
               <Button
-                onClick={onCancelEdit}
+                onClick={handleCancelEdit}
                 size="sm"
                 intent="cancel"
                 className={cn(
@@ -97,9 +102,20 @@ export default function Reply({
             <div className={replyInfo({ variant })}>
               <div className="flex items-center gap-x-3">
                 <Avatar image={comment.user.image} className="h-8 w-8" />
+                <span className="visually-hidden">작성자</span>
                 <span>{comment.user.nickname}</span>
               </div>
-              <span className={replyTimeStamp({ variant })}>{getTimeAgo(comment.createdAt)}</span>
+              <time
+                dateTime={comment.createdAt}
+                title={formatDateToFullStr({ date: comment.createdAt })}
+                aria-label={formatDateToFullStr({ date: comment.createdAt })}
+                className={replyTimeStamp({ variant })}
+              >
+                {getTimeAgo(comment.createdAt)}
+              </time>
+              {comment.createdAt !== comment.updatedAt && (
+                <span className="text-xs text-gray-500">(수정됨)</span>
+              )}
             </div>
             {isAuthor && <ReplyActions actions={actions} />}
           </>

@@ -26,7 +26,7 @@ export default function renderCustomHeader({
           <ArrowIcon className="rotate-90" />
         </div>
       </button>
-      <div className="text-fs-body-s">{monthYear}</div>
+      <div className="text-body-s">{monthYear}</div>
       <button
         type="button"
         onClick={increaseMonth}

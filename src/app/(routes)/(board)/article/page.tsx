@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense } from "react";
+import Link from "next/link";
 import { Container } from "@/components/layout";
 import { SearchBar, BestArticleSection, AllArticleSection } from "@/components/features/article";
 import { Floating, ScrollTopButton, CircleButton } from "@/components/ui";
@@ -33,7 +34,7 @@ export default function ArticlesPage() {
       </Suspense>
       <Floating className="z-20">
         <ScrollTopButton />
-        <CircleButton as="a" href="/article/write">
+        <CircleButton as={Link} href="/article/create">
           <IcEdit className="h-6 w-6" />
           <span className="visually-hidden">글쓰기</span>
         </CircleButton>

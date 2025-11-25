@@ -5,5 +5,5 @@
 
 export const DISPLAY_LIMITS = {
   MAX_LIKE_COUNT: 9999,
-  MAX_LIKE_COUNT_TEXT: "9999+",
+  MAX_COMMENT_COUNT: 9999,
 } as const;

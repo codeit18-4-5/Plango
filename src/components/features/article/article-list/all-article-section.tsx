@@ -1,6 +1,12 @@
+"use client";
+import { useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useQueryClient, useInfiniteQuery } from "@tanstack/react-query";
 import getArticles from "@/api/article/get-articles";
+import deleteArticle from "@/api/article/delete-article";
+import { useMutation } from "@tanstack/react-query";
+import { useAuthStore } from "@/store/auth.store";
+import { useAlert } from "@/providers/alert-provider";
 import { useDebouncedValue, useInfiniteObserver } from "@/hooks";
 import { Card, Dropdown } from "@/components/ui";
 import { ArticleListEmpty } from "@/components/features/article";
@@ -22,9 +28,11 @@ export default function AllArticleSection() {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const router = useRouter();
+  const currentUser = useAuthStore(state => state.user);
   const param = searchParams.get("orderBy");
   const orderBy: OrderByType = param === "like" || param === "recent" ? param : "recent";
   const searchQuery = searchParams.get("keyword") ?? "";
+  const { showAlert } = useAlert();
 
   const debouncedOrderBy = useDebouncedValue(orderBy, DEBOUNCE_DELAY);
   const debouncedQuery = useDebouncedValue(searchQuery, DEBOUNCE_DELAY);
@@ -33,7 +41,7 @@ export default function AllArticleSection() {
     Article[],
     Error
   >({
-    queryKey: ["articles", debouncedOrderBy, debouncedQuery],
+    queryKey: ["getArticles", debouncedOrderBy, debouncedQuery],
     queryFn: ({ pageParam = 1 }) =>
       getArticles({
         orderBy: debouncedOrderBy,
@@ -57,7 +65,7 @@ export default function AllArticleSection() {
 
   const setQueryParams = (newOrderBy: OrderByType) => {
     queryClient.removeQueries({
-      queryKey: ["articles", debouncedOrderBy, debouncedQuery],
+      queryKey: ["getArticles", debouncedOrderBy, debouncedQuery],
     });
 
     const params = new URLSearchParams(searchParams.toString());
@@ -68,6 +76,21 @@ export default function AllArticleSection() {
   };
 
   const selectedSort = sortOptions.find(opt => opt.value === orderBy) ?? sortOptions[0];
+
+  const { mutate: removeArticle } = useMutation({
+    mutationFn: ({ articleId }: { articleId: number }) => deleteArticle({ articleId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getArticles"] });
+    },
+  });
+
+  const handleDelete = useCallback(
+    async (articleId: number) => {
+      const confirmed = await showAlert({ type: "deleteArticle" });
+      if (confirmed) removeArticle({ articleId });
+    },
+    [showAlert, removeArticle],
+  );
 
   return (
     <section className={ARTICLE_LIST_STYLES.section.wrapper}>
@@ -106,12 +129,35 @@ export default function AllArticleSection() {
           </ArticleListEmpty>
         )}
         {articles.map(article => (
-          <Card id={article.id} href={`/articles/${article.id}`} key={article.id}>
+          <Card
+            id={article.id}
+            href={`/article/${article.id}`}
+            key={article.id}
+            actions={
+              currentUser?.id === article.writer.id
+                ? [
+                    {
+                      label: "수정하기",
+                      onClick: () => {
+                        router.push(`/article/${article.id}/edit`);
+                      },
+                    },
+                    {
+                      label: "삭제하기",
+                      onClick: async () => {
+                        handleDelete(article.id);
+                      },
+                    },
+                  ]
+                : []
+            }
+          >
             <Card.Content title={article.title} image={article.image} />
             <Card.Info
               writer={article.writer.nickname}
               createdAt={article.createdAt}
               likeCount={article.likeCount}
+              commentCount={article.commentCount}
               image={article.writer.image}
             />
           </Card>

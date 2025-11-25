@@ -4,7 +4,9 @@ import deleteUser from "@/api/user/delete-user";
 import patchUser from "@/api/user/patch-user";
 import { Button, Form, Input } from "@/components/ui";
 import { useLogout } from "@/hooks";
+import axiosInstance from "@/lib/axios";
 import { nicknameErrorHandler } from "@/lib/error";
+import { getAccessToken } from "@/lib/token";
 import { changeProfileSchema, ChangeProfileSchema } from "@/lib/schema";
 import { useAuthStore } from "@/store/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +32,9 @@ function ProfileUpdate() {
   );
 }
 export default function HomePage() {
-  const { user, accessToken, initialized } = useAuthStore();
+  const user = useAuthStore(state => state.user);
+  const accessToken = getAccessToken();
+  const initialized = useAuthStore(state => state.initialized);
   const logout = useLogout();
   if (!initialized) {
     return null;
@@ -72,10 +76,26 @@ export default function HomePage() {
       logout();
     }
   };
+
+  const getGroup = async () => {
+    const res = await axiosInstance.get("/user/groups");
+    // console.log(res.data);
+    return res.data;
+  };
+  const getMemberships = async () => {
+    const res = await axiosInstance.get("/user/memberships");
+    // console.log(res.data);
+    return res.data;
+  };
+
   return (
     <div className="p-8">
+      <h1 className="text-xl">테스트 페이지</h1>
+      <br />
+
+      <p className="break-all">현재 액세스 토큰(쿠키): {accessToken ?? "없음"}</p>
+      <br />
       <h2>Zustand에 저장된 목록</h2>
-      <p className="break-all">현재 액세스 토큰: {accessToken ?? "없음"}</p>
       <p>현재 user id: {id ?? "없음"}</p>
       <p>현재 user image: {image ?? "없음"}</p>
       <p>현재 user nickname: {nickname ?? "없음"}</p>
@@ -96,6 +116,12 @@ export default function HomePage() {
       </button>
       <button onClick={handleDelete} className="mt-4 border p-2">
         회원탈퇴
+      </button>
+      <button onClick={getGroup} className="mt-4 border p-2">
+        그룹불러오기(콘솔)
+      </button>
+      <button onClick={getMemberships} className="mt-4 border p-2">
+        멤버불러오기(콘솔)
       </button>
     </div>
   );

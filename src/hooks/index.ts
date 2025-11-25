@@ -8,3 +8,4 @@ export { default as useAuthSuccess } from "@/hooks/use-auth-success";
 export { default as useLogout } from "@/hooks/use-logout";
 export { default as useDebouncedValue } from "@/hooks/use-debounced-value";
 export { default as useInfiniteObserver } from "@/hooks/use-infinite-observer";
+export { default as useDatepickerDate } from "@/hooks/use-datepicker-date";

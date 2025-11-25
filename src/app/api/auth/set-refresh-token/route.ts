@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const POST = async (req: NextRequest) => {
   try {
     // 전달받은 refreshToken
-    const { refreshToken } = await req.json();
+    const { refreshToken, accessToken } = await req.json();
 
     if (!refreshToken) {
       // refreshToken이 정상적이지 않는 경우
@@ -30,7 +30,15 @@ export const POST = async (req: NextRequest) => {
       path: "/",
       sameSite: "lax",
     });
-
+    cookieStore.set({
+      name: "accessToken",
+      value: accessToken,
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 60 * 60, // 1시간
+      path: "/",
+      sameSite: "lax",
+    });
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     return createErrorResponse(

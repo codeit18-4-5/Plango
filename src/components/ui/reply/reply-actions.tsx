@@ -15,7 +15,11 @@ export default function ReplyActions({ actions, className }: ReplyActionsProps) 
   return (
     <div className={cn(REPLY_ACTIONS_STYLES.wrapper, className)}>
       <Dropdown>
-        <Dropdown.TriggerIcon intent="icon" className={REPLY_ACTIONS_STYLES.icon}>
+        <Dropdown.TriggerIcon
+          intent="icon"
+          className={REPLY_ACTIONS_STYLES.icon}
+          aria-label="옵션 더보기"
+        >
           <IcKebab />
         </Dropdown.TriggerIcon>
         <Dropdown.Menu size="md">
