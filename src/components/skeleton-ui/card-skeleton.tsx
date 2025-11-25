@@ -19,7 +19,7 @@ export default function CardSkeleton({
   className,
 }: CardSkeletonProps) {
   return (
-    <div className={cn(CARD_WRAPPER_STYLES.wrapper(false), className)}>
+    <div className={cn(CARD_WRAPPER_STYLES.wrapper(false), "hover:border-gray-700", className)}>
       <div className={CARD_WRAPPER_STYLES.group}>
         {badge && <Skeleton height={22} width={48} />}
         <div className="flex w-full justify-between">

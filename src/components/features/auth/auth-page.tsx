@@ -12,6 +12,7 @@ type AuthFieldProps = {
   id: string;
   errorMsg?: string;
   label: string;
+  labelHidden?: boolean;
   children: ReactNode;
 };
 
@@ -43,10 +44,10 @@ export function AuthLink({ message, linkText, href }: AuthLinkProps) {
   );
 }
 
-export function AuthField({ id, label, errorMsg, children }: AuthFieldProps) {
+export function AuthField({ id, label, labelHidden, errorMsg, children }: AuthFieldProps) {
   return (
     <Input id={id} errorMsg={errorMsg}>
-      <Input.Label label={label} />
+      <Input.Label label={label} hidden={labelHidden} />
       {children}
       <Input.Error />
     </Input>
