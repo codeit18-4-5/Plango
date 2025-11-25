@@ -41,20 +41,29 @@ export type Task = TaskCommonValue & {
 
 // task 상세정보
 export type TaskDetail = Task & {
-  recurring: Recurring;
+  recurring: RecurringType;
 };
 
-export type Recurring = {
+type RecurringCommon = {
   id: number;
   name: string;
-  description: string | null;
   createdAt: string;
   updatedAt: string;
   startDate: string;
   frequencyType: string;
-  weekDays: string[];
-  monthDay: number;
   taskListId: number;
   groupId: number;
   writerId: number;
+};
+
+export type RecurringType = RecurringCommon & {
+  description: string | null;
+  weekDays: number[];
+  monthDay: number;
+};
+
+export type RecurringPostType = RecurringCommon & {
+  description: string;
+  weekDays?: number[];
+  monthDay?: number;
 };

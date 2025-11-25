@@ -4,7 +4,12 @@ import { Task } from "./task";
  * @author luli
  */
 
-type Member = {
+export interface MemberPermissionProps {
+  groupId: number;
+  userId?: number;
+}
+
+export type MemberInfo = {
   userId: number;
   groupId: number;
   userName: string;
@@ -20,7 +25,7 @@ export type GroupTaskList = {
   createdAt: string;
   updatedAt: string;
   teamId: string;
-  members: Member[];
+  members: MemberInfo[];
   taskLists: TaskList[];
 };
 
