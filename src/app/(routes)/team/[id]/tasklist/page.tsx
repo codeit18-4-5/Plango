@@ -1,9 +1,10 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import TaskListClient from "./tasklist-client";
-import { isEmpty } from "@/lib/utils";
+import { formatDateToISOString, isEmpty } from "@/lib/utils";
 import { GroupTaskList } from "@/types/tasklist";
 import { redirect } from "next/navigation";
 import { getGroupTaskListsforServer, getTaskListForServer } from "@/api/tasklist/index-server";
+import TeamPermissionProvider from "./team-permission-provider";
 
 export default async function TasklistPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -20,6 +21,7 @@ export default async function TasklistPage({ params }: { params: Promise<{ id: s
   });
 
   const currentDate = new Date();
+  currentDate.setHours(10, 0, 0, 0);
   const dateString = currentDate.toISOString().split("T")[0];
 
   let firstTaskListId: number | null = null;
@@ -38,7 +40,7 @@ export default async function TasklistPage({ params }: { params: Promise<{ id: s
           getTaskListForServer({
             groupId: groupId,
             taskListId: firstTaskListId,
-            date: currentDate.toString(),
+            date: formatDateToISOString(currentDate),
           }),
       });
     }
@@ -46,9 +48,11 @@ export default async function TasklistPage({ params }: { params: Promise<{ id: s
 
   return (
     <>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <TaskListClient groupData={groupResult} taskListId={firstTaskListId} date={currentDate} />
-      </HydrationBoundary>
+      <TeamPermissionProvider groupId={groupId}>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <TaskListClient groupData={groupResult} taskListId={firstTaskListId} date={currentDate} />
+        </HydrationBoundary>
+      </TeamPermissionProvider>
     </>
   );
 }
