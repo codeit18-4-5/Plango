@@ -1,3 +1,5 @@
+"use client";
+
 import { useImageUpload, useFileDrop } from "@/hooks";
 import { IMG_UPLOAD_STYLES } from "./index.styles";
 import Image from "next/image";

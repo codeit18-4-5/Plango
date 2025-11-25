@@ -3,7 +3,7 @@
 import cn from "@/lib/cn";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import postImagesUpload from "@/api/image/post-images-upload";
 import patchArticle from "@/api/article/patch-article";
 import getArticleDetail from "@/api/article/get-article-detail";
@@ -12,7 +12,7 @@ import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
 import { CreateArticleData } from "@/types/article";
 import { Container } from "@/components/layout";
 import { ArticleFormFields } from "@/components/features/article";
-import { Form, Button } from "@/components/ui";
+import { Form } from "@/components/ui";
 import { ArticleEditFormProps } from "@/types/article";
 import {
   ARTICLE_COMMON_STYLES,
@@ -21,9 +21,10 @@ import {
 
 export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  //const queryClient = useQueryClient();
-  const { data: article, isPending } = useQuery({
+  const [isImageDeleted, setIsImageDeleted] = useState(false);
+  const { data: article } = useQuery({
     queryKey: ["getArticleDetail", articleId],
     queryFn: () => getArticleDetail({ articleId }),
     enabled: !!articleId,
@@ -34,7 +35,9 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
     mutationFn: ({ articleId, patchBody }: { articleId: number; patchBody: CreateArticleData }) =>
       patchArticle(articleId, patchBody),
     onSuccess: () => {
-      //TODO: 자유게시판 리스트/상세페이지 캐시 최신 데이터 반영
+      queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
+      queryClient.invalidateQueries({ queryKey: ["getArticles"] });
+      router.replace(`/article/${articleId}`);
     },
   });
 
@@ -48,6 +51,7 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
 
   const handleImageChange = (fileOrUrl: File | string | null) => {
     setSelectedFile(fileOrUrl instanceof File ? fileOrUrl : null);
+    setIsImageDeleted(fileOrUrl === null);
   };
 
   const handleSubmit = async (values: ArticleFormSchema) => {
@@ -65,28 +69,18 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
     const patchBody: CreateArticleData = {
       title: values.title,
       content: values.content,
-      ...(imageUrl && { image: imageUrl }),
     };
+
+    if (selectedFile && imageUrl) {
+      patchBody.image = imageUrl;
+    }
+    if (isImageDeleted) {
+      patchBody.image = null;
+    }
 
     mutate({ articleId, patchBody });
   };
 
-  if (isPending) {
-    return (
-      <Container as="main" className={ARTICLE_COMMON_STYLES.empty.form}>
-        <div className="text-gray-400">게시글 정보를 불러오는 중...</div>
-      </Container>
-    );
-  }
-
-  if (!defaultValues) {
-    return (
-      <Container as="main" className={ARTICLE_COMMON_STYLES.empty.form}>
-        <div className="text-gray-400">게시글 정보를 찾을 수 없습니다.</div>
-        <Button onClick={() => router.back()}>이전 페이지로 이동</Button>
-      </Container>
-    );
-  }
   return (
     <Container as="main" className={cn(ARTICLE_COMMON_STYLES.main.wrapper, "pb-[120px]")}>
       <h2 className="visually-hidden">자유게시판</h2>

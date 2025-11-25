@@ -8,31 +8,7 @@ export interface Writer {
   image?: string;
 }
 
-export interface CreateArticleData {
-  title: string;
-  content: string;
-  image?: string;
-}
-
-export type EditArticleData = CreateArticleData;
-
-export type Article = CreateArticleData & {
-  id: number;
-  updatedAt: string;
-  createdAt: string;
-  likeCount: number;
-  writer: Writer;
-};
-
-export interface ArticleListResponse {
-  totalCount: number;
-  list: Article[];
-}
-
-export interface ArticleDetail extends Article {
-  commentCount: number;
-  isLiked: boolean;
-}
+export type WriterSummary = Pick<Writer, "nickname" | "id">;
 
 /**
  * 자유게시판 리스트 페이지 관련 타입 정의
@@ -73,6 +49,28 @@ export type ArticleEmptyProps = {
  * @author yeonsu
  */
 
+export interface CreateArticleData {
+  title: string;
+  content: string;
+  image?: string | null;
+}
+
+export type EditArticleData = CreateArticleData;
+
+export type Article = CreateArticleData & {
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  likeCount: number;
+  commentCount: number;
+  writer: Writer;
+};
+
+export interface ArticleListResponse {
+  totalCount: number;
+  list: Article[];
+}
+
 export type ArticleFormFieldsProps = {
   type?: "create" | "edit";
 };
@@ -96,3 +94,13 @@ export type CreateSectionHeaderProps = {
   className?: string;
   children?: React.ReactNode;
 };
+
+/**
+ * 자유게시판 상세 페이지 관련 타입 정의
+ * @author yeonsu
+ */
+export interface ArticleDetail extends Omit<Article, "writer"> {
+  writer: WriterSummary;
+  commentCount: number;
+  isLiked: boolean;
+}

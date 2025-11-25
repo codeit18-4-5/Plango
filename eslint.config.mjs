@@ -15,6 +15,7 @@ export default [
         ecmaVersion: "latest",
         sourceType: "module",
         ecmaFeatures: { jsx: true },
+        lib: ["esnext", "dom"],
       },
       globals: {
         ...globals.browser,

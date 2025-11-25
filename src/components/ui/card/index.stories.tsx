@@ -64,6 +64,7 @@ export const Default: Story = {
         writer="참깨"
         createdAt="2025-11-11T10:30:00Z"
         likeCount={11111}
+        commentCount={1234}
         image="/assets/images/img-test.jpeg"
       />
     </Card>
@@ -83,6 +84,7 @@ export const WithLink: Story = {
         writer="참깨"
         createdAt="2025-11-11T10:30:00Z"
         likeCount={42}
+        commentCount={1234}
         image="/assets/images/img-test.jpeg"
       />
     </Card>
@@ -102,6 +104,7 @@ export const WithActions: Story = {
         writer="참깨"
         createdAt="2025-11-11T10:30:00Z"
         likeCount={42}
+        commentCount={1234}
         image="/assets/images/img-test.jpeg"
       />
     </Card>
@@ -122,6 +125,7 @@ export const WithLinkAndActions: Story = {
         writer="참깨"
         createdAt="2025-11-11T10:30:00Z"
         likeCount={42}
+        commentCount={1234}
         image="/assets/images/img-test.jpeg"
       />
     </Card>
@@ -145,6 +149,7 @@ export const variant: Story = {
         writer="참깨"
         createdAt="2025-11-11T10:30:00Z"
         likeCount={42}
+        commentCount={1234}
         image="/assets/images/img-test.jpeg"
       />
     </Card>
@@ -166,6 +171,7 @@ export const WithoutImage: Story = {
           writer="참깨"
           createdAt="2025-11-11T10:30:00Z"
           likeCount={42}
+          commentCount={1234}
           image="/assets/images/img-test.jpeg"
         />
       </Card>
@@ -176,6 +182,7 @@ export const WithoutImage: Story = {
           writer="참깨"
           createdAt="2025-11-11T10:30:00Z"
           likeCount={42}
+          commentCount={1234}
           image="/assets/images/img-test.jpeg"
         />
       </Card>
@@ -198,6 +205,7 @@ export const TestGrid: Story = {
             writer="참깨"
             createdAt="2025-11-11T10:30:00Z"
             likeCount={11111}
+            commentCount={1234}
             image="/assets/images/img-test.jpeg"
           />
         </Card>
@@ -207,6 +215,7 @@ export const TestGrid: Story = {
             writer="dfsdfsdfsdfsdfsfsdfsdfsdfsfsfsfdsfsdfsfsdfsfsdfs"
             createdAt="2025-11-01T10:30:00Z"
             likeCount={11111}
+            commentCount={1234}
             image="/assets/images/img-test.jpeg"
           />
           <Card.Badge />
@@ -217,6 +226,7 @@ export const TestGrid: Story = {
             writer="dfsdfsdfsdfsdfsfsdfsdfsdfsfsfsfdsfsdfsfsdfsfsdfs"
             createdAt="2025-11-11T10:30:00Z"
             likeCount={11111}
+            commentCount={1234}
             image="/assets/images/img-test.jpeg"
           />
           <Card.Content title="dfjsdlfjsdkfjdsklfjdklfjskdlfjskdlfjskldfjskfjsdlkfjsldfkjslfjslkfjslkfjfjslkfjslkdfjlskdjflksjflskj" />
@@ -226,6 +236,7 @@ export const TestGrid: Story = {
             writer="dfsdfsdfsdfsdfsfsdfsdfsdfsfsfsfdsfsdfsfsdfsfsdfs"
             createdAt="2025-11-11T10:30:00Z"
             likeCount={11111}
+            commentCount={1234}
             image="/assets/images/img-test.jpeg"
           />
           <Card.Content title="dfjsdlfjsdkfjdsklfjdklfjskdlfjskdlfjskldfjskfjsdlkfjsldfkjslfjslkfjslkfjfjslkfjslkdfjlskdjflksjflskj" />

@@ -128,41 +128,6 @@ export const formatDateToFullStr = ({ date, type = "korean" }: DateFullProps): s
 };
 
 /**
- * get 요청중 인증이 불필요한 패턴 필터
- * @author sohyun
- * @param pattern
- * @param url
- */
-export const matchPattern = (pattern: string | RegExp, url: string) => {
-  if (typeof pattern === "string") {
-    return url.startsWith(pattern);
-  }
-  return pattern.test(url);
-};
-
-/**
- * axios config를 받아 인증이 불필요한 URL 필터
- * @author sohyun
- * @param config
- */
-export const isNoAuthURL = (config: AxiosRequestConfig) => {
-  const url = config.url || "";
-  const method = (config.method || "get").toLowerCase();
-
-  // method 상관없이 인증 불필요한 URL
-  if (NO_AUTH_URLS.some(publicUrl => url.startsWith(publicUrl))) {
-    return true;
-  }
-
-  // get 요청 중 인증 불필요한 패턴
-  if (method === "get") {
-    return NO_AUTH_GET.some(pattern => matchPattern(pattern, url));
-  }
-
-  return false;
-};
-
-/**
  * Date를 문자열 형식으로 포맷. 시간
  * @author luli
  * @param date
@@ -231,6 +196,68 @@ export const isEmpty = (value: unknown): boolean => {
 export const getFrequencyLabel = (frequency: string): string => {
   return FrequencyOptions.find(fo => fo.value === frequency)?.label ?? "";
 };
+
+/**
+ * get 요청중 인증이 불필요한 패턴 필터
+ * @author sohyun
+ * @param pattern
+ * @param url
+ */
+export const matchPattern = (pattern: string | RegExp, url: string) => {
+  if (typeof pattern === "string") {
+    return url.startsWith(pattern);
+  }
+  return pattern.test(url);
+};
+
+/**
+ * server fetch 에서 사용할 인증이 불필요한 URL 필터
+ * @author sohyun
+ * @param config
+ */
+
+export const isNoAuthURL = (url: string, method = "get") => {
+  const apiMethod = method.toLowerCase();
+
+  // method 상관없이 인증 불필요한 URL
+  if (NO_AUTH_URLS.some(publicUrl => url.startsWith(publicUrl))) {
+    return true;
+  }
+
+  // get 요청 중 인증 불필요한 패턴
+  if (apiMethod === "get") {
+    return NO_AUTH_GET.some(pattern => matchPattern(pattern, url));
+  }
+
+  return false;
+};
+
+/**
+ * axios config를 받아 인증이 불필요한 URL 필터
+ * @author sohyun
+ * @param config
+ */
+export const isNoAuthAxios = (config: AxiosRequestConfig) => {
+  const url = config.url || "";
+  const method = (config.method || "get").toLowerCase();
+  return isNoAuthURL(url, method);
+};
+
+/**
+ * 숫자를 제한값 이상이면 "9999+" 형태로 변환
+ */
+export function clampText(value: number, limit: number, suffix = "+") {
+  return value > limit ? `${limit}${suffix}` : value;
+}
+
+/**
+ * 좋아요 숫자 SNS 표기 형식 단위로 포맷팅
+ */
+export function formatSocialCount(value: number): string {
+  if (value < 10000) return value.toLocaleString();
+  if (value / 10000 < 10000) return (value / 10000).toFixed(1).replace(/\.0$/, "") + "만";
+  return (value / 100000000).toFixed(1).replace(/\.0$/, "") + "억";
+}
 
 /**
  * Date 시간타입 korea locale 적용한 ISO date로 변환.
