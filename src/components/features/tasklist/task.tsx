@@ -55,10 +55,13 @@ export default function Task({ task, onKebabClick }: TaskProps) {
           </div>
         </div>
       </div>
-      <div onClick={e => e.stopPropagation()} className="rounded px-[2px] hover:bg-gray-700">
+      <div onClick={e => e.stopPropagation()}>
         <Dropdown>
-          <Dropdown.TriggerIcon intent="icon">
-            <KebabIcon className="mt-[5px] w-[16px]" />
+          <Dropdown.TriggerIcon
+            intent="icon"
+            className="rounded px-[2px] py-[3px] hover:bg-gray-700"
+          >
+            <KebabIcon className="w-[16px]" />
           </Dropdown.TriggerIcon>
           <Dropdown.Menu size="md">
             <Dropdown.Option align="center" onClick={() => handleKebabClick("update")}>
