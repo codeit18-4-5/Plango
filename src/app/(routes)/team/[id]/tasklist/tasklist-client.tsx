@@ -5,8 +5,7 @@ import LeftArrowIcon from "@/assets/icons/ic-arrow-left-circle.svg";
 import RightArrowIcon from "@/assets/icons/ic-arrow-right-circle.svg";
 import CalendarIcon from "@/assets/icons/ic-calendar-circle.svg";
 import PlusIcon from "@/assets/icons/ic-plus.svg";
-import Task from "@/components/features/tasklist/task";
-import { useTaskList } from "@/hooks/taskList/use-tasklist";
+import { createRecurring, createTask } from "@/hooks/taskList/use-tasklist";
 import { formatDateForToMonthAndDays, isEmpty } from "@/lib/utils";
 import { Button, Floating } from "@/components/ui";
 import { useToggle } from "@/hooks";
@@ -15,11 +14,12 @@ import TaskRecurringAddModal from "@/components/features/tasklist/task-recurring
 import { useEffect, useState } from "react";
 import { useAlert } from "@/providers/alert-provider";
 import { GroupTaskList } from "@/types/tasklist";
-import cn from "@/lib/cn";
-import { usePathname, useRouter } from "next/navigation";
-import { taskSchema } from "@/lib/schema";
+import { useRouter } from "next/navigation";
+import { taskDetailSchema, taskSchema } from "@/lib/schema";
 import z4 from "zod/v4";
-import { dateTitleStyle, hiddenBrStyle, newListbuttonStyle, tabButtonStyle } from "./index.styles";
+import { dateTitleStyle, hiddenBrStyle, newListbuttonStyle } from "./index.styles";
+import { useTaskListContext } from "./tasklist-provider";
+import TaskCardField from "@/components/features/tasklist/task-card-field";
 
 interface TaskListPageProps {
   groupData: GroupTaskList;
@@ -36,7 +36,13 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
     setOpen: setOpenRecurring,
     setClose: setCloseRecurring,
   } = useToggle();
+  const [activeTab, setActiveTab] = useState<number>(taskListId || 0);
   const { showAlert } = useAlert();
+  const router = useRouter();
+
+  const { isTeam, isLoading, permissionCheck, dateString } = useTaskListContext();
+  const { mutate: postRecurringMutate } = createRecurring();
+  const { mutate: taskMutate } = createTask();
 
   const currentDateStr = formatDateForToMonthAndDays(date);
 
@@ -51,14 +57,66 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
       setOpenRecurring();
     }
   };
-
-  const handleTaskSubmit = (value: string) => {
-    console.log("tasklist 그룹 추가", value);
+  const handleTaskSubmit = async (value: z4.infer<typeof taskSchema>) => {
+    const result = await permissionCheck();
+    if (result) {
+      const resultValue = value.name;
+      if (isEmpty(resultValue))
+        taskMutate(
+          {
+            groupId: groupData.id,
+            name: resultValue,
+          },
+          {
+            onSuccess: () => {
+              showAlert("할 일 목록이 등록되었습니다."); // 나중에 toast로 교체
+              setCloseTask();
+              router.refresh();
+            },
+            onError: error => {
+              console.error(error);
+              showAlert("등록 중 오류가 발생했습니다.");
+            },
+          },
+        );
+    }
   };
 
-  const handleTaskRecurringSubmit = (value: z4.infer<typeof taskSchema>) => {
-    console.log("task 추가", value);
+  const handleTaskRecurringSubmit = async (value: z4.infer<typeof taskDetailSchema>) => {
+    const result = await permissionCheck();
+
+    if (!activeTab) {
+      showAlert("할 일 목록을 먼저 선택하여야 합니다.");
+      return;
+    }
+
+    if (result) {
+      postRecurringMutate(
+        {
+          groupId: groupData.id,
+          taskListId: activeTab,
+          recurringData: value,
+          dateString: dateString,
+        },
+        {
+          onSuccess: () => {
+            showAlert("할 일이 등록되었습니다."); // 나중에 toast로 교체
+            setCloseRecurring();
+          },
+          onError: () => {
+            showAlert("등록 중 오류가 발생했습니다.");
+          },
+        },
+      );
+    }
   };
+
+  useEffect(() => {
+    if (!isLoading && !isTeam) {
+      showAlert("해당 팀에 권한이 없습니다.");
+      router.push("/");
+    }
+  }, [isLoading, isTeam, router, showAlert]);
 
   return (
     <>
@@ -98,7 +156,12 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
               </span>
             </section>
           ) : (
-            <TaskCardField taskListId={taskListId} groupData={groupData} date={date} />
+            <TaskCardField
+              groupData={groupData}
+              date={date}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
           )}
         </main>
         <footer>
@@ -122,93 +185,6 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
           onClose={setCloseRecurring}
           onSubmit={handleTaskRecurringSubmit}
         />
-      )}
-    </>
-  );
-}
-
-function TaskCardField({ groupData, taskListId, date }: TaskListPageProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const groupId = groupData.id;
-  const [activeTab, setActiveTab] = useState<number>(taskListId || 0);
-  const tabs = groupData.taskLists
-    .sort((a, b) => a.displayIndex - b.displayIndex)
-    .map(taskList => ({ id: taskList.id, label: taskList.name }));
-
-  const { data: taskListData } = useTaskList({
-    groupId: groupId,
-    taskListId: activeTab,
-    date: date.toISOString(),
-  });
-
-  const storageDatas = {
-    taskGroupId: groupId.toString(),
-    taskListId: activeTab,
-    taskDate: date,
-  };
-
-  const handleTaskClick = (id: number) => {
-    sessionStorage.setItem("taskStorageProps", JSON.stringify(storageDatas));
-    sessionStorage.setItem("openDetailModal", "true");
-    router.push(`/team/${groupId}/tasklist/${id}`);
-  };
-
-  // 탭이동시 상세보기 화면 닫기
-  useEffect(() => {
-    const pathParts = pathname.split("/").filter(Boolean);
-    if (pathParts.length >= 4 && pathParts[2] === "tasklist") {
-      router.back();
-    }
-  }, [activeTab, router]);
-
-  if (!taskListId || isEmpty(taskListData)) return null;
-
-  return (
-    <>
-      <section>
-        <div className="scroll-bar overflow-x flex gap-[12px]">
-          {!isEmpty(tabs) &&
-            tabs.map(tab => {
-              return (
-                <button
-                  key={tab.id}
-                  className={cn(
-                    activeTab === tab.id
-                      ? tabButtonStyle({ variant: "active" })
-                      : tabButtonStyle({ variant: "inactive" }),
-                    tabButtonStyle(),
-                  )}
-                  title={tab.label}
-                  onClick={() => setActiveTab(tab.id)}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-        </div>
-      </section>
-      {taskListData ? (
-        <section className="pb-[24px]">
-          {taskListData.tasks.map(task => (
-            <article
-              key={task.id}
-              className="mt-[16px] block w-full cursor-pointer"
-              onClick={() => handleTaskClick(task.id)}
-            >
-              <Task task={task} />
-            </article>
-          ))}
-        </section>
-      ) : (
-        <section className="flex flex-1 items-center justify-center">
-          <span className="text-body-s text-gray-500">
-            아직 할 일 목록이 없습니다.
-            <br />
-            새로운 목록을 추가해주세요.
-          </span>
-        </section>
       )}
     </>
   );
