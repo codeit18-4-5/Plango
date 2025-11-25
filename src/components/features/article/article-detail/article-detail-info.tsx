@@ -14,7 +14,6 @@ import KebabMenu from "@/components/features/article/actions/kebab-menu";
 import { ARTICLE_DETAIL_STYLES } from "../index.styles";
 import IcComment from "@/assets/icons/ic-comment.svg";
 import IcHeart from "@/assets/icons/ic-heart.svg";
-import IcLiked from "@/assets/icons/ic-heart-color.svg";
 
 export default function ArticleDetailInfo({ articleId }: { articleId: number }) {
   const router = useRouter();
@@ -105,13 +104,6 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
       </div>
       <div className={ARTICLE_DETAIL_STYLES.actions.wrapper}>
         <div className={ARTICLE_DETAIL_STYLES.actions.like}>
-          <Button
-            size="icon"
-            className="hover:text-pink-400"
-            aria-label={article.isLiked ? "좋아요 취소" : "좋아요"}
-          >
-            <IcLiked />
-          </Button>
           <span>{formatSocialCount(article.likeCount)}</span>
         </div>
         <Button

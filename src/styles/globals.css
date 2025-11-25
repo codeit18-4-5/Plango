@@ -289,3 +289,21 @@ svg path {
   height: 1px;
   margin-top: 20px;
 }
+
+@keyframes like_effect {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.like-effect {
+  animation: like_effect 0.4s ease;
+}
