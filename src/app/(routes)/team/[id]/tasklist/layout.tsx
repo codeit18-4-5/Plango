@@ -1,41 +1,24 @@
-"use client";
+import TaskListProvider from "./tasklist-provider";
+import LayoutContent from "./layout-content";
+import { formatDateToISOString } from "@/lib/utils";
 
-import { useEffect, useState } from "react";
-import { layoutStyle } from "./index.styles";
-import { usePathname } from "next/navigation";
-
-interface CommonProps {
+interface LayoutProps {
   children: React.ReactNode;
   detail: React.ReactNode;
+  params: Promise<{ id: string }>;
 }
 
-export default function LayoutContent({ children, detail }: CommonProps) {
-  const pathname = usePathname();
+export default async function TasklistLayout({ children, detail, params }: LayoutProps) {
+  const { id } = await params;
+  const groupId = Number(id);
 
-  const [isOpenDetailModal, setIsOpenDetailModal] = useState(false);
-
-  useEffect(() => {
-    const isClose = sessionStorage.getItem("closeDetailModal");
-    const isModal = sessionStorage.getItem("openDetailModal");
-
-    if (isModal) {
-      setIsOpenDetailModal(true);
-      sessionStorage.removeItem("openDetailModal");
-    } else if (isClose) {
-      setIsOpenDetailModal(false);
-      sessionStorage.removeItem("closeDetailModal");
-    }
-  }, [pathname]);
-
-  console.log("isOpenDetailModal:  ", isOpenDetailModal);
+  const currentDate = new Date();
+  currentDate.setHours(10, 0, 0, 0);
+  const formattedDate = formatDateToISOString(currentDate);
 
   return (
-    <>
-      <div className="relative h-[calc(100vh-72px)]">
-        <div className="h-full w-full">{children}</div>
-
-        {isOpenDetailModal && <div className={layoutStyle}>{detail}</div>}
-      </div>
-    </>
+    <TaskListProvider groupId={groupId} date={formattedDate}>
+      <LayoutContent detail={detail}>{children}</LayoutContent>
+    </TaskListProvider>
   );
 }
