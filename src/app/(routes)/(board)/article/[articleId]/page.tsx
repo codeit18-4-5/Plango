@@ -10,8 +10,12 @@ import {
   ARTICLE_DETAIL_STYLES,
 } from "@/components/features/article/index.styles";
 
-export default async function ArticleDetailPage({ params }: { params: { articleId: string } }) {
-  const { articleId } = params;
+export default async function ArticleDetailPage({
+  params,
+}: {
+  params: Promise<{ articleId: string }>;
+}) {
+  const { articleId } = await params;
   const articleIdNum = Number(articleId);
   const queryClient = new QueryClient();
 
