@@ -1,18 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getTimeAgo, formatDateToFullStr } from "@/lib/utils";
-import { ArticleDetail } from "@/types/article";
 import { Button } from "@/components/ui";
 import ArticleMetaCounts from "@/components/features/article/article-detail/article-meta-counts";
 import ArticleLike from "@/components/features/article/actions/article-like";
 import KebabMenu from "@/components/features/article/actions/kebab-menu";
 import { ARTICLE_DETAIL_STYLES } from "../index.styles";
 
-type ArticleDetailInfoProps = {
-  article: ArticleDetail;
-};
+import { ArticleDetail } from "@/types/article";
+
+type ArticleDetailInfoProps = { article: ArticleDetail };
 
 export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
+  if (!article) return null;
   const DATE_TIME = article.createdAt;
 
   return (
@@ -36,11 +36,7 @@ export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
           </time>
         </div>
         <div className={ARTICLE_DETAIL_STYLES.meta.stats}>
-          <ArticleMetaCounts
-            articleId={article.id}
-            initialLikeCount={article.likeCount}
-            initialCommentCount={article.commentCount}
-          />
+          <ArticleMetaCounts articleId={article.id} initialData={article} />
         </div>
       </div>
       <div className={ARTICLE_DETAIL_STYLES.content}>
@@ -59,7 +55,11 @@ export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
         )}
       </div>
       <div className={ARTICLE_DETAIL_STYLES.actions.wrapper}>
-        <ArticleLike articleId={article.id} className={ARTICLE_DETAIL_STYLES.actions.like} />
+        <ArticleLike
+          articleId={article.id}
+          initialData={article}
+          className={ARTICLE_DETAIL_STYLES.actions.like}
+        />
         <Button
           as={Link}
           href="/article"

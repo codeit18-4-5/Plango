@@ -1,44 +1,33 @@
 "use client";
-
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import {
-  useInfiniteQuery,
-  useMutation,
-  useQueryClient,
-  InfiniteData,
-  useQuery,
-} from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient, InfiniteData } from "@tanstack/react-query";
 import getArticleComments from "@/api/article/comment/get-article-comments";
 import postArticleComment from "@/api/article/comment/post-article-comment";
 import deleteArticleComment from "@/api/article/comment/delete-article-comment";
 import patchArticleComment from "@/api/article/comment/patch-article-comment";
-import getArticleDetail from "@/api/article/get-article-detail";
-import ArticleCommentList from "./article-comment-list";
 import { useAuthStore } from "@/store/auth.store";
+import ArticleCommentList from "./article-comment-list";
 import { ArticleComments } from "@/types/article-comment";
 import { useInfiniteObserver } from "@/hooks";
+import useArticleDetail from "@/hooks/article/use-article-detail";
 import { useAlert } from "@/providers/alert-provider";
 import { ReplyInput } from "@/components/ui";
 import { ArticleConfirmModal } from "../layout";
 import { ARTICLE_COMMENT_STYLES } from "../index.styles";
 import { NEXT_CURSOR } from "./article-comment-list";
 
-export default function ArticleCommentSection({
-  articleId,
-  commentCount,
-}: {
-  articleId: number;
-  commentCount: number;
-}) {
+export default function ArticleCommentSection({ articleId }: { articleId: number }) {
   const queryClient = useQueryClient();
   const router = useRouter();
   const currentUser = useAuthStore(state => state.user);
-  const { showAlert } = useAlert();
-  const [editingId, setEditingId] = useState<number | null>(null);
   const prevContentRef = useRef<string | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [comment, setComment] = useState("");
+  const { showAlert } = useAlert();
+
+  const { data: article } = useArticleDetail(articleId);
 
   const handleRequireLogin = () => setShowLoginModal(true);
 
@@ -60,7 +49,6 @@ export default function ArticleCommentSection({
       },
       initialPageParam: null,
       getNextPageParam: lastPage => (lastPage.nextCursor !== null ? lastPage.nextCursor : null),
-      staleTime: 60000,
     });
 
   const comments = data?.pages.flatMap(page => page.list) ?? [];
@@ -74,8 +62,9 @@ export default function ArticleCommentSection({
   });
 
   const invalidateAllQueries = () => {
-    queryClient.invalidateQueries({ queryKey: ["getArticleComments", articleId] });
     queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
+    queryClient.invalidateQueries({ queryKey: ["getArticleComments", articleId] });
+    queryClient.invalidateQueries({ queryKey: ["getArticles"] });
   };
 
   const { mutate: createComment, isPending: isMutating } = useMutation({
@@ -99,17 +88,6 @@ export default function ArticleCommentSection({
   const { mutate: removeComment } = useMutation({
     mutationFn: ({ commentId }: { commentId: number }) => deleteArticleComment({ commentId }),
     onSuccess: invalidateAllQueries,
-  });
-
-  const cached = queryClient.getQueryData<{ commentCount: number }>([
-    "getArticleDetail",
-    articleId,
-  ]);
-  const { data: commentCountData } = useQuery<{ commentCount: number }, Error>({
-    queryKey: ["getArticleDetail", articleId],
-    queryFn: () => getArticleDetail({ articleId }),
-    select: data => ({ commentCount: data.commentCount }),
-    placeholderData: cached ?? { commentCount },
   });
 
   useEffect(() => {
@@ -162,7 +140,7 @@ export default function ArticleCommentSection({
     <>
       <section>
         <h4 className={ARTICLE_COMMENT_STYLES.section.heading.title}>
-          댓글 <b>{commentCountData!.commentCount}</b>
+          댓글 <b>{article?.commentCount ?? 0}</b>
         </h4>
         <form onSubmit={handleAddComment}>
           <ReplyInput

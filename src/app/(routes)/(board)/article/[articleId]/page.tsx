@@ -11,7 +11,7 @@ import {
 } from "@/components/features/article/index.styles";
 
 export default async function ArticleDetailPage({ params }: { params: { articleId: string } }) {
-  const { articleId } = await params;
+  const { articleId } = params;
   const articleIdNum = Number(articleId);
   const queryClient = new QueryClient();
 
@@ -28,7 +28,7 @@ export default async function ArticleDetailPage({ params }: { params: { articleI
         <h2 className="visually-hidden">자유게시판</h2>
         <div className={ARTICLE_DETAIL_STYLES.wrapper}>
           <ArticleDetailInfo article={article} />
-          <ArticleCommentSection articleId={articleIdNum} commentCount={article.commentCount} />
+          <ArticleCommentSection articleId={articleIdNum} />
         </div>
         <Floating className="z-20">
           <ScrollTopButton />
