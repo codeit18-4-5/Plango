@@ -1,5 +1,7 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import getArticleDetail from "@/api/article/get-article-detail";
+import { notFound } from "next/navigation";
+import { AxiosError } from "axios";
 import { Container } from "@/components/layout";
 import { Floating, ScrollTopButton } from "@/components/ui";
 import { ArticleDetailInfo, ArticleCommentSection } from "@/components/features/article";
@@ -13,7 +15,11 @@ export default async function ArticleDetailPage({ params }: { params: { articleI
   const articleIdNum = Number(articleId);
   const queryClient = new QueryClient();
 
-  const article = await getArticleDetail({ articleId: articleIdNum });
+  const article = await getArticleDetail({ articleId: articleIdNum }).catch(e => {
+    if (e instanceof AxiosError && e.response?.status === 404) notFound();
+    throw e;
+  });
+  if (!article || !article.id) notFound();
   queryClient.setQueryData(["getArticleDetail", articleIdNum], article);
 
   return (

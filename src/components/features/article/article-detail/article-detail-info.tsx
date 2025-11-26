@@ -59,14 +59,13 @@ export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
         )}
       </div>
       <div className={ARTICLE_DETAIL_STYLES.actions.wrapper}>
-        <div className={ARTICLE_DETAIL_STYLES.actions.like}>
-          <ArticleLike
-            isLogin={true}
-            isLiked={article.isLiked}
-            articleId={article.id}
-            likeCount={article.likeCount}
-          />
-        </div>
+        <ArticleLike
+          isLogin={true}
+          isLiked={article.isLiked}
+          articleId={article.id}
+          likeCount={article.likeCount}
+          className={ARTICLE_DETAIL_STYLES.actions.like}
+        />
         <Button
           as={Link}
           href="/article"

@@ -19,7 +19,7 @@ export default function LikeButton({
   ...props
 }: LikeButtonProps) {
   return (
-    <div>
+    <div className={className}>
       <Button
         size="icon"
         type="button"
@@ -34,7 +34,7 @@ export default function LikeButton({
       >
         <IcLiked />
       </Button>
-      <span>{formatSocialCount(likeCount)}</span>
+      {formatSocialCount(likeCount)}
     </div>
   );
 }

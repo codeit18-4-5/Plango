@@ -101,11 +101,16 @@ export default function ArticleCommentSection({
     onSuccess: invalidateAllQueries,
   });
 
+  const cached = queryClient.getQueryData<{ commentCount: number }>([
+    "getArticleDetail",
+    articleId,
+  ]);
   const { data: commentCountData } = useQuery<{ commentCount: number }, Error>({
     queryKey: ["getArticleDetail", articleId],
     queryFn: () => getArticleDetail({ articleId }),
     select: data => ({ commentCount: data.commentCount }),
-    placeholderData: { commentCount },
+    placeholderData: cached ?? { commentCount },
+    staleTime: 60000,
   });
 
   useEffect(() => {

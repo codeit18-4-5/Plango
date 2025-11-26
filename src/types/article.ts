@@ -109,4 +109,5 @@ export type ArticleLikeProps = {
   isLiked: boolean;
   articleId: number;
   likeCount: number;
+  className?: string;
 };

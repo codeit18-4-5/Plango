@@ -9,7 +9,13 @@ import { ArticleLikeProps, ArticleDetail } from "@/types/article";
 import { LikeButton } from "@/components/ui";
 import { ArticleConfirmModal } from "../layout";
 
-export default function ArticleLike({ isLogin, isLiked, articleId, likeCount }: ArticleLikeProps) {
+export default function ArticleLike({
+  isLogin,
+  isLiked,
+  articleId,
+  likeCount,
+  className,
+}: ArticleLikeProps) {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -58,6 +64,7 @@ export default function ArticleLike({ isLogin, isLiked, articleId, likeCount }: 
         liked={isLiked}
         likeCount={likeCount}
         onClick={() => handleLikeClick(isLiked ? "unlike" : "like")}
+        className={className}
       />
       {showLoginModal && (
         <ArticleConfirmModal

@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import getArticleDetail from "@/api/article/get-article-detail";
 import { clampText } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
@@ -19,11 +19,17 @@ export default function ArticleMetaCounts({
   initialLikeCount,
   initialCommentCount,
 }: ArticleMetaCountsProps) {
+  const queryClient = useQueryClient();
+  const cached = queryClient.getQueryData<{ likeCount: number; commentCount: number }>([
+    "getArticleDetail",
+    articleId,
+  ]);
   const { data } = useQuery<{ likeCount: number; commentCount: number }, Error>({
     queryKey: ["getArticleDetail", articleId],
     queryFn: () => getArticleDetail({ articleId }),
     select: data => ({ likeCount: data.likeCount, commentCount: data.commentCount }),
-    placeholderData: { likeCount: initialLikeCount, commentCount: initialCommentCount },
+    placeholderData: cached ?? { likeCount: initialLikeCount, commentCount: initialCommentCount },
+    staleTime: 60000,
   });
 
   return (
