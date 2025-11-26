@@ -1,17 +1,21 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useQuery } from "@tanstack/react-query";
-import getArticleDetail from "@/api/article/get-article-detail";
 import { useRouter } from "next/navigation";
-import { useInfiniteQuery, useMutation, useQueryClient, InfiniteData } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+  InfiniteData,
+  useQuery,
+} from "@tanstack/react-query";
 import getArticleComments from "@/api/article/comment/get-article-comments";
 import postArticleComment from "@/api/article/comment/post-article-comment";
 import deleteArticleComment from "@/api/article/comment/delete-article-comment";
 import patchArticleComment from "@/api/article/comment/patch-article-comment";
+import getArticleDetail from "@/api/article/get-article-detail";
 import ArticleCommentList from "./article-comment-list";
 import { useAuthStore } from "@/store/auth.store";
-import { ArticleDetail } from "@/types/article";
 import { ArticleComments } from "@/types/article-comment";
 import { useInfiniteObserver } from "@/hooks";
 import { useAlert } from "@/providers/alert-provider";
@@ -22,10 +26,10 @@ import { NEXT_CURSOR } from "./article-comment-list";
 
 export default function ArticleCommentSection({
   articleId,
-  initialArticle,
+  commentCount,
 }: {
   articleId: number;
-  initialArticle: ArticleDetail;
+  commentCount: number;
 }) {
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -35,13 +39,6 @@ export default function ArticleCommentSection({
   const prevContentRef = useRef<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [comment, setComment] = useState("");
-
-  const { data: articleDetail } = useQuery<ArticleDetail>({
-    queryKey: ["getArticleDetail", articleId],
-    queryFn: () => getArticleDetail({ articleId }),
-    enabled: !!articleId,
-    initialData: initialArticle,
-  });
 
   const handleRequireLogin = () => setShowLoginModal(true);
 
@@ -101,6 +98,13 @@ export default function ArticleCommentSection({
     onSuccess: invalidateAllQueries,
   });
 
+  const { data: commentCountData } = useQuery<{ commentCount: number }, Error>({
+    queryKey: ["getArticleDetail", articleId],
+    queryFn: () => getArticleDetail({ articleId }),
+    select: data => ({ commentCount: data.commentCount }),
+    placeholderData: { commentCount },
+  });
+
   useEffect(() => {
     if (editingId !== null) {
       const editingComment = comments.find(comment => comment.id === editingId);
@@ -153,7 +157,7 @@ export default function ArticleCommentSection({
     <>
       <section>
         <h4 className={ARTICLE_COMMENT_STYLES.section.heading.title}>
-          댓글 <b>{articleDetail?.commentCount ?? 0}</b>
+          댓글 <b>{commentCountData!.commentCount}</b>
         </h4>
         <form onSubmit={handleAddComment}>
           <ReplyInput

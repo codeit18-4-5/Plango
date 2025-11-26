@@ -22,7 +22,7 @@ export default async function ArticleDetailPage({ params }: { params: { articleI
         <h2 className="visually-hidden">자유게시판</h2>
         <div className={ARTICLE_DETAIL_STYLES.wrapper}>
           <ArticleDetailInfo article={article} />
-          <ArticleCommentSection articleId={articleIdNum} initialArticle={article} />
+          <ArticleCommentSection articleId={articleIdNum} commentCount={article.commentCount} />
         </div>
         <Floating className="z-20">
           <ScrollTopButton />

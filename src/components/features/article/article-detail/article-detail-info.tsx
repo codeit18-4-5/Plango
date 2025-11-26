@@ -1,18 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getTimeAgo, formatDateToFullStr, clampText } from "@/lib/utils";
-import { DISPLAY_LIMITS } from "@/constants/display";
+import { getTimeAgo, formatDateToFullStr } from "@/lib/utils";
 import { ArticleDetail } from "@/types/article";
 import { Button } from "@/components/ui";
+import ArticleMetaCounts from "@/components/features/article/article-detail/article-meta-counts";
 import ArticleLike from "@/components/features/article/actions/article-like";
 import KebabMenu from "@/components/features/article/actions/kebab-menu";
 import { ARTICLE_DETAIL_STYLES } from "../index.styles";
-import IcComment from "@/assets/icons/ic-comment.svg";
-import IcHeart from "@/assets/icons/ic-heart.svg";
 
-interface ArticleDetailInfoProps {
+type ArticleDetailInfoProps = {
   article: ArticleDetail;
-}
+};
 
 export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
   const DATE_TIME = article.createdAt;
@@ -38,16 +36,11 @@ export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
           </time>
         </div>
         <div className={ARTICLE_DETAIL_STYLES.meta.stats}>
-          <span>
-            <IcComment className={ARTICLE_DETAIL_STYLES.meta.icon} />
-            <span className="visually-hidden">댓글</span>
-            {clampText(article.commentCount, DISPLAY_LIMITS.MAX_COMMENT_COUNT)}
-          </span>
-          <span>
-            <IcHeart className={ARTICLE_DETAIL_STYLES.meta.icon} />
-            <span className="visually-hidden">좋아요</span>
-            {clampText(article.likeCount, DISPLAY_LIMITS.MAX_LIKE_COUNT)}
-          </span>
+          <ArticleMetaCounts
+            articleId={article.id}
+            initialLikeCount={article.likeCount}
+            initialCommentCount={article.commentCount}
+          />
         </div>
       </div>
       <div className={ARTICLE_DETAIL_STYLES.content}>
