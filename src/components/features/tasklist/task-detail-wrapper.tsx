@@ -1,7 +1,12 @@
 "use client";
 import CancelIcon from "@/assets/icons/ic-cancel.svg";
 import { Container } from "@/components/layout";
-import { updateRecurring, useDeleteRecurring, useTaskDetail } from "@/hooks/taskList/use-tasklist";
+import {
+  updateRecurring,
+  useDeleteRecurring,
+  useTaskComments,
+  useTaskDetail,
+} from "@/hooks/taskList/use-tasklist";
 import { useRouter } from "next/navigation";
 import TaskDetailMain from "./task-detail-main";
 import { KebabType } from "./task";
@@ -35,6 +40,8 @@ export default function TaskDetailWrapper({
 
   const { showAlert } = useAlert();
   const { permissionCheck, dateString } = useTaskListContext();
+
+  const { data: commentsData } = useTaskComments(taskId);
 
   const { mutate: updateMutate } = updateRecurring();
   const { mutate: deleteMutate } = useDeleteRecurring();
@@ -165,14 +172,18 @@ export default function TaskDetailWrapper({
     <>
       {data ? (
         <>
-          <Container>
+          <Container className="h-full">
             <header>
               <button className="mb-[16px] w-[24px]" onClick={handleCloseButton}>
                 <CancelIcon stroke="var(--gray-500)" />
               </button>
             </header>
-            <main>
-              <TaskDetailMain taskDetail={data} onKebabClick={handleKebabClick} />
+            <main className="flex h-full flex-col">
+              <TaskDetailMain
+                taskDetail={data}
+                onKebabClick={handleKebabClick}
+                commentsData={commentsData ?? []}
+              />
             </main>
           </Container>
 

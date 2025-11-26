@@ -3,12 +3,14 @@ import {
   deleteOneRecurring,
   getGroupTaskLists,
   getMemberInfo,
+  getTaskComments,
   getTaskDetail,
   getTaskList,
   patchRecurring,
   postRecurring,
   postTask,
 } from "@/api/tasklist";
+import { Comment } from "@/types/comments";
 import { TaskDetail, TaskDetailProps, TaskListProps } from "@/types/task";
 import { GroupTaskList, MemberInfo, MemberPermissionProps, TaskList } from "@/types/tasklist";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -199,5 +201,14 @@ export const useDeleteRecurring = () => {
         });
       }
     },
+  });
+};
+
+export const useTaskComments = (taskId: number) => {
+  return useQuery<Comment[]>({
+    queryKey: ["taskComments", taskId],
+    queryFn: () => getTaskComments(taskId),
+    enabled: !!taskId,
+    staleTime: 1000 * 60 * 5,
   });
 };

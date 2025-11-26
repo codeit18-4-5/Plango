@@ -162,3 +162,13 @@ export async function deleteAllRecurring({
     throw e;
   }
 }
+
+export async function getTaskComments(taskId: number) {
+  try {
+    const res = await axiosInstance.get(`/tasks/${taskId}/comments`);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
