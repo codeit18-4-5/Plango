@@ -80,7 +80,10 @@ export default function ArticleCommentSection({
 
   const { mutate: createComment, isPending: isMutating } = useMutation({
     mutationFn: (payload: { content: string }) => postArticleComment(articleId, payload),
-    onSuccess: invalidateAllQueries,
+    onSuccess: () => {
+      invalidateAllQueries();
+      setComment("");
+    },
   });
 
   const { mutate: updateComment } = useMutation({
@@ -119,15 +122,11 @@ export default function ArticleCommentSection({
     }
   }, [comments, editingId]);
 
-  const handleAddComment = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!comment.trim()) return;
-      createComment({ content: comment });
-      setComment("");
-    },
-    [comment, createComment],
-  );
+  function handleAddComment(e: React.FormEvent) {
+    e.preventDefault();
+    if (!comment.trim()) return;
+    createComment({ content: comment });
+  }
 
   const handleEditSave = useCallback(
     (commentId: number, updatedContent: string) => {
@@ -136,7 +135,9 @@ export default function ArticleCommentSection({
     [updateComment],
   );
 
-  const handleCancelEdit = useCallback(() => setEditingId(null), []);
+  function handleCancelEdit() {
+    setEditingId(null);
+  }
 
   const handleDelete = useCallback(
     async (commentId: number) => {
