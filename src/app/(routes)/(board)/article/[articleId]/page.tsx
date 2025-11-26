@@ -21,7 +21,7 @@ export default async function ArticleDetailPage({ params }: { params: { articleI
       <Container as="main" className={ARTICLE_COMMON_STYLES.main.wrapper}>
         <h2 className="visually-hidden">자유게시판</h2>
         <div className={ARTICLE_DETAIL_STYLES.wrapper}>
-          <ArticleDetailInfo articleId={articleIdNum} initialArticle={article} />
+          <ArticleDetailInfo article={article} />
           <ArticleCommentSection articleId={articleIdNum} initialArticle={article} />
         </div>
         <Floating className="z-20">

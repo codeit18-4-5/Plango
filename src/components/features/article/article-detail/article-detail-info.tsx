@@ -1,12 +1,5 @@
-"use client";
-
-import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import getArticleDetail from "@/api/article/get-article-detail";
-import deleteArticle from "@/api/article/delete-article";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuthStore } from "@/store/auth.store";
 import { getTimeAgo, formatDateToFullStr, clampText } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
 import { ArticleDetail } from "@/types/article";
@@ -18,32 +11,10 @@ import IcComment from "@/assets/icons/ic-comment.svg";
 import IcHeart from "@/assets/icons/ic-heart.svg";
 
 interface ArticleDetailInfoProps {
-  articleId: number;
-  initialArticle: ArticleDetail;
+  article: ArticleDetail;
 }
 
-export default function ArticleDetailInfo({ articleId, initialArticle }: ArticleDetailInfoProps) {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const currentUser = useAuthStore(state => state.user);
-
-  const { data: article, isError } = useQuery<ArticleDetail>({
-    queryKey: ["getArticleDetail", articleId],
-    queryFn: () => getArticleDetail({ articleId }),
-    enabled: !!articleId,
-    initialData: initialArticle,
-  });
-
-  const { mutate: deleteArticleMutate } = useMutation({
-    mutationFn: () => deleteArticle({ articleId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getArticles"] });
-      router.replace("/article");
-    },
-  });
-
-  if (isError || !article) return null;
-
+export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
   const DATE_TIME = article.createdAt;
 
   return (
@@ -51,22 +22,7 @@ export default function ArticleDetailInfo({ articleId, initialArticle }: Article
       <h3 className="visually-hidden">게시글 상세 정보</h3>
       <div className={ARTICLE_DETAIL_STYLES.heading.wrapper}>
         <h4 className={ARTICLE_DETAIL_STYLES.heading.title}>{article.title}</h4>
-        {currentUser?.id === article.writer.id && (
-          <KebabMenu
-            className={ARTICLE_DETAIL_STYLES.heading.kebab}
-            options={[
-              {
-                label: "수정하기",
-                as: Link,
-                href: `/article/${article.id}/edit`,
-              },
-              {
-                label: "삭제하기",
-                onClick: () => deleteArticleMutate(),
-              },
-            ]}
-          />
-        )}
+        <KebabMenu article={article} />
       </div>
       <div className={ARTICLE_DETAIL_STYLES.meta.wrapper}>
         <div className={ARTICLE_DETAIL_STYLES.meta.authorInfo}>
@@ -112,7 +68,7 @@ export default function ArticleDetailInfo({ articleId, initialArticle }: Article
       <div className={ARTICLE_DETAIL_STYLES.actions.wrapper}>
         <div className={ARTICLE_DETAIL_STYLES.actions.like}>
           <ArticleLike
-            isLogin={!!currentUser}
+            isLogin={true}
             isLiked={article.isLiked}
             articleId={article.id}
             likeCount={article.likeCount}
