@@ -14,7 +14,6 @@ type TaskListProviderType = {
   permissionCheck: () => Promise<boolean>;
   currentISOStrDate: string;
   setCurrentISOStrDate: (date: string) => void;
-  todayISOStrDate: string;
   dateString: string;
 };
 
@@ -95,7 +94,6 @@ export default function TaskListProvider({
         permissionCheck,
         currentISOStrDate,
         setCurrentISOStrDate,
-        todayISOStrDate: date,
         dateString,
       }}
     >
