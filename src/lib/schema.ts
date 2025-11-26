@@ -206,3 +206,7 @@ export const articleFormSchema = z.object({
 });
 
 export type ArticleFormSchema = z.infer<typeof articleFormSchema>;
+
+export const taskCommentsSchema = z.object({
+  content: z.string().trim().max(255, { error: "댓글은 최대 255자까지 가능합니다." }),
+});
