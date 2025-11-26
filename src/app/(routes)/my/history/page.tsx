@@ -1,21 +1,17 @@
 "use client";
+
 import { Container } from "@/components/layout";
-import axiosInstance from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 import HistoryList from "@/components/features/my/history-list";
 import { UserHistoryResponse } from "@/types/user";
-
-const getHistory = async () => {
-  const res = await axiosInstance.get(`/user/history`);
-  return res.data;
-};
+import getHistory from "@/api/user/get-history";
 
 export default function MyHistory() {
   const { data: historyItems } = useQuery<UserHistoryResponse>({
     queryKey: ["history"],
     queryFn: getHistory,
+    staleTime: 1000 * 60 * 5,
   });
-
   const historyDone = historyItems?.tasksDone ?? [];
 
   return (
