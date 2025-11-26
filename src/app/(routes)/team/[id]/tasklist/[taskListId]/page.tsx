@@ -20,31 +20,6 @@ export default async function TasklistPage({
 
   const groupResult = await getGroupTaskListsforServer(groupId);
 
-  // const dateString = formatDateToISOString(currentDate).split("T")[0];
-
-  // let firstTaskListId: number | null = null;
-
-  // if (groupResult?.taskLists?.length) {
-  //   const first = groupResult.taskLists.find(t => t.displayIndex === 0);
-  //   if (first) {
-  //     firstTaskListId = first.id;
-  //   }
-  // }
-
-  // if (firstTaskListId !== null) {
-  //   if (!isEmpty(firstTaskListId)) {
-  //     await queryClient.prefetchQuery({
-  //       queryKey: ["taskList", groupId, firstTaskListId, dateString],
-  //       queryFn: () =>
-  //         getTaskListForServer({
-  //           groupId: groupId,
-  //           taskListId: firstTaskListId,
-  //           date: formattedDate,
-  //         }),
-  //     });
-  //   }
-  // }
-
   return (
     <>
       <HydrationBoundary state={dehydrate(queryClient)}>

@@ -24,7 +24,6 @@ import TaskCardField from "@/components/features/tasklist/task-card-field";
 interface TaskListPageProps {
   groupData: GroupTaskList;
   taskListId: string;
-  // date: string;
 }
 
 type ModalType = "task" | "recurring";
