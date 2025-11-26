@@ -68,3 +68,5 @@ export type RecurringPostType = RecurringCommon & {
   weekDays?: number[];
   monthDay?: number;
 };
+
+export type DeleteType = "All" | "One";

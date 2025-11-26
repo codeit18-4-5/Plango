@@ -127,3 +127,38 @@ export async function patchRecurringDoneAt({
     throw e;
   }
 }
+
+export async function deleteOneRecurring({
+  groupId,
+  taskListId,
+  taskId,
+}: TaskDetailProps & { dateString: string }) {
+  try {
+    const res = await axiosInstance.delete(
+      `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}`,
+    );
+
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function deleteAllRecurring({
+  groupId,
+  taskListId,
+  taskId,
+  recurringId,
+}: TaskDetailProps & { recurringId: number; dateString: string }) {
+  try {
+    const res = await axiosInstance.delete(
+      `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}/recurring/${recurringId}`,
+    );
+
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}

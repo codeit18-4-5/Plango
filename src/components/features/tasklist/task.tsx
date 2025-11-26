@@ -11,7 +11,15 @@ import { formatDateToFullStr, getFrequencyLabel } from "@/lib/utils";
 
 interface TaskProps {
   task: TaskType;
-  onKebabClick: ({ taskId, type }: { taskId: number; type: KebabType }) => void;
+  onKebabClick: ({
+    taskId,
+    recurringId,
+    type,
+  }: {
+    taskId: number;
+    recurringId: number;
+    type: KebabType;
+  }) => void;
 }
 
 export type KebabType = "update" | "delete";
@@ -20,7 +28,7 @@ export default function Task({ task, onKebabClick }: TaskProps) {
   const [checked, setChecked] = useState(false);
 
   const handleKebabClick = (type: KebabType) => {
-    onKebabClick({ taskId: task.id, type });
+    onKebabClick({ taskId: task.id, recurringId: task.recurringId, type });
   };
 
   return (

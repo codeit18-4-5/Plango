@@ -1,8 +1,7 @@
 "use client";
 import CancelIcon from "@/assets/icons/ic-cancel.svg";
 import { Container } from "@/components/layout";
-import { updateRecurring, useTaskDetail } from "@/hooks/taskList/use-tasklist";
-import { useEffect, useMemo, useState } from "react";
+import { updateRecurring, useDeleteRecurring, useTaskDetail } from "@/hooks/taskList/use-tasklist";
 import { useRouter } from "next/navigation";
 import TaskDetailMain from "./task-detail-main";
 import { KebabType } from "./task";
@@ -10,8 +9,10 @@ import { useToggle } from "@/hooks";
 import TaskDetailUpdateTemplate from "./task-recurring-update-modal";
 import z4 from "zod/v4";
 import { taskDetailUpdateSchema } from "@/lib/schema";
-import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/tasklist-provider";
+import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
 import { useAlert } from "@/providers/alert-provider";
+import TaskDeleteSheet from "./task-recurring-delete-sheet";
+import { DeleteType } from "@/types/task";
 
 export default function TaskDetailWrapper({
   taskId,
@@ -26,74 +27,58 @@ export default function TaskDetailWrapper({
     setOpen: setOpenUpdateTaskDetail,
     setClose: setCloseUpdateTaskDetail,
   } = useToggle();
-  const [selectedRecurringId, setSelectedRecurringId] = useState<number | null>(null);
+  const {
+    isOpen: isOpenDeleteSheet,
+    setOpen: setOpenDeleteSheet,
+    setClose: setCloseDeleteSheet,
+  } = useToggle();
+
   const { showAlert } = useAlert();
   const { permissionCheck, dateString } = useTaskListContext();
-  const { mutate } = updateRecurring();
 
-  const context = useMemo(() => {
-    if (typeof window === "undefined") return null;
+  const { mutate: updateMutate } = updateRecurring();
+  const { mutate: deleteMutate } = useDeleteRecurring();
 
-    const storageDatas = sessionStorage.getItem("taskStorageProps");
-    if (!storageDatas) return null;
+  const storedTaskListId = sessionStorage.getItem("taskListId");
+  const storedRecurringId = sessionStorage.getItem("recurringId");
 
-    try {
-      const parsedData = JSON.parse(storageDatas);
-      return {
-        taskListId: Number(parsedData.taskListId),
-        date: parsedData.taskDate,
-        groupId: Number(parsedData.taskGroupId),
-      };
-    } catch {
-      return null;
-    }
-  }, [taskId]);
+  if (storedTaskListId == null || storedRecurringId == null) {
+    return <div className="p-4">로딩중...</div>;
+  }
 
-  const handleKebabClick = ({ taskId, type }: { taskId: number; type: KebabType }) => {
+  const taskListId = Number(storedTaskListId);
+  const recurringId = Number(storedRecurringId);
+
+  const handleKebabClick = (type: KebabType) => {
     if (type === "update") {
-      setSelectedRecurringId(taskId);
       setOpenUpdateTaskDetail();
     } else {
-      console.log("delete:", taskId);
+      setOpenDeleteSheet();
     }
   };
 
-  useEffect(() => {
-    if (!context || !taskId) {
-      router.push("/");
-    }
-  }, [context, taskId, router]);
-
   const { data, isLoading } = useTaskDetail({
     groupId: groupId,
-    taskListId: context?.taskListId ?? 0,
+    taskListId: taskListId,
     taskId: taskId,
   });
 
-  if (!context) {
-    return <div className="p-4">로딩중...</div>;
-  }
-
-  if (isLoading) {
-    return <div className="p-4">로딩중...</div>;
-  }
-
   const handleCloseButton = () => {
     sessionStorage.setItem("closeDetailModal", "true");
-    router.push(`/team/${groupId}/tasklist`);
+    router.push(`/team/${groupId}/tasklist/${taskListId}`);
   };
 
   const handleTaskUpdateSubmit = async (
     value: z4.infer<ReturnType<typeof taskDetailUpdateSchema>>,
   ) => {
-    if (selectedRecurringId === null) return;
+    if (taskId === null) return;
 
     const result = await permissionCheck();
     if (result) {
-      mutate(
+      updateMutate(
         {
           groupId: groupId,
-          taskListId: context.taskListId,
+          taskListId: taskListId,
           dateString: dateString,
           taskId: taskId,
           ...value,
@@ -110,6 +95,71 @@ export default function TaskDetailWrapper({
       );
     }
   };
+
+  const handleClickDelete = async (type: DeleteType) => {
+    if (taskId === null) {
+      showAlert("선택된 할 일이 없습니다.");
+      return;
+    }
+
+    const result = await permissionCheck();
+
+    if (result) {
+      if (type === "One") {
+        deleteMutate(
+          {
+            groupId: groupId,
+            taskListId: taskListId,
+            dateString: dateString,
+            taskId: taskId,
+          },
+          {
+            onSuccess: () => {
+              showAlert("할 일이 삭제 되었습니다."); // 나중에 toast로 교체
+              setCloseDeleteSheet();
+
+              sessionStorage.setItem("closeDetailModal", "true");
+              router.push(`/team/${groupId}/tasklist`);
+            },
+            onError: () => {
+              showAlert("삭제 중 오류가 발생했습니다.");
+            },
+          },
+        );
+      } else if (type === "All") {
+        if (taskId === null) {
+          showAlert("선택된 할 일이 없습니다.");
+          return;
+        }
+
+        deleteMutate(
+          {
+            groupId: groupId,
+            taskListId: taskListId,
+            dateString: dateString,
+            taskId: taskId,
+            recurringId: recurringId,
+          },
+          {
+            onSuccess: () => {
+              showAlert("할 일이 삭제 되었습니다."); // 나중에 toast로 교체
+              setCloseDeleteSheet();
+
+              sessionStorage.setItem("closeDetailModal", "true");
+              router.push(`/team/${groupId}/tasklist`);
+            },
+            onError: () => {
+              showAlert("삭제 중 오류가 발생했습니다.");
+            },
+          },
+        );
+      }
+    }
+  };
+
+  if (isLoading) {
+    return <div className="p-4">로딩중...</div>;
+  }
 
   return (
     <>
@@ -134,6 +184,14 @@ export default function TaskDetailWrapper({
               name={data.name}
               description={data.description ?? ""}
               type="nameAndDescription"
+            />
+          )}
+
+          {isOpenDeleteSheet && (
+            <TaskDeleteSheet
+              isOpen={isOpenDeleteSheet}
+              onClose={setCloseDeleteSheet}
+              onDelete={handleClickDelete}
             />
           )}
         </>

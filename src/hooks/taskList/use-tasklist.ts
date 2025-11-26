@@ -1,4 +1,6 @@
 import {
+  deleteAllRecurring,
+  deleteOneRecurring,
   getGroupTaskLists,
   getMemberInfo,
   getTaskDetail,
@@ -49,7 +51,7 @@ export const useTaskDetail = ({ groupId, taskListId, taskId }: TaskDetailProps) 
   });
 };
 
-export const usetMemberPermission = ({ groupId, userId }: MemberPermissionProps) => {
+export const userMemberPermission = ({ groupId, userId }: MemberPermissionProps) => {
   return useQuery<MemberInfo>({
     queryKey: ["memberInfo", groupId, userId],
     queryFn: () => getMemberInfo({ groupId, userId }),
@@ -132,6 +134,68 @@ export const updateRecurring = () => {
             context.variables.taskListId,
             context.variables.taskId,
           ],
+        });
+      }
+    },
+  });
+};
+
+export const useDeleteRecurring = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (
+      variables: TaskDetailProps & {
+        recurringId?: number;
+        dateString: string;
+      },
+    ) => {
+      const { groupId, taskListId, taskId, recurringId, dateString } = variables;
+
+      if (recurringId) {
+        return deleteAllRecurring({
+          groupId,
+          taskListId,
+          taskId,
+          recurringId,
+          dateString,
+        });
+      }
+
+      return deleteOneRecurring({
+        groupId,
+        taskListId,
+        taskId,
+        dateString,
+      });
+    },
+    onMutate: async variables => {
+      const queryKey = ["taskList", variables.groupId, variables.taskListId, variables.dateString];
+
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData<TaskList>(queryKey);
+
+      queryClient.setQueryData<TaskList>(queryKey, (old: TaskList | undefined) => {
+        if (!old?.tasks) return old;
+        const updatedTasks = old.tasks.filter(task => task.id !== variables.taskId);
+        return { ...old, tasks: updatedTasks };
+      });
+      return { previousData, queryKey };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(context.queryKey, context.previousData);
+      }
+      console.error("할 일 삭제 실패.", error);
+    },
+    onSettled: (data, error, variables, context) => {
+      if (!context) return;
+
+      if (variables.recurringId) {
+        queryClient.invalidateQueries({ queryKey: ["taskList", variables.groupId] });
+      } else {
+        queryClient.invalidateQueries({
+          queryKey: context.queryKey,
         });
       }
     },

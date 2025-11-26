@@ -9,12 +9,12 @@ import { KebabType } from "./task";
 
 interface TaskDetailProps {
   taskDetail: TaskDetail;
-  onKebabClick: ({ taskId, type }: { taskId: number; type: KebabType }) => void;
+  onKebabClick: (type: KebabType) => void;
 }
 
 export default function TaskDetailMain({ taskDetail, onKebabClick }: TaskDetailProps) {
   const handleKebabClick = (type: KebabType) => {
-    onKebabClick({ taskId: taskDetail.id, type });
+    onKebabClick(type);
   };
 
   return (

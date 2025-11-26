@@ -5,24 +5,26 @@ import Task, { KebabType } from "@/components/features/tasklist/task";
 import { tabButtonStyle } from "@/app/(routes)/team/[id]/tasklist/index.styles";
 import { GroupTaskList } from "@/types/tasklist";
 import cn from "@/lib/cn";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import TaskDetailUpdateTemplate from "@/components/features/tasklist/task-recurring-update-modal";
-import { updateRecurring, useTaskList } from "@/hooks/taskList/use-tasklist";
-import { formatDateToISOString, isEmpty } from "@/lib/utils";
+import { updateRecurring, useDeleteRecurring, useTaskList } from "@/hooks/taskList/use-tasklist";
+import { isEmpty } from "@/lib/utils";
 import { useToggle } from "@/hooks";
 import z4 from "zod/v4";
 import { taskDetailUpdateSchema } from "@/lib/schema";
 import { useAlert } from "@/providers/alert-provider";
-import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/tasklist-provider";
+import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
+import TaskDeleteSheet from "./task-recurring-delete-sheet";
+import { DeleteType } from "@/types/task";
 
 interface TaskListPageProps {
   groupData: GroupTaskList;
-  date: Date;
+  date: string;
 }
 
 interface TaskFieldProps extends TaskListPageProps {
   activeTab: number;
-  setActiveTab: React.Dispatch<React.SetStateAction<number>>;
+  setActiveTab: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 export default function TaskCardField({
@@ -32,65 +34,79 @@ export default function TaskCardField({
   setActiveTab,
 }: TaskFieldProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const {
     isOpen: isOpenUpdateTaskDetail,
     setOpen: setOpenUpdateTaskDetail,
     setClose: setCloseUpdateTaskDetail,
   } = useToggle();
+  const {
+    isOpen: isOpenDeleteSheet,
+    setOpen: setOpenDeleteSheet,
+    setClose: setCloseDeleteSheet,
+  } = useToggle();
 
   const { showAlert } = useAlert();
   const { permissionCheck, dateString } = useTaskListContext();
-  const { mutate } = updateRecurring();
+  const { mutate: updateMutate } = updateRecurring();
+  const { mutate: deleteMutate } = useDeleteRecurring();
 
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null); // 카드 케밥용
   const [selectedRecurringId, setSelectedRecurringId] = useState<number | null>(null);
 
   const groupId = groupData.id;
-  const tabs = groupData.taskLists
+  const tabs = groupData?.taskLists
     .sort((a, b) => a.displayIndex - b.displayIndex)
     .map(taskList => ({ id: taskList.id, label: taskList.name }));
 
   const { data: taskListData } = useTaskList({
     groupId: groupId,
     taskListId: activeTab,
-    date: formatDateToISOString(date),
+    date: date,
     dateString: dateString,
   });
 
-  const storageDatas = {
-    taskGroupId: groupId.toString(),
-    taskListId: activeTab,
-    taskDate: date,
-  };
-
   const handleTaskClick = (id: number) => {
-    sessionStorage.setItem("taskStorageProps", JSON.stringify(storageDatas));
+    sessionStorage.setItem("taskId", id.toString()); // 상세보기 용
+    const resultRecurringId = groupData?.taskLists
+      .find(taskList => taskList.id === activeTab)
+      ?.tasks.find(task => task.id === id)?.recurringId;
+    sessionStorage.setItem("recurringId", resultRecurringId ? resultRecurringId.toString() : "");
+
     sessionStorage.setItem("openDetailModal", "true");
-    router.push(`/team/${groupId}/tasklist/${id}`);
+    router.push(`/team/${groupId}/tasklist/${activeTab}/${id}`);
   };
 
-  const handleKebabClick = ({ taskId, type }: { taskId: number; type: KebabType }) => {
+  const handleKebabClick = ({
+    taskId,
+    recurringId,
+    type,
+  }: {
+    taskId: number;
+    recurringId: number;
+    type: KebabType;
+  }) => {
+    setSelectedTaskId(taskId);
+    setSelectedRecurringId(recurringId);
     if (type === "update") {
-      setSelectedRecurringId(taskId);
       setOpenUpdateTaskDetail();
     } else {
-      console.log("delete:", taskId);
+      setOpenDeleteSheet();
     }
   };
 
   const handleTaskUpdateSubmit = async (
     value: z4.infer<ReturnType<typeof taskDetailUpdateSchema>>,
   ) => {
-    if (selectedRecurringId === null) return;
+    if (selectedTaskId === null) return;
 
     const result = await permissionCheck();
     if (result) {
-      mutate(
+      updateMutate(
         {
           groupId: groupData.id,
           taskListId: activeTab,
           dateString: dateString,
-          taskId: selectedRecurringId,
+          taskId: selectedTaskId,
           name: value.name,
         },
         {
@@ -106,12 +122,87 @@ export default function TaskCardField({
     }
   };
 
+  const handleClickDelete = async (type: DeleteType) => {
+    if (selectedTaskId === null) {
+      showAlert("선택된 할 일이 없습니다.");
+      return;
+    }
+
+    const result = await permissionCheck();
+
+    if (result) {
+      if (type === "One") {
+        deleteMutate(
+          {
+            groupId: groupData.id,
+            taskListId: activeTab,
+            dateString: dateString,
+            taskId: selectedTaskId,
+          },
+          {
+            onSuccess: () => {
+              showAlert("할 일이 삭제 되었습니다."); // 나중에 toast로 교체
+              setCloseDeleteSheet();
+
+              const sessionTaskId = sessionStorage.getItem("taskId");
+              if (sessionTaskId && Number(sessionTaskId) === selectedTaskId) {
+                sessionStorage.setItem("closeDetailModal", "true");
+                router.push(`/team/${groupId}/tasklist`);
+              }
+              router.refresh();
+            },
+            onError: () => {
+              showAlert("삭제 중 오류가 발생했습니다.");
+            },
+          },
+        );
+      } else if (type === "All") {
+        if (selectedRecurringId === null) {
+          showAlert("선택된 할 일이 없습니다.");
+          return;
+        }
+
+        deleteMutate(
+          {
+            groupId: groupData.id,
+            taskListId: activeTab,
+            dateString: dateString,
+            taskId: selectedTaskId,
+            recurringId: selectedRecurringId,
+          },
+          {
+            onSuccess: () => {
+              showAlert("할 일이 삭제 되었습니다."); // 나중에 toast로 교체
+              setCloseDeleteSheet();
+
+              const sessionTaskId = sessionStorage.getItem("taskId");
+              if (sessionTaskId && Number(sessionTaskId) === selectedTaskId) {
+                sessionStorage.setItem("closeDetailModal", "true");
+                router.push(`/team/${groupId}/tasklist`);
+              }
+              router.refresh();
+            },
+            onError: () => {
+              showAlert("삭제 중 오류가 발생했습니다.");
+            },
+          },
+        );
+      }
+    }
+  };
+
+  const handleTabClick = (tabId: number) => {
+    setActiveTab(tabId);
+
+    const searchParams = useSearchParams();
+    const dateParam = searchParams.get("date");
+    router.replace(`/team/${groupId}/tasklist/${tabId}?${dateParam ? `date=${dateParam}` : ""}`, {
+      scroll: false,
+    });
+  };
+
   // 탭이동시 상세보기 화면 닫기
   useEffect(() => {
-    const pathParts = pathname.split("/").filter(Boolean);
-    if (pathParts.length >= 4 && pathParts[2] === "tasklist") {
-      router.back();
-    }
     sessionStorage.setItem("closeDetailModal", "true");
   }, [activeTab, router]);
 
@@ -133,7 +224,7 @@ export default function TaskCardField({
                     tabButtonStyle(),
                   )}
                   title={tab.label}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabClick(tab.id)}
                 >
                   {tab.label}
                 </button>
@@ -168,8 +259,16 @@ export default function TaskCardField({
           isOpen={isOpenUpdateTaskDetail}
           onClose={setCloseUpdateTaskDetail}
           onSubmit={handleTaskUpdateSubmit}
-          name={taskListData?.tasks.find(task => task.id === selectedRecurringId)?.name ?? ""}
+          name={taskListData?.tasks.find(task => task.id === selectedTaskId)?.name ?? ""}
           type="nameOnly"
+        />
+      )}
+
+      {isOpenDeleteSheet && (
+        <TaskDeleteSheet
+          isOpen={isOpenDeleteSheet}
+          onClose={setCloseDeleteSheet}
+          onDelete={handleClickDelete}
         />
       )}
     </>
