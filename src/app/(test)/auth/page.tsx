@@ -1,37 +1,14 @@
 "use client";
 
 import deleteUser from "@/api/user/delete-user";
-import patchUser from "@/api/user/patch-user";
-import { Button, Form, Input } from "@/components/ui";
 import { useLogout } from "@/hooks";
-import axiosInstance from "@/lib/axios";
-import { nicknameErrorHandler } from "@/lib/error";
 import { getAccessToken } from "@/lib/token";
-import { changeProfileSchema, ChangeProfileSchema } from "@/lib/schema";
 import { useAuthStore } from "@/store/auth.store";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useFormContext } from "react-hook-form";
+import { useToast } from "@/providers/toast-provider";
 
-function ProfileUpdate() {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext<ChangeProfileSchema>();
-  return (
-    <>
-      <Input id="nickname" errorMsg={errors?.nickname?.message}>
-        <Input.Label label="닉네임" caption="(닉네임 중복 불가, 최대 10자)" />
-        <Input.Field {...register("nickname")} placeholder="닉네임을 입력해주세요." />
-        <Input.Error />
-      </Input>
-      <Button type="submit" className="mt-4">
-        변경
-      </Button>
-    </>
-  );
-}
 export default function HomePage() {
+  const { showToast } = useToast();
   const user = useAuthStore(state => state.user);
   const accessToken = getAccessToken();
   const initialized = useAuthStore(state => state.initialized);
@@ -53,21 +30,6 @@ export default function HomePage() {
     );
 
   const { id, image, email, teamId, nickname, memberships } = user;
-  const handleSubmit = async (data: ChangeProfileSchema) => {
-    const prev = useAuthStore.getState().user;
-    const { updateUser } = useAuthStore.getState().actions;
-
-    // 낙관적 갱신
-    updateUser({ nickname: data.nickname });
-
-    try {
-      await patchUser({ nickname: data.nickname });
-    } catch (err) {
-      // 실패 시 롤백
-      updateUser({ nickname: prev?.nickname ?? "" });
-      throw err;
-    }
-  };
 
   const handleDelete = async () => {
     try {
@@ -75,17 +37,6 @@ export default function HomePage() {
     } finally {
       logout();
     }
-  };
-
-  const getGroup = async () => {
-    const res = await axiosInstance.get("/user/groups");
-    // console.log(res.data);
-    return res.data;
-  };
-  const getMemberships = async () => {
-    const res = await axiosInstance.get("/user/memberships");
-    // console.log(res.data);
-    return res.data;
   };
 
   return (
@@ -101,27 +52,33 @@ export default function HomePage() {
       <p>현재 user nickname: {nickname ?? "없음"}</p>
       <p>현재 user email: {email ?? "없음"}</p>
       <p>현재 user teamId: {teamId ?? "없음"}</p>
-      <p>현재 user memberships: {String(Boolean(memberships))}</p>
-      <Form<ChangeProfileSchema>
-        onSubmit={handleSubmit}
-        onServerError={nicknameErrorHandler}
-        resolver={zodResolver(changeProfileSchema)}
-        mode="onBlur"
-        reValidateMode="onBlur"
-      >
-        <ProfileUpdate />
-      </Form>
-      <button onClick={() => logout()} className="mt-4 border p-2">
+      <p>현재 user memberships: {JSON.stringify(memberships)}</p>
+
+      <button onClick={() => logout()} className="mt-4 justify-between border p-2">
         로그아웃
       </button>
-      <button onClick={handleDelete} className="mt-4 border p-2">
-        회원탈퇴
+      <button onClick={handleDelete} className="mt-4 border p-2" disabled>
+        회원탈퇴(disabled)
       </button>
-      <button onClick={getGroup} className="mt-4 border p-2">
-        그룹불러오기(콘솔)
+
+      <button onClick={() => showToast("일반 토스트")} className="mt-4 border p-2">
+        기본 토스트 띄우기
       </button>
-      <button onClick={getMemberships} className="mt-4 border p-2">
-        멤버불러오기(콘솔)
+      <button
+        onClick={() => showToast("데이터 불러오기 성공!", "success")}
+        className="mt-4 border p-2"
+      >
+        성공 토스트 띄우기
+      </button>
+
+      <button
+        onClick={() => showToast("데이터 불러오기 실패!", "error")}
+        className="mt-4 border p-2"
+      >
+        실패 토스트 띄우기
+      </button>
+      <button onClick={() => showToast(<p>커스텀 토스트</p>)} className="mt-4 border p-2">
+        커스텀 토스트 띄우기
       </button>
     </div>
   );
