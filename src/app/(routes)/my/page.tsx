@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function My() {
   const { data: userData, isLoading } = useUserQuery();
-  const { mutate } = useUserUpdateQuery();
+  const { mutate, isPending } = useUserUpdateQuery();
   const user = useAuthStore(state => state.user);
   const { isOpen, setOpen, setClose } = useToggle();
 
@@ -59,7 +59,7 @@ export default function My() {
         </Form>
         <div className="flex items-center justify-between gap-4">
           <UserDelete />
-          <Button form="profileForm" type="submit" className="w-1/4 self-end">
+          <Button form="profileForm" type="submit" className="w-1/4 self-end" disabled={isPending}>
             프로필 변경
           </Button>
         </div>
