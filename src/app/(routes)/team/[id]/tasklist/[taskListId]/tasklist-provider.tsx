@@ -1,6 +1,6 @@
 "use client";
 
-import { usetMemberPermission } from "@/hooks/taskList/use-tasklist";
+import { userMemberPermission } from "@/hooks/taskList/use-tasklist";
 import { useAlert } from "@/providers/alert-provider";
 import { useAuthStore } from "@/store/auth.store";
 import { MemberInfo } from "@/types/tasklist";
@@ -33,6 +33,7 @@ export default function TaskListProvider({
   const [memberInfo, setMemberInfo] = useState<MemberInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentISOStrDate, setCurrentISOStrDate] = useState(date);
+
   const { showAlert } = useAlert();
 
   const dateString = useMemo(() => {
@@ -46,13 +47,13 @@ export default function TaskListProvider({
       if (isTeam) {
         return true;
       } else {
-        console.error("팀 권한 없음:");
-        showAlert("팀 권한이 없습니다.");
+        console.error("팀 권한 없음");
+        await showAlert("팀 권한이 없습니다.");
         return false;
       }
     } catch (error) {
       console.error("권한 체크 중 에러 발생:", error);
-      showAlert("팀 권한 확인 중 오류가 발생했습니다.");
+      await showAlert("팀 권한 확인 중 오류가 발생했습니다.");
       return false;
     }
   };
@@ -61,7 +62,7 @@ export default function TaskListProvider({
     data,
     refetch,
     isLoading: queryLoading,
-  } = usetMemberPermission({
+  } = userMemberPermission({
     groupId,
     userId: user?.id,
   });

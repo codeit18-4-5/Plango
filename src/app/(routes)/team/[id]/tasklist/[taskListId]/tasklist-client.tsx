@@ -6,7 +6,7 @@ import RightArrowIcon from "@/assets/icons/ic-arrow-right-circle.svg";
 import CalendarIcon from "@/assets/icons/ic-calendar-circle.svg";
 import PlusIcon from "@/assets/icons/ic-plus.svg";
 import { createRecurring, createTask } from "@/hooks/taskList/use-tasklist";
-import { formatDateForToMonthAndDays, isEmpty } from "@/lib/utils";
+import { formatDateForToMonthAndDays, formatDateToISOString, isEmpty } from "@/lib/utils";
 import { Button, Floating } from "@/components/ui";
 import { useToggle } from "@/hooks";
 import TaskAddTemplate from "@/components/features/tasklist/task-add-modal";
@@ -14,43 +14,79 @@ import TaskRecurringAddModal from "@/components/features/tasklist/task-recurring
 import { useEffect, useState } from "react";
 import { useAlert } from "@/providers/alert-provider";
 import { GroupTaskList } from "@/types/tasklist";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { taskDetailSchema, taskSchema } from "@/lib/schema";
 import z4 from "zod/v4";
-import { dateTitleStyle, hiddenBrStyle, newListbuttonStyle } from "./index.styles";
+import { dateTitleStyle, hiddenBrStyle, newListbuttonStyle } from "../index.styles";
 import { useTaskListContext } from "./tasklist-provider";
 import TaskCardField from "@/components/features/tasklist/task-card-field";
 
 interface TaskListPageProps {
   groupData: GroupTaskList;
-  taskListId?: number | null;
-  date: Date;
+  taskListId: string;
+  // date: string;
 }
 
 type ModalType = "task" | "recurring";
+type ArrowType = "prev" | "next";
 
-export default function TasklistClient({ groupData, taskListId, date }: TaskListPageProps) {
+export default function TasklistClient({ groupData, taskListId }: TaskListPageProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const { showAlert } = useAlert();
+  const {
+    isTeam,
+    isLoading,
+    permissionCheck,
+    dateString,
+    currentISOStrDate,
+    setCurrentISOStrDate,
+  } = useTaskListContext();
+
   const { isOpen: isOpenTask, setOpen: setOpenTask, setClose: setCloseTask } = useToggle();
   const {
     isOpen: isOpenRecurring,
     setOpen: setOpenRecurring,
     setClose: setCloseRecurring,
   } = useToggle();
-  const [activeTab, setActiveTab] = useState<number>(taskListId || 0);
-  const { showAlert } = useAlert();
-  const router = useRouter();
 
-  const { isTeam, isLoading, permissionCheck, dateString } = useTaskListContext();
+  const currentDate = new Date();
+  currentDate.setHours(10, 0, 0, 0);
+
+  const queryDate = searchParams.get("date");
+
+  const [activeTab, setActiveTab] = useState<number | null>(Number(taskListId));
+
+  useEffect(() => {
+    let initialDate = queryDate;
+
+    if (!queryDate) {
+      const today = new Date();
+      today.setHours(10, 0, 0, 0);
+      initialDate = formatDateToISOString(today);
+
+      const params = new URLSearchParams(searchParams.toString());
+      params.set("date", initialDate);
+      router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+      setCurrentISOStrDate(initialDate);
+    }
+  }, [queryDate, router, searchParams, setCurrentISOStrDate]);
+
+  const [titleCurrentDate, setTitleCurrentDate] = useState("");
+
+  useEffect(() => {
+    setTitleCurrentDate(formatDateForToMonthAndDays(new Date(currentISOStrDate)));
+  }, [currentISOStrDate]);
+
   const { mutate: postRecurringMutate } = createRecurring();
   const { mutate: taskMutate } = createTask();
-
-  const currentDateStr = formatDateForToMonthAndDays(date);
 
   const handleButtonClick = (type: ModalType) => {
     if (type === "task") {
       setOpenTask();
     } else if (type === "recurring") {
-      if (!taskListId) {
+      if (!activeTab) {
         showAlert("할 일 그룹을 먼저 추가하여야 합니다.");
         return;
       }
@@ -111,6 +147,27 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
     }
   };
 
+  const handleArrowClick = (type: ArrowType) => {
+    const currentDate = new Date(currentISOStrDate);
+    let newDate: Date;
+    newDate = currentDate;
+
+    if (type === "prev") {
+      newDate.setDate(newDate.getDate() - 1);
+    } else if (type === "next") {
+      newDate.setDate(newDate.getDate() + 1);
+    }
+
+    setCurrentISOStrDate(formatDateToISOString(newDate));
+
+    const newDateStr = formatDateToISOString(newDate);
+    setCurrentISOStrDate(newDateStr);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("date", newDateStr);
+    router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+  };
+
   useEffect(() => {
     if (!isLoading && !isTeam) {
       showAlert("해당 팀에 권한이 없습니다.");
@@ -127,14 +184,22 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
         <main className="flex h-[95%] flex-col">
           <section className="mb-[24px] flex items-center justify-between">
             <div className="flex gap-[12px]">
-              <span className={dateTitleStyle}>{currentDateStr}</span>
+              <span className={dateTitleStyle}>{titleCurrentDate}</span>
               <div className="flex gap-[4px]">
-                <div className="w-[16px]">
+                <button
+                  className="w-[16px]"
+                  aria-label="이전 날짜로 이동"
+                  onClick={() => handleArrowClick("prev")}
+                >
                   <LeftArrowIcon></LeftArrowIcon>
-                </div>
-                <div className="w-[16px]">
+                </button>
+                <button
+                  className="w-[16px]"
+                  aria-label="다음 날짜로 이동"
+                  onClick={() => handleArrowClick("next")}
+                >
                   <RightArrowIcon></RightArrowIcon>
-                </div>
+                </button>
               </div>
               <div className="w-[24px]">
                 <CalendarIcon />
@@ -147,7 +212,14 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
               </span>
             </button>
           </section>
-          {!taskListId ? (
+          {activeTab ? (
+            <TaskCardField
+              groupData={groupData}
+              date={currentISOStrDate}
+              activeTab={activeTab}
+              setActiveTab={setActiveTab}
+            />
+          ) : (
             <section className="flex flex-1 items-center justify-center">
               <span className="text-body-s text-gray-500">
                 아직 할 일 목록이 없습니다.
@@ -155,13 +227,6 @@ export default function TasklistClient({ groupData, taskListId, date }: TaskList
                 새로운 목록을 추가해주세요.
               </span>
             </section>
-          ) : (
-            <TaskCardField
-              groupData={groupData}
-              date={date}
-              activeTab={activeTab}
-              setActiveTab={setActiveTab}
-            />
           )}
         </main>
         <footer>

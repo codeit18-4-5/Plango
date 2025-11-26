@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { layoutStyle } from "./index.styles";
+import { layoutStyle } from "../index.styles";
 import { usePathname } from "next/navigation";
 
 interface CommonProps {
@@ -15,16 +15,20 @@ export default function LayoutContent({ children, detail }: CommonProps) {
   const [isOpenDetailModal, setIsOpenDetailModal] = useState(false);
 
   useEffect(() => {
-    const isClose = sessionStorage.getItem("closeDetailModal");
-    const isModal = sessionStorage.getItem("openDetailModal");
+    const checkModal = () => {
+      const isClose = sessionStorage.getItem("closeDetailModal");
+      const isOpen = sessionStorage.getItem("openDetailModal");
 
-    if (isModal) {
-      setIsOpenDetailModal(true);
-      sessionStorage.removeItem("openDetailModal");
-    } else if (isClose) {
-      setIsOpenDetailModal(false);
-      sessionStorage.removeItem("closeDetailModal");
-    }
+      if (isOpen) {
+        setIsOpenDetailModal(true);
+        sessionStorage.removeItem("openDetailModal");
+      } else if (isClose) {
+        setIsOpenDetailModal(false);
+        sessionStorage.removeItem("closeDetailModal");
+      }
+    };
+
+    checkModal();
   }, [pathname]);
 
   return (
