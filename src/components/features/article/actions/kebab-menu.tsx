@@ -9,7 +9,13 @@ import { useAlert } from "@/providers/alert-provider";
 import { Dropdown } from "@/components/ui";
 import IcKebab from "@/assets/icons/ic-kebab.svg";
 
-export default function KebabMenu({ article }: { article: ArticleDetail }) {
+export default function KebabMenu({
+  article,
+  className,
+}: {
+  article: ArticleDetail;
+  className?: string;
+}) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const currentUser = useAuthStore(state => state.user);
@@ -37,7 +43,7 @@ export default function KebabMenu({ article }: { article: ArticleDetail }) {
   if (currentUser?.id !== article.writer.id) return null;
 
   return (
-    <Dropdown>
+    <Dropdown className={className}>
       <Dropdown.TriggerIcon
         intent="icon"
         className="duration-200 hover:text-gray-400 focus:text-gray-200 active:text-gray-300"

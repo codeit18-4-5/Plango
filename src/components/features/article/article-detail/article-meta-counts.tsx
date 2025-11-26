@@ -29,7 +29,6 @@ export default function ArticleMetaCounts({
     queryFn: () => getArticleDetail({ articleId }),
     select: data => ({ likeCount: data.likeCount, commentCount: data.commentCount }),
     placeholderData: cached ?? { likeCount: initialLikeCount, commentCount: initialCommentCount },
-    staleTime: 60000,
   });
 
   return (

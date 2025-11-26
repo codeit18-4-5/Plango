@@ -1,24 +1,33 @@
 "use client";
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import postArticleLike from "@/api/article/post-article-like";
 import deleteArticleLike from "@/api/article/delete-article-like";
-import { ArticleLikeProps, ArticleDetail } from "@/types/article";
+import { ArticleDetail } from "@/types/article";
+import { useAuthStore } from "@/store/auth.store";
 import { LikeButton } from "@/components/ui";
 import { ArticleConfirmModal } from "../layout";
+import getArticleDetail from "@/api/article/get-article-detail";
 
 export default function ArticleLike({
-  isLogin,
-  isLiked,
   articleId,
-  likeCount,
   className,
-}: ArticleLikeProps) {
+}: {
+  articleId: number;
+  className?: string;
+}) {
+  const currentUser = useAuthStore(state => state.user);
+  const isLogin = !!currentUser;
   const [showLoginModal, setShowLoginModal] = useState(false);
   const queryClient = useQueryClient();
   const router = useRouter();
+
+  const { data } = useQuery<ArticleDetail, Error>({
+    queryKey: ["getArticleDetail", articleId],
+    queryFn: () => getArticleDetail({ articleId }),
+  });
 
   const { mutate } = useMutation({
     mutationFn: async (userAction: "unlike" | "like") => {
@@ -30,19 +39,18 @@ export default function ArticleLike({
     },
     onMutate: async userAction => {
       await queryClient.cancelQueries({ queryKey: ["getArticleDetail", articleId] });
-
       const prevData = queryClient.getQueryData(["getArticleDetail", articleId]);
-
       queryClient.setQueryData(["getArticleDetail", articleId], (prev: ArticleDetail) => ({
         ...prev,
-        likeCount: userAction === "like" ? prev.likeCount + 1 : prev.likeCount - 1,
+        likeCount: userAction === "like" ? prev.likeCount + 1 : Math.max(0, prev.likeCount - 1),
         isLiked: userAction === "like",
       }));
-
       return { prevData };
     },
-    onError: (err, _, context) => {
-      queryClient.setQueryData(["getArticleDetail", articleId], context?.prevData);
+    onError: (_err, _userAction, context) => {
+      if (context?.prevData) {
+        queryClient.setQueryData(["getArticleDetail", articleId], context.prevData);
+      }
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
@@ -50,20 +58,20 @@ export default function ArticleLike({
     },
   });
 
-  const handleLikeClick = (userAction: "unlike" | "like") => {
+  const handleLikeClick = () => {
     if (!isLogin) {
       setShowLoginModal(true);
     } else {
-      mutate(userAction);
+      mutate(data && data.isLiked ? "unlike" : "like");
     }
   };
 
   return (
     <>
       <LikeButton
-        liked={isLiked}
-        likeCount={likeCount}
-        onClick={() => handleLikeClick(isLiked ? "unlike" : "like")}
+        liked={data?.isLiked}
+        likeCount={data?.likeCount ?? 0}
+        onClick={handleLikeClick}
         className={className}
       />
       {showLoginModal && (

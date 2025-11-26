@@ -20,7 +20,7 @@ export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
       <h3 className="visually-hidden">게시글 상세 정보</h3>
       <div className={ARTICLE_DETAIL_STYLES.heading.wrapper}>
         <h4 className={ARTICLE_DETAIL_STYLES.heading.title}>{article.title}</h4>
-        <KebabMenu article={article} />
+        <KebabMenu article={article} className={ARTICLE_DETAIL_STYLES.heading.kebab} />
       </div>
       <div className={ARTICLE_DETAIL_STYLES.meta.wrapper}>
         <div className={ARTICLE_DETAIL_STYLES.meta.authorInfo}>
@@ -59,13 +59,7 @@ export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
         )}
       </div>
       <div className={ARTICLE_DETAIL_STYLES.actions.wrapper}>
-        <ArticleLike
-          isLogin={true}
-          isLiked={article.isLiked}
-          articleId={article.id}
-          likeCount={article.likeCount}
-          className={ARTICLE_DETAIL_STYLES.actions.like}
-        />
+        <ArticleLike articleId={article.id} className={ARTICLE_DETAIL_STYLES.actions.like} />
         <Button
           as={Link}
           href="/article"

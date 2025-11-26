@@ -5,7 +5,7 @@ import { Button } from "@/components/ui";
 import IcLiked from "@/assets/icons/ic-heart-color.svg";
 
 type LikeButtonProps = {
-  liked: boolean;
+  liked?: boolean;
   likeCount: number;
   className?: string;
   onClick?: () => void;
@@ -19,14 +19,13 @@ export default function LikeButton({
   ...props
 }: LikeButtonProps) {
   return (
-    <div className={className}>
+    <div className={cn(className, liked ? "text-gray-100" : "text-gray-400")}>
       <Button
         size="icon"
         type="button"
         className={cn(
-          "hover:text-pink-400",
-          className,
-          liked ? "like-effect text-pink-500" : "like-effect text-gray-400",
+          "text-inherit",
+          liked ? "like-effect text-pink-500 hover:text-pink-600" : "hover:text-gray-500",
         )}
         aria-label={liked ? "좋아요 취소" : "좋아요"}
         onClick={onClick}

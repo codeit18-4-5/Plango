@@ -110,7 +110,6 @@ export default function ArticleCommentSection({
     queryFn: () => getArticleDetail({ articleId }),
     select: data => ({ commentCount: data.commentCount }),
     placeholderData: cached ?? { commentCount },
-    staleTime: 60000,
   });
 
   useEffect(() => {
