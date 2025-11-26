@@ -12,6 +12,8 @@ import {
 } from "react-hook-form";
 
 type FormProps<T extends FieldValues = FieldValues> = {
+  id?: string;
+  form?: ReturnType<typeof useForm<T>>;
   onSubmit?: SubmitHandler<T>;
   onError?: SubmitErrorHandler<T>;
   onServerError?: ServerErrorHandler<T>;
@@ -20,6 +22,8 @@ type FormProps<T extends FieldValues = FieldValues> = {
 } & UseFormProps<T>;
 
 export default function Form<T extends FieldValues = FieldValues>({
+  id,
+  form,
   onSubmit,
   onError,
   onServerError,
@@ -27,7 +31,7 @@ export default function Form<T extends FieldValues = FieldValues>({
   children,
   ...formOptions
 }: FormProps<T>) {
-  const methods = useForm<T>(formOptions);
+  const methods = form ?? useForm<T>(formOptions);
   const { handleSubmit, setError } = methods;
 
   const handleFormSubmit: SubmitHandler<T> = async data => {
@@ -51,6 +55,7 @@ export default function Form<T extends FieldValues = FieldValues>({
       <form
         onSubmit={handleSubmit(handleFormSubmit, onError)}
         className={cn("flex flex-col gap-6", className)}
+        id={id}
       >
         {children}
       </form>
