@@ -22,6 +22,7 @@ import { DeleteType } from "@/types/task";
 import { Button, Floating } from "@/components/ui";
 import CheckIcon from "@/assets/icons/ic-check.svg";
 import CheckColorIcon from "@/assets/icons/ic-check-color.svg";
+import { useToast } from "@/providers/toast-provider";
 
 export default function TaskDetailWrapper({
   taskId,
@@ -43,11 +44,11 @@ export default function TaskDetailWrapper({
     setClose: setCloseDeleteSheet,
   } = useToggle();
 
+  const { showToast } = useToast();
   const { showAlert } = useAlert();
   const { permissionCheck, dateString } = useTaskListContext();
 
   const { data: commentsData } = useTaskComments(taskId);
-
   const { mutate: updateMutate } = updateRecurring();
   const { mutate: deleteMutate } = useDeleteRecurring();
   const { mutate: updateRecurringDoneMutate } = updateRecurringDoneAt();
@@ -98,11 +99,11 @@ export default function TaskDetailWrapper({
         },
         {
           onSuccess: () => {
-            showAlert("할 일 내용이 수정되었습니다."); // 나중에 toast로 교체
+            showToast("할 일 내용이 수정되었습니다.", "success");
             setCloseUpdateTaskDetail();
           },
           onError: () => {
-            showAlert("등록 중 오류가 발생했습니다.");
+            showToast("등록 중 오류가 발생했습니다.", "error");
           },
         },
       );
@@ -128,14 +129,14 @@ export default function TaskDetailWrapper({
           },
           {
             onSuccess: () => {
-              showAlert("할 일이 삭제 되었습니다."); // 나중에 toast로 교체
+              showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
 
               sessionStorage.setItem("closeDetailModal", "true");
               router.push(`/team/${groupId}/tasklist`);
             },
             onError: () => {
-              showAlert("삭제 중 오류가 발생했습니다.");
+              showToast("삭제 중 오류가 발생했습니다.", "error");
             },
           },
         );
@@ -155,14 +156,14 @@ export default function TaskDetailWrapper({
           },
           {
             onSuccess: () => {
-              showAlert("할 일이 삭제 되었습니다."); // 나중에 toast로 교체
+              showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
 
               sessionStorage.setItem("closeDetailModal", "true");
               router.push(`/team/${groupId}/tasklist`);
             },
             onError: () => {
-              showAlert("삭제 중 오류가 발생했습니다.");
+              showToast("삭제 중 오류가 발생했습니다.", "error");
             },
           },
         );
@@ -183,7 +184,7 @@ export default function TaskDetailWrapper({
       {
         onSuccess: () => {},
         onError: () => {
-          showAlert("등록 중 오류가 발생했습니다.");
+          showToast("등록 중 오류가 발생했습니다.", "error");
         },
       },
     );

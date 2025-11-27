@@ -20,6 +20,7 @@ import z4 from "zod/v4";
 import { dateTitleStyle, hiddenBrStyle, newListbuttonStyle } from "../index.styles";
 import { useTaskListContext } from "./tasklist-provider";
 import TaskCardField from "@/components/features/tasklist/task-card-field";
+import { useToast } from "@/providers/toast-provider";
 
 interface TaskListPageProps {
   groupData: GroupTaskList;
@@ -39,6 +40,8 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
   } = useToggle();
 
   const { showAlert } = useAlert();
+  const { showToast } = useToast();
+
   const {
     isTeam,
     isLoading,
@@ -121,13 +124,13 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
           },
           {
             onSuccess: () => {
-              showAlert("할 일 목록이 등록되었습니다."); // 나중에 toast로 교체
+              showToast("할 일 목록이 등록되었습니다.", "success");
               setCloseTask();
               router.refresh();
             },
             onError: error => {
               console.error(error);
-              showAlert("등록 중 오류가 발생했습니다.");
+              showToast("등록 중 오류가 발생했습니다.", "error");
             },
           },
         );
@@ -152,11 +155,11 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
         },
         {
           onSuccess: () => {
-            showAlert("할 일이 등록되었습니다."); // 나중에 toast로 교체
+            showToast("할 일이 등록되었습니다.", "success");
             setCloseRecurring();
           },
           onError: () => {
-            showAlert("등록 중 오류가 발생했습니다.");
+            showToast("등록 중 오류가 발생했습니다.", "error");
           },
         },
       );
@@ -230,6 +233,7 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
 
   return (
     <>
+      <Button onClick={() => showToast("등록 중 오류가 발생했습니다.", "error")}>눌러봐</Button>
       <Container className="h-full">
         <header className="mb-[24px]">
           <h1 className="text-heading-s text-gray-100">할 일</h1>

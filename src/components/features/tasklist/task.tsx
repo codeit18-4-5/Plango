@@ -9,7 +9,7 @@ import { Task as TaskType } from "@/types/task";
 import { formatDateToFullStr, getFrequencyLabel } from "@/lib/utils";
 import { updateRecurringDoneAt } from "@/hooks/taskList/use-tasklist";
 import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
-import { useAlert } from "@/providers/alert-provider";
+import { useToast } from "@/providers/toast-provider";
 
 interface TaskProps {
   task: TaskType;
@@ -28,7 +28,7 @@ interface TaskProps {
 export type KebabType = "update" | "delete";
 
 export default function Task({ task, groupId, onKebabClick }: TaskProps) {
-  const { showAlert } = useAlert();
+  const { showToast } = useToast();
 
   const { mutate } = updateRecurringDoneAt();
   const { dateString } = useTaskListContext();
@@ -52,7 +52,7 @@ export default function Task({ task, groupId, onKebabClick }: TaskProps) {
       {
         onSuccess: () => {},
         onError: () => {
-          showAlert("등록 중 오류가 발생했습니다.");
+          showToast("등록 중 오류가 발생했습니다.", "error");
         },
       },
     );

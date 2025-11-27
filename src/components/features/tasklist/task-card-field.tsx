@@ -16,6 +16,7 @@ import { useAlert } from "@/providers/alert-provider";
 import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
 import TaskDeleteSheet from "./task-recurring-delete-sheet";
 import { DeleteType } from "@/types/task";
+import { useToast } from "@/providers/toast-provider";
 
 interface TaskListPageProps {
   groupData: GroupTaskList;
@@ -47,7 +48,9 @@ export default function TaskCardField({
     setClose: setCloseDeleteSheet,
   } = useToggle();
 
+  const { showToast } = useToast();
   const { showAlert } = useAlert();
+
   const { permissionCheck, dateString } = useTaskListContext();
   const { mutate: updateMutate } = updateRecurring();
   const { mutate: deleteMutate } = useDeleteRecurring();
@@ -123,11 +126,11 @@ export default function TaskCardField({
         },
         {
           onSuccess: () => {
-            showAlert("할 일 제목이 수정되었습니다."); // 나중에 toast로 교체
+            showToast("할 일 제목이 수정되었습니다.", "success");
             setCloseUpdateTaskDetail();
           },
           onError: () => {
-            showAlert("등록 중 오류가 발생했습니다.");
+            showToast("등록 중 오류가 발생했습니다.", "error");
           },
         },
       );
@@ -153,7 +156,7 @@ export default function TaskCardField({
           },
           {
             onSuccess: () => {
-              showAlert("할 일이 삭제 되었습니다."); // 나중에 toast로 교체
+              showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
 
               const sessionTaskId = sessionStorage.getItem("taskId");
@@ -164,7 +167,7 @@ export default function TaskCardField({
               router.refresh();
             },
             onError: () => {
-              showAlert("삭제 중 오류가 발생했습니다.");
+              showToast("삭제 중 오류가 발생했습니다.", "error");
             },
           },
         );
@@ -184,7 +187,7 @@ export default function TaskCardField({
           },
           {
             onSuccess: () => {
-              showAlert("할 일이 삭제 되었습니다."); // 나중에 toast로 교체
+              showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
 
               const sessionTaskId = sessionStorage.getItem("taskId");
@@ -195,7 +198,7 @@ export default function TaskCardField({
               router.refresh();
             },
             onError: () => {
-              showAlert("삭제 중 오류가 발생했습니다.");
+              showToast("삭제 중 오류가 발생했습니다.", "error");
             },
           },
         );
