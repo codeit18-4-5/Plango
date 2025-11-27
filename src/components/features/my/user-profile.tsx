@@ -1,21 +1,18 @@
 "use client";
 
-import { Avatar, Button, Form, Input, Modal } from "@/components/ui";
-import { changePasswordSchema, ChangePasswordSchema, ChangeProfileSchema } from "@/lib/schema";
+import { Avatar, Button, Input } from "@/components/ui";
+import { ChangeProfileSchema } from "@/lib/schema";
 import { Controller, useFormContext } from "react-hook-form";
-import IcLeave from "@/assets/icons/ic-leave.svg";
 import IcEdit from "@/assets/icons/ic-pencil-border.svg";
 import IcCancel from "@/assets/icons/ic-cancel-border.svg";
-import deleteUser from "@/api/user/delete-user";
-import { useImageUpload, useLogout } from "@/hooks";
-import { useAlert, ALERT_TYPE } from "@/providers/alert-provider";
-import { zodResolver } from "@hookform/resolvers/zod";
-import patchPassword from "@/api/user/patch-password";
+import { useImageUpload } from "@/hooks";
 import { FILE_ACCEPT } from "@/constants/file_policy";
 import cn from "@/lib/cn";
 import postImagesUpload from "@/api/image/post-images-upload";
 import { useAuthStore } from "@/store/auth.store";
-import { useState } from "react";
+import { ReactNode, useState } from "react";
+import { useToast } from "@/providers/toast-provider";
+import { devConsoleError } from "@/lib/error";
 
 type ProfileFieldProps = {
   id: string;
@@ -24,17 +21,14 @@ type ProfileFieldProps = {
   caption?: string;
   children: React.ReactNode;
 };
-type PasswordChangeModalProps = {
-  isOpen: boolean;
-  onClose: () => void;
-};
+
 type ImgUploadProps = {
   value: string | null;
   onChange: (file: File | string | null) => void;
 };
 
 // 유저 프로필 수정 field
-function ProfileField({ id, label, errorMsg, caption, children }: ProfileFieldProps) {
+export function ProfileField({ id, label, errorMsg, caption, children }: ProfileFieldProps) {
   return (
     <Input id={id} errorMsg={errorMsg}>
       <Input.Label label={label} caption={caption} />
@@ -49,6 +43,7 @@ function ProfileImage({ value, onChange }: ImgUploadProps) {
   const { preview, error, handleFile, clearPreview } = useImageUpload();
   const user = useAuthStore.getState().user;
   const [defaultImg, setDefaultImg] = useState(user?.image);
+  const { showToast } = useToast();
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,8 +57,9 @@ function ProfileImage({ value, onChange }: ImgUploadProps) {
     try {
       const res = await postImagesUpload({ url: file });
       onChange(res.url);
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      devConsoleError(err);
+      showToast("이미지 업로드에 실패했습니다.\n 잠시 후 다시 시도해주세요", "error");
     }
   };
 
@@ -106,6 +102,8 @@ function ProfileImage({ value, onChange }: ImgUploadProps) {
     </div>
   );
 }
+
+// 유저 프로필 수정
 export function ProfileUpdateFormField({
   email,
   onModalOpen,
@@ -163,99 +161,11 @@ export function ProfileUpdateFormField({
   );
 }
 
-//  비밀번호 변경
-function PasswordFormFields({ onClose }: { onClose: () => void }) {
-  const {
-    register,
-    formState: { errors },
-    watch,
-  } = useFormContext<ChangePasswordSchema>();
-
-  const [password, passwordConfirmation] = watch(["password", "passwordConfirmation"]);
-  const allFilled = !!password?.toString().trim() && !!passwordConfirmation?.toString().trim();
-
+export function ProfileEmpty({ msg, children }: { msg: string; children?: ReactNode }) {
   return (
-    <>
-      <ProfileField
-        id="password"
-        errorMsg={errors?.password?.message}
-        label="새 비밀번호"
-        caption="(영문, 숫자, 특수문자[!@#$%^&*] 포함 8~30자)"
-      >
-        <Input.Password {...register("password")} placeholder="비밀번호를 입력해주세요." />
-      </ProfileField>
-
-      <ProfileField
-        id="passwordConfirmation"
-        errorMsg={errors?.passwordConfirmation?.message}
-        label="새 비밀번호 확인"
-      >
-        <Input.Password
-          {...register("passwordConfirmation")}
-          placeholder="비밀번호를 확인을 입력해주세요."
-        />
-      </ProfileField>
-
-      <div className="flex flex-nowrap gap-2 pb-6">
-        <Button type="button" intent="secondary" className="flex-1" onClick={onClose}>
-          취소
-        </Button>
-        <Button type="submit" className="flex-1" disabled={!allFilled}>
-          변경하기
-        </Button>
-      </div>
-    </>
-  );
-}
-export function PasswordChangeModal({ isOpen, onClose }: PasswordChangeModalProps) {
-  const handleSubmit = async (data: ChangePasswordSchema) => {
-    try {
-      await patchPassword(data);
-      // @TODO toast
-      alert("변경되었습니다.");
-      onClose();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-  return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <p className="mb-6 text-center text-base">비밀번호 재설정</p>
-      <Form<ChangePasswordSchema>
-        onSubmit={handleSubmit}
-        resolver={zodResolver(changePasswordSchema)}
-        mode="onBlur"
-        reValidateMode="onChange"
-        className="px-2"
-      >
-        <PasswordFormFields onClose={onClose} />
-      </Form>
-    </Modal>
-  );
-}
-
-//  회원 탈퇴
-export function UserDelete() {
-  const logout = useLogout();
-  const { showAlert } = useAlert();
-
-  const handleConfirm = async () => {
-    const confirmed = await showAlert({ type: ALERT_TYPE.Leave });
-    if (!confirmed) return;
-    await handleDelete();
-  };
-
-  const handleDelete = async () => {
-    try {
-      await deleteUser();
-    } finally {
-      logout();
-    }
-  };
-
-  return (
-    <button onClick={handleConfirm} className="flex gap-2 text-base text-red-400">
-      <IcLeave className="h-6 w-6" /> 회원 탈퇴하기
-    </button>
+    <div className="flex-1 content-center justify-items-center text-center">
+      <p className="text-base text-gray-500">{msg}</p>
+      {children}
+    </div>
   );
 }

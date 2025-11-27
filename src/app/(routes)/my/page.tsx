@@ -1,6 +1,11 @@
 "use client";
 
-import { PasswordChangeModal, ProfileUpdateFormField, UserDelete } from "@/components/features/my";
+import {
+  ProfileEmpty,
+  ProfileUpdateFormField,
+  UserDelete,
+  UserPasswordChangeModal,
+} from "@/components/features/my";
 import { Container } from "@/components/layout";
 import ProfileSkeleton from "@/components/skeleton-ui/profile-skeleton";
 import { Button, Form } from "@/components/ui";
@@ -8,14 +13,16 @@ import { useToggle } from "@/hooks";
 import { useUserQuery, useUserUpdateQuery } from "@/hooks/user/use-userQuery";
 import { nicknameErrorHandler } from "@/lib/error";
 import { changeProfileSchema, ChangeProfileSchema } from "@/lib/schema";
+import { useToast } from "@/providers/toast-provider";
 import { useAuthStore } from "@/store/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function My() {
-  const { data: userData, isLoading } = useUserQuery();
+  const { data: userData, isLoading, isError } = useUserQuery();
   const { mutate, isPending } = useUserUpdateQuery();
   const user = useAuthStore(state => state.user);
   const { isOpen, setOpen, setClose } = useToggle();
+  const { showToast } = useToast();
 
   const handleSubmit = async (data: ChangeProfileSchema) => {
     const prevUser = useAuthStore.getState().user;
@@ -27,14 +34,22 @@ export default function My() {
       payload.image = data.image;
     }
     if (Object.keys(payload).length === 0) {
-      return alert("변경된 내용이 없습니다.");
+      return showToast("변경된 내용이 없습니다.", "error");
     }
 
     mutate(payload);
   };
 
-  if (isLoading) {
-    return <ProfileSkeleton />;
+  if (isLoading) return <ProfileSkeleton />;
+
+  if (isError) {
+    return (
+      <ProfileEmpty msg="히스토리를 불러오지 못했습니다.">
+        <Button className="mt-4" size="md" onClick={() => window.location.reload()}>
+          다시 시도
+        </Button>
+      </ProfileEmpty>
+    );
   }
   return (
     <Container as={"main"} className="max-w-[792px] pb-4">
@@ -58,13 +73,18 @@ export default function My() {
           />
         </Form>
         <div className="flex items-center justify-between gap-4">
-          <UserDelete />
-          <Button form="profileForm" type="submit" className="w-1/4 self-end" disabled={isPending}>
+          <UserDelete email={user?.email} />
+          <Button
+            form="profileForm"
+            type="submit"
+            className="ml-auto w-1/4 self-end"
+            disabled={isPending}
+          >
             프로필 변경
           </Button>
         </div>
       </section>
-      {isOpen && <PasswordChangeModal isOpen onClose={setClose} />}
+      {isOpen && <UserPasswordChangeModal isOpen onClose={setClose} />}
     </Container>
   );
 }
