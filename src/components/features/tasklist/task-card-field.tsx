@@ -253,7 +253,7 @@ export default function TaskCardField({
               className="mt-[16px] block w-full cursor-pointer"
               onClick={() => handleTaskClick(task.id)}
             >
-              <Task task={task} onKebabClick={handleKebabClick} />
+              <Task task={task} onKebabClick={handleKebabClick} groupId={groupId} />
             </article>
           ))}
         </section>

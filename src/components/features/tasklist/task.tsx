@@ -6,11 +6,14 @@ import KebabIcon from "@/assets/icons/ic-kebab.svg";
 import CalendarIcon from "@/assets/icons/ic-calendar.svg";
 import RepeatIcon from "@/assets/icons/ic-repeat.svg";
 import { Task as TaskType } from "@/types/task";
-import { useState } from "react";
 import { formatDateToFullStr, getFrequencyLabel } from "@/lib/utils";
+import { updateRecurringDoneAt } from "@/hooks/taskList/use-tasklist";
+import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
+import { useAlert } from "@/providers/alert-provider";
 
 interface TaskProps {
   task: TaskType;
+  groupId: number;
   onKebabClick: ({
     taskId,
     recurringId,
@@ -24,18 +27,46 @@ interface TaskProps {
 
 export type KebabType = "update" | "delete";
 
-export default function Task({ task, onKebabClick }: TaskProps) {
-  const [checked, setChecked] = useState(false);
+export default function Task({ task, groupId, onKebabClick }: TaskProps) {
+  const { showAlert } = useAlert();
+
+  const { mutate } = updateRecurringDoneAt();
+  const { dateString } = useTaskListContext();
+  const storedTaskListId = sessionStorage.getItem("taskListId");
 
   const handleKebabClick = (type: KebabType) => {
     onKebabClick({ taskId: task.id, recurringId: task.recurringId, type });
+  };
+
+  const handleCheckBoxChange = (done: boolean) => {
+    if (!(groupId && storedTaskListId && dateString)) return;
+
+    mutate(
+      {
+        groupId: groupId,
+        taskListId: Number(storedTaskListId),
+        dateString: dateString,
+        taskId: task.id,
+        done: done,
+      },
+      {
+        onSuccess: () => {},
+        onError: () => {
+          showAlert("등록 중 오류가 발생했습니다.");
+        },
+      },
+    );
   };
 
   return (
     <div className="flex h-[74px] w-full items-center justify-between rounded-lg bg-gray-800 py-[12px] pl-[14px] pr-[12px]">
       <div>
         <div className="mb-[10px] flex gap-[12px]">
-          <Checkbox checked={checked} onChange={setChecked} label={task.name}></Checkbox>
+          <Checkbox
+            checked={task.doneAt ? true : false}
+            onChange={done => handleCheckBoxChange(done)}
+            label={task.name}
+          ></Checkbox>
           <div className="flex items-center gap-[2px]">
             <div className="w-[16px]">
               <CommentIcon></CommentIcon>

@@ -7,11 +7,12 @@ import {
   getTaskDetail,
   getTaskList,
   patchRecurring,
+  patchRecurringDoneAt,
   postRecurring,
   postTask,
 } from "@/api/tasklist";
 import { Comment } from "@/types/comments";
-import { TaskDetail, TaskDetailProps, TaskListProps } from "@/types/task";
+import { Task, TaskDetail, TaskDetailProps, TaskListProps } from "@/types/task";
 import { GroupTaskList, MemberInfo, MemberPermissionProps, TaskList } from "@/types/tasklist";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -210,5 +211,85 @@ export const useTaskComments = (taskId: number) => {
     queryFn: () => getTaskComments(taskId),
     enabled: !!taskId,
     staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const updateRecurringDoneAt = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: patchRecurringDoneAt,
+
+    onMutate: async variables => {
+      await queryClient.cancelQueries({
+        queryKey: ["taskList", variables.groupId, variables.taskListId, variables.dateString],
+      });
+      await queryClient.cancelQueries({
+        queryKey: ["taskDetail", variables.groupId, variables.taskListId, variables.taskId],
+      });
+
+      const previousTaskList = queryClient.getQueryData<TaskList>([
+        "taskList",
+        variables.groupId,
+        variables.taskListId,
+        variables.dateString,
+      ]);
+
+      const previousTaskDetail = queryClient.getQueryData<Task>([
+        "taskDetail",
+        variables.groupId,
+        variables.taskListId,
+        variables.taskId,
+      ]);
+
+      queryClient.setQueryData<TaskList>(
+        ["taskList", variables.groupId, variables.taskListId, variables.dateString],
+        old => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            tasks: old.tasks.map((task: Task) =>
+              task.id === variables.taskId ? { ...task, isCompleted: variables.done } : task,
+            ),
+          };
+        },
+      );
+
+      queryClient.setQueryData<Task>(
+        ["taskDetail", variables.groupId, variables.taskListId, variables.taskId],
+        old => {
+          if (!old) return old;
+          return { ...old, isCompleted: variables.done };
+        },
+      );
+
+      return { previousTaskList, previousTaskDetail };
+    },
+
+    onError: (err, variables, context) => {
+      if (context?.previousTaskList) {
+        queryClient.setQueryData(
+          ["taskList", variables.groupId, variables.taskListId, variables.dateString],
+          context.previousTaskList,
+        );
+      }
+
+      if (context?.previousTaskDetail) {
+        queryClient.setQueryData(
+          ["taskDetail", variables.groupId, variables.taskListId, variables.taskId],
+          context.previousTaskDetail,
+        );
+      }
+    },
+
+    onSettled: (data, error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["taskList", variables.groupId, variables.taskListId, variables.dateString],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["taskDetail", variables.groupId, variables.taskListId, variables.taskId],
+      });
+    },
   });
 };

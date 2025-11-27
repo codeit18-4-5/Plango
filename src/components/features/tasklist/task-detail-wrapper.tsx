@@ -3,6 +3,7 @@ import CancelIcon from "@/assets/icons/ic-cancel.svg";
 import { Container } from "@/components/layout";
 import {
   updateRecurring,
+  updateRecurringDoneAt,
   useDeleteRecurring,
   useTaskComments,
   useTaskDetail,
@@ -18,6 +19,9 @@ import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListI
 import { useAlert } from "@/providers/alert-provider";
 import TaskDeleteSheet from "./task-recurring-delete-sheet";
 import { DeleteType } from "@/types/task";
+import { Button, Floating } from "@/components/ui";
+import CheckIcon from "@/assets/icons/ic-check.svg";
+import CheckColorIcon from "@/assets/icons/ic-check-color.svg";
 
 export default function TaskDetailWrapper({
   taskId,
@@ -27,6 +31,7 @@ export default function TaskDetailWrapper({
   groupId: number;
 }) {
   const router = useRouter();
+
   const {
     isOpen: isOpenUpdateTaskDetail,
     setOpen: setOpenUpdateTaskDetail,
@@ -45,6 +50,7 @@ export default function TaskDetailWrapper({
 
   const { mutate: updateMutate } = updateRecurring();
   const { mutate: deleteMutate } = useDeleteRecurring();
+  const { mutate: updateRecurringDoneMutate } = updateRecurringDoneAt();
 
   const storedTaskListId = sessionStorage.getItem("taskListId");
   const storedRecurringId = sessionStorage.getItem("recurringId");
@@ -164,8 +170,27 @@ export default function TaskDetailWrapper({
     }
   };
 
+  const hanelDoneButtonClick = (doneAt: string | null) => {
+    const done = doneAt ? false : true;
+    updateRecurringDoneMutate(
+      {
+        groupId: groupId,
+        taskListId: taskListId,
+        dateString: dateString,
+        taskId: taskId,
+        done: done,
+      },
+      {
+        onSuccess: () => {},
+        onError: () => {
+          showAlert("등록 중 오류가 발생했습니다.");
+        },
+      },
+    );
+  };
+
   if (isLoading) {
-    return <div className="p-4">로딩중...</div>;
+    return <div className="p-4">로딩중..ㄹㄹㄹ</div>;
   }
 
   return (
@@ -186,6 +211,16 @@ export default function TaskDetailWrapper({
               />
             </main>
           </Container>
+          <Floating>
+            <Button
+              shape="round"
+              intent={data.doneAt ? "secondary" : "primary"}
+              onClick={() => hanelDoneButtonClick(data.doneAt)}
+            >
+              <div className="w-[16px]">{data.doneAt ? <CheckColorIcon /> : <CheckIcon />}</div>
+              <span className={data.doneAt ? "text-pink-400" : ""}>완료하기</span>
+            </Button>
+          </Floating>
 
           {isOpenUpdateTaskDetail && (
             <TaskDetailUpdateTemplate
