@@ -7,11 +7,11 @@ import CalendarIcon from "@/assets/icons/ic-calendar-circle.svg";
 import PlusIcon from "@/assets/icons/ic-plus.svg";
 import { createRecurring, createTask } from "@/hooks/taskList/use-tasklist";
 import { formatDateForToMonthAndDays, formatDateToISOString, isEmpty } from "@/lib/utils";
-import { Button, Floating } from "@/components/ui";
+import { Button, Floating, SingleDatepicker } from "@/components/ui";
 import { useToggle } from "@/hooks";
 import TaskAddTemplate from "@/components/features/tasklist/task-add-modal";
 import TaskRecurringAddModal from "@/components/features/tasklist/task-recurring-add-modal";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAlert } from "@/providers/alert-provider";
 import { GroupTaskList } from "@/types/tasklist";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -32,6 +32,11 @@ type ArrowType = "prev" | "next";
 export default function TasklistClient({ groupData, taskListId }: TaskListPageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const {
+    isOpen: isOpenCalendar,
+    setOpen: setOpenCalendar,
+    setClose: setCloseCalendar,
+  } = useToggle();
 
   const { showAlert } = useAlert();
   const {
@@ -57,6 +62,10 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
 
   const [activeTab, setActiveTab] = useState<number | null>(Number(taskListId));
   const [titleCurrentDate, setTitleCurrentDate] = useState("");
+  const [startDate, setStartDate] = useState<Date | null>(null);
+
+  const calendarButtonRef = useRef<HTMLButtonElement>(null);
+  const [calendarPosition, setCalendarPosition] = useState({ top: 0, left: 0 });
 
   useEffect(() => {
     const urlTaskListId = Number(taskListId);
@@ -177,6 +186,41 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
     setTitleCurrentDate(formatDateForToMonthAndDays(newDateStr));
   };
 
+  const handleDateChange = (date: Date | null) => {
+    if (date == null) return;
+    setStartDate(date);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("date", formatDateToISOString(date));
+    router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+    setCloseCalendar();
+  };
+
+  const handleTodayPickerClick = () => {
+    handleDateChange(new Date());
+  };
+
+  useEffect(() => {
+    if (!isOpenCalendar) return;
+
+    const updateCalendarPos = () => {
+      if (!calendarButtonRef.current) return;
+      const rect = calendarButtonRef.current.getBoundingClientRect();
+      setCalendarPosition({
+        top: rect.bottom + window.scrollY + 8,
+        left: rect.left + window.scrollX - 150,
+      });
+    };
+
+    updateCalendarPos();
+
+    window.addEventListener("resize", updateCalendarPos);
+
+    return () => {
+      window.removeEventListener("resize", updateCalendarPos);
+    };
+  }, [isOpenCalendar]);
+
   useEffect(() => {
     if (!isLoading && !isTeam) {
       showAlert("해당 팀에 권한이 없습니다.");
@@ -210,9 +254,14 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
                   <RightArrowIcon></RightArrowIcon>
                 </button>
               </div>
-              <div className="w-[24px]">
+              <button
+                ref={calendarButtonRef}
+                className="w-[24px]"
+                aria-label="캘린더 열기"
+                onClick={setOpenCalendar}
+              >
                 <CalendarIcon />
-              </div>
+              </button>
             </div>
             <button onClick={() => handleButtonClick("task")}>
               <span className={newListbuttonStyle}>
@@ -253,12 +302,34 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
       {isOpenTask && (
         <TaskAddTemplate isOpen={isOpenTask} onClose={setCloseTask} onSubmit={handleTaskSubmit} />
       )}
+
       {isOpenRecurring && (
         <TaskRecurringAddModal
           isOpen={isOpenRecurring}
           onClose={setCloseRecurring}
           onSubmit={handleTaskRecurringSubmit}
         />
+      )}
+
+      {isOpenCalendar && (
+        <div
+          className="fixed z-50"
+          style={{
+            top: `${calendarPosition.top}px`,
+            left: `${calendarPosition.left}px`,
+          }}
+        >
+          <div className="rounded-lg border border-pink-400 bg-gray-800 p-[10px] shadow-lg">
+            <SingleDatepicker
+              onSingleChange={date => handleDateChange(date)}
+              startDate={startDate}
+            />
+            <Button className="h-[30px] w-full" onMouseDown={handleTodayPickerClick}>
+              오늘 날짜 선택
+            </Button>
+          </div>
+          <div className="fixed inset-0 -z-10" onClick={setCloseCalendar} />
+        </div>
       )}
     </>
   );

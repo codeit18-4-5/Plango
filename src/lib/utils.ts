@@ -65,7 +65,7 @@ export const getTimeAgo = (dateString: string) => {
  * @author luli
  * @param day
  */
-export const cuttingDayString = (day: string) => day.substring(0, 3);
+export const cuttingDayString = (day: string) => day.substring(0, 1);
 
 /**
  * datepicker 현재 달력에서 보고있는 날짜를 제외한 날짜는 other-month-day class 적용
