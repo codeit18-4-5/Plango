@@ -14,6 +14,6 @@ export const toastBox = cva(
   },
 );
 
-export const toast = "flex gap-2 text-base text-gray-100";
+export const toast = "flex gap-2 text-base text-gray-100 items-center whitespace-pre-line";
 
 export const toastIcon = "w-6 h-6 flex-shrink-0";
