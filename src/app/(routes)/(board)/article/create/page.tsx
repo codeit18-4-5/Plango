@@ -37,7 +37,10 @@ export default function CreateArticlesPage() {
 
       const postBody: CreateArticleData = {
         title: data.title,
-        content: data.content,
+        content: {
+          content: data.content.content,
+          token: data.content.token,
+        },
         ...(imageUrl && { image: imageUrl }),
       };
       return postArticle(postBody);

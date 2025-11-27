@@ -44,7 +44,16 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
   const defaultValues: ArticleFormSchema | undefined = article
     ? {
         title: article.title,
-        content: article.content,
+        content:
+          typeof article.content === "string"
+            ? (() => {
+                try {
+                  return JSON.parse(article.content);
+                } catch {
+                  return { content: article.content, token: "" };
+                }
+              })()
+            : article.content,
         image: article.image ?? "",
       }
     : undefined;
@@ -68,7 +77,10 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
 
     const patchBody: CreateArticleData = {
       title: values.title,
-      content: values.content,
+      content: {
+        content: values.content.content,
+        token: values.content.token,
+      },
     };
 
     if (selectedFile && imageUrl) {
