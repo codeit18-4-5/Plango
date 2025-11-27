@@ -61,7 +61,7 @@ export const getTimeAgo = (dateString: string) => {
 };
 
 /**
- * datepicker week 3글자까지만 자르기 (e.g. Sunday -> Sun)
+ * datepicker week 1글자까지만 자르기 (e.g. 일요일 -> 일)
  * @author luli
  * @param day
  */
