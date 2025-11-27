@@ -77,7 +77,17 @@ export default function HomePage() {
       >
         실패 토스트 띄우기
       </button>
-      <button onClick={() => showToast(<p>커스텀 토스트</p>)} className="mt-4 border p-2">
+      <button
+        onClick={() =>
+          showToast(
+            <p>
+              로그인이 만료되었습니다.
+              <br />재 로그인이 필요합니다.
+            </p>,
+          )
+        }
+        className="mt-4 border p-2"
+      >
         커스텀 토스트 띄우기
       </button>
     </div>

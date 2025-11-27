@@ -11,7 +11,7 @@ export default function Toast({
   children?: ReactNode;
 }) {
   return (
-    <div className={toast({ intent })}>
+    <div className={toast}>
       {intent === "success" && <IcSuccess className={toastIcon} />}
       {intent === "error" && <IcError className={toastIcon} />}
       {children}

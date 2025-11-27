@@ -1,6 +1,8 @@
 import { cva } from "class-variance-authority";
 
-export const toastContainer = cva(
+export const toastContainer = "z-9999 fixed right-10 top-24 flex flex-col gap-4";
+
+export const toastBox = cva(
   "flex justify-between border rounded-xl bg-gray-800 px-4 py-3 border-pink-400 min-w-[280px]",
   {
     variants: {
@@ -12,13 +14,6 @@ export const toastContainer = cva(
   },
 );
 
-export const toast = cva("flex gap-2 text-base text-pink-400", {
-  variants: {
-    intent: {
-      success: "text-green-400",
-      error: "text-red-400",
-    },
-  },
-});
+export const toast = "flex gap-2 text-base text-gray-100";
 
 export const toastIcon = "w-6 h-6 flex-shrink-0";
