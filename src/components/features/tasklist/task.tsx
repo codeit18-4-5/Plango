@@ -7,13 +7,13 @@ import CalendarIcon from "@/assets/icons/ic-calendar.svg";
 import RepeatIcon from "@/assets/icons/ic-repeat.svg";
 import { Task as TaskType } from "@/types/task";
 import { formatDateToFullStr, getFrequencyLabel } from "@/lib/utils";
-import { updateRecurringDoneAt } from "@/hooks/taskList/use-tasklist";
 import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
 import { useToast } from "@/providers/toast-provider";
+import { notFound, useParams } from "next/navigation";
+import { useRecurringMutation } from "@/hooks/taskList/use-tasklist";
 
 interface TaskProps {
   task: TaskType;
-  groupId: number;
   onKebabClick: ({
     taskId,
     recurringId,
@@ -27,24 +27,26 @@ interface TaskProps {
 
 export type KebabType = "update" | "delete";
 
-export default function Task({ task, groupId, onKebabClick }: TaskProps) {
+export default function Task({ task, onKebabClick }: TaskProps) {
+  const { id: groupId, taskListId } = useParams();
+  if (groupId == null || taskListId == null) notFound();
+
   const { showToast } = useToast();
 
-  const { mutate } = updateRecurringDoneAt();
+  const { updateDoneAt: updateRecurringDoneAt } = useRecurringMutation();
   const { dateString } = useTaskListContext();
-  const storedTaskListId = sessionStorage.getItem("taskListId");
 
   const handleKebabClick = (type: KebabType) => {
     onKebabClick({ taskId: task.id, recurringId: task.recurringId, type });
   };
 
   const handleCheckBoxChange = (done: boolean) => {
-    if (!(groupId && storedTaskListId && dateString)) return;
+    if (!(groupId && taskListId && dateString)) return;
 
-    mutate(
+    updateRecurringDoneAt.mutate(
       {
-        groupId: groupId,
-        taskListId: Number(storedTaskListId),
+        groupId: Number(groupId),
+        taskListId: Number(taskListId),
         dateString: dateString,
         taskId: task.id,
         done: done,

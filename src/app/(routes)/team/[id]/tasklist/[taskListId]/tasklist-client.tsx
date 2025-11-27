@@ -5,7 +5,7 @@ import LeftArrowIcon from "@/assets/icons/ic-arrow-left-circle.svg";
 import RightArrowIcon from "@/assets/icons/ic-arrow-right-circle.svg";
 import CalendarIcon from "@/assets/icons/ic-calendar-circle.svg";
 import PlusIcon from "@/assets/icons/ic-plus.svg";
-import { createRecurring, createTask } from "@/hooks/taskList/use-tasklist";
+import { useRecurringMutation, useTaskListMutation } from "@/hooks/taskList/use-tasklist";
 import { formatDateForToMonthAndDays, formatDateToISOString, isEmpty } from "@/lib/utils";
 import { Button, Floating, SingleDatepicker } from "@/components/ui";
 import { useToggle } from "@/hooks";
@@ -51,6 +51,9 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
     setCurrentISOStrDate,
   } = useTaskListContext();
 
+  const { create: createRecurring } = useRecurringMutation();
+  const { create: createTaskList } = useTaskListMutation();
+
   const { isOpen: isOpenTask, setOpen: setOpenTask, setClose: setCloseTask } = useToggle();
   const {
     isOpen: isOpenRecurring,
@@ -94,13 +97,6 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
     }
   }, [queryDate, router, searchParams, setCurrentISOStrDate]);
 
-  useEffect(() => {
-    if (activeTab) sessionStorage.setItem("taskListId", activeTab?.toString());
-  }, [activeTab]);
-
-  const { mutate: postRecurringMutate } = createRecurring();
-  const { mutate: taskMutate } = createTask();
-
   const handleButtonClick = (type: ModalType) => {
     if (type === "task") {
       setOpenTask();
@@ -117,7 +113,7 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
     if (result) {
       const resultValue = value.name;
       if (isEmpty(resultValue))
-        taskMutate(
+        createTaskList.mutate(
           {
             groupId: groupData.id,
             name: resultValue,
@@ -146,7 +142,7 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
     }
 
     if (result) {
-      postRecurringMutate(
+      createRecurring.mutate(
         {
           groupId: groupData.id,
           taskListId: activeTab,

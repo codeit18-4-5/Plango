@@ -1,14 +1,8 @@
 "use client";
 import CancelIcon from "@/assets/icons/ic-cancel.svg";
 import { Container } from "@/components/layout";
-import {
-  updateRecurring,
-  updateRecurringDoneAt,
-  useDeleteRecurring,
-  useTaskComments,
-  useTaskDetail,
-} from "@/hooks/taskList/use-tasklist";
-import { useParams, useRouter } from "next/navigation";
+import { useRecurring, useRecurringMutation, useTaskComments } from "@/hooks/taskList/use-tasklist";
+import { notFound, useParams, useRouter, useSearchParams } from "next/navigation";
 import TaskDetailMain from "./task-detail-main";
 import { KebabType } from "./task";
 import { useToggle } from "@/hooks";
@@ -33,8 +27,9 @@ export default function TaskDetailWrapper({
 }) {
   const router = useRouter();
   const { taskListId: taskListIdParam } = useParams();
+  const searchParams = useSearchParams();
 
-  if (taskListIdParam == null) return;
+  if (taskListIdParam == null) notFound();
 
   const {
     isOpen: isOpenUpdateTaskDetail,
@@ -52,9 +47,16 @@ export default function TaskDetailWrapper({
   const { permissionCheck, dateString } = useTaskListContext();
 
   const { data: commentsData } = useTaskComments(taskId);
-  const { mutate: updateMutate } = updateRecurring();
-  const { mutate: deleteMutate } = useDeleteRecurring();
-  const { mutate: updateRecurringDoneMutate } = updateRecurringDoneAt();
+  const { data: recurringData } = useRecurring({
+    groupId,
+    taskListId: Number(taskListIdParam),
+    taskId,
+  });
+  const {
+    update: updateRecurring,
+    remove: deleteRecurring,
+    updateDoneAt: updateRecurringDoneAt,
+  } = useRecurringMutation();
 
   const taskListId = Number(taskListIdParam);
   const storedRecurringId = sessionStorage.getItem("recurringId");
@@ -73,15 +75,12 @@ export default function TaskDetailWrapper({
     }
   };
 
-  const { data, isLoading } = useTaskDetail({
-    groupId: groupId,
-    taskListId: taskListId,
-    taskId: taskId,
-  });
-
   const handleCloseButton = () => {
     sessionStorage.setItem("closeDetailModal", "true");
-    router.push(`/team/${groupId}/tasklist/${taskListId}`);
+    const params = new URLSearchParams(searchParams.toString());
+    const dateParam = searchParams.get("date");
+    params.set("date", dateParam ? dateParam : "");
+    router.push(`/team/${groupId}/tasklist/${taskListId}?${params.toString()}`);
   };
 
   const handleTaskUpdateSubmit = async (
@@ -91,7 +90,7 @@ export default function TaskDetailWrapper({
 
     const result = await permissionCheck();
     if (result) {
-      updateMutate(
+      updateRecurring.mutate(
         {
           groupId: groupId,
           taskListId: taskListId,
@@ -122,7 +121,7 @@ export default function TaskDetailWrapper({
 
     if (result) {
       if (type === "One") {
-        deleteMutate(
+        deleteRecurring.mutate(
           {
             groupId: groupId,
             taskListId: taskListId,
@@ -148,7 +147,7 @@ export default function TaskDetailWrapper({
           return;
         }
 
-        deleteMutate(
+        deleteRecurring.mutate(
           {
             groupId: groupId,
             taskListId: taskListId,
@@ -175,7 +174,7 @@ export default function TaskDetailWrapper({
 
   const hanelDoneButtonClick = (doneAt: string | null) => {
     const done = doneAt ? false : true;
-    updateRecurringDoneMutate(
+    updateRecurringDoneAt.mutate(
       {
         groupId: groupId,
         taskListId: taskListId,
@@ -192,13 +191,9 @@ export default function TaskDetailWrapper({
     );
   };
 
-  if (isLoading) {
-    return <div className="p-4">로딩중..ㄹㄹㄹ</div>;
-  }
-
   return (
     <>
-      {data ? (
+      {recurringData ? (
         <>
           <Container className="h-full">
             <header>
@@ -208,7 +203,7 @@ export default function TaskDetailWrapper({
             </header>
             <main className="flex h-full flex-col">
               <TaskDetailMain
-                taskDetail={data}
+                taskDetail={recurringData}
                 onKebabClick={handleKebabClick}
                 commentsData={commentsData ?? []}
               />
@@ -217,11 +212,13 @@ export default function TaskDetailWrapper({
           <Floating>
             <Button
               shape="round"
-              intent={data.doneAt ? "secondary" : "primary"}
-              onClick={() => hanelDoneButtonClick(data.doneAt)}
+              intent={recurringData.doneAt ? "secondary" : "primary"}
+              onClick={() => hanelDoneButtonClick(recurringData.doneAt)}
             >
-              <div className="w-[16px]">{data.doneAt ? <CheckColorIcon /> : <CheckIcon />}</div>
-              <span className={data.doneAt ? "text-pink-400" : ""}>완료하기</span>
+              <div className="w-[16px]">
+                {recurringData.doneAt ? <CheckColorIcon /> : <CheckIcon />}
+              </div>
+              <span className={recurringData.doneAt ? "text-pink-400" : ""}>완료하기</span>
             </Button>
           </Floating>
 
@@ -230,8 +227,8 @@ export default function TaskDetailWrapper({
               isOpen={isOpenUpdateTaskDetail}
               onClose={setCloseUpdateTaskDetail}
               onSubmit={handleTaskUpdateSubmit}
-              name={data.name}
-              description={data.description ?? ""}
+              name={recurringData.name}
+              description={recurringData.description ?? ""}
               type="nameAndDescription"
             />
           )}

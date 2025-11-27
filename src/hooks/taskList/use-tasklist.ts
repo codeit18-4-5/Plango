@@ -8,6 +8,7 @@ import {
   getTaskList,
   patchRecurring,
   patchRecurringDoneAt,
+  postComment,
   postRecurring,
   postTask,
 } from "@/api/tasklist";
@@ -22,6 +23,18 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
  * @param taskListId
  */
 
+// 멤버 인증 (api호출시 체크용)
+export const userMemberPermission = ({ groupId, userId }: MemberPermissionProps) => {
+  return useQuery<MemberInfo>({
+    queryKey: ["memberInfo", groupId, userId],
+    queryFn: () => getMemberInfo({ groupId, userId }),
+    enabled: !!userId && !!groupId,
+    staleTime: 1000 * 30, // 30초마다 체크
+    refetchOnWindowFocus: true,
+  });
+};
+
+// group-------------------------------------------------------------------------
 export const useGroupTaskLists = (groupId: number) => {
   return useQuery<GroupTaskList>({
     queryKey: ["groupTaskLists", groupId],
@@ -31,6 +44,7 @@ export const useGroupTaskLists = (groupId: number) => {
   });
 };
 
+// taskList----------------------------------------------------------------------
 export const useTaskList = ({
   groupId,
   taskListId,
@@ -45,43 +59,10 @@ export const useTaskList = ({
   });
 };
 
-export const useTaskDetail = ({ groupId, taskListId, taskId }: TaskDetailProps) => {
-  return useQuery<TaskDetail>({
-    queryKey: ["taskDetail", groupId, taskListId, taskId],
-    queryFn: () => getTaskDetail({ groupId, taskListId, taskId }),
-    enabled: !!(groupId && taskListId && taskId),
-    staleTime: 1000 * 60 * 5,
-  });
-};
-
-export const userMemberPermission = ({ groupId, userId }: MemberPermissionProps) => {
-  return useQuery<MemberInfo>({
-    queryKey: ["memberInfo", groupId, userId],
-    queryFn: () => getMemberInfo({ groupId, userId }),
-    enabled: !!userId && !!groupId,
-    staleTime: 1000 * 30, // 30초마다 체크
-    refetchOnWindowFocus: true,
-  });
-};
-
-export const createRecurring = () => {
+export const useTaskListMutation = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: postRecurring,
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["taskList", variables.groupId, variables.taskListId, variables.dateString],
-      });
-    },
-    onError: error => console.error("할 일 상세 등록 실패.", error),
-  });
-};
-
-export const createTask = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
+  const create = useMutation({
     mutationFn: postTask,
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
@@ -90,12 +71,33 @@ export const createTask = () => {
     },
     onError: error => console.error("할 일 목록 등록 실패.", error),
   });
+  return { create };
 };
 
-export const updateRecurring = () => {
+// recurring (taskDetail)--------------------------------------------------------
+export const useRecurring = ({ groupId, taskListId, taskId }: TaskDetailProps) => {
+  return useQuery<TaskDetail>({
+    queryKey: ["taskDetail", groupId, taskListId, taskId],
+    queryFn: () => getTaskDetail({ groupId, taskListId, taskId }),
+    enabled: !!(groupId && taskListId && taskId),
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useRecurringMutation = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  const create = useMutation({
+    mutationFn: postRecurring,
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["taskList", variables.groupId, variables.taskListId, variables.dateString],
+      });
+    },
+    onError: error => console.error("할 일 상세 등록 실패.", error),
+  });
+
+  const update = useMutation({
     mutationFn: patchRecurring,
     onMutate: async variables => {
       const queryKey = ["taskList", variables.groupId, variables.taskListId, variables.dateString];
@@ -110,7 +112,9 @@ export const updateRecurring = () => {
             ? {
                 ...task,
                 ...(variables.name !== undefined && { name: variables.name }),
-                ...(variables.description !== undefined && { description: variables.description }),
+                ...(variables.description !== undefined && {
+                  description: variables.description,
+                }),
               }
             : task,
         );
@@ -141,12 +145,8 @@ export const updateRecurring = () => {
       }
     },
   });
-};
 
-export const useDeleteRecurring = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
+  const remove = useMutation({
     mutationFn: async (
       variables: TaskDetailProps & {
         recurringId?: number;
@@ -203,21 +203,8 @@ export const useDeleteRecurring = () => {
       }
     },
   });
-};
 
-export const useTaskComments = (taskId: number) => {
-  return useQuery<Comment[]>({
-    queryKey: ["taskComments", taskId],
-    queryFn: () => getTaskComments(taskId),
-    enabled: !!taskId,
-    staleTime: 1000 * 60 * 5,
-  });
-};
-
-export const updateRecurringDoneAt = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
+  const updateDoneAt = useMutation({
     mutationFn: patchRecurringDoneAt,
 
     onMutate: async variables => {
@@ -292,4 +279,33 @@ export const updateRecurringDoneAt = () => {
       });
     },
   });
+  return { create, update, remove, updateDoneAt };
+};
+
+// comment ----------------------------------------------------------------------
+export const useTaskComments = (taskId: number) => {
+  return useQuery<Comment[]>({
+    queryKey: ["taskComments", taskId],
+    queryFn: () => getTaskComments(taskId),
+    enabled: !!taskId,
+    staleTime: 1000 * 60 * 5,
+  });
+};
+
+export const useTaskCommentsMutation = () => {
+  const queryClient = useQueryClient();
+
+  const create = useMutation({
+    mutationFn: postComment,
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["taskComments", variables.taskId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["taskList", variables.groupId, variables.taskListId, variables.dateString],
+      });
+    },
+    onError: error => console.error("댓글 등록 실패.", error),
+  });
+  return { create };
 };

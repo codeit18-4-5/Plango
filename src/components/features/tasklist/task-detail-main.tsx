@@ -12,6 +12,11 @@ import { taskCommentsSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Comment } from "@/types/comments";
 import { useAuthStore } from "@/store/auth.store";
+import { useToast } from "@/providers/toast-provider";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
+import { useTaskCommentsMutation } from "@/hooks/taskList/use-tasklist";
 
 interface TaskDetailProps {
   taskDetail: TaskDetail;
@@ -29,13 +34,51 @@ export default function TaskDetailMain({
   taskDetail,
   onKebabClick,
 }: TaskDetailPageProps) {
+  const { showToast } = useToast();
+  const { id: groupId, taskListId } = useParams();
+  const { dateString } = useTaskListContext();
+
+  const { create: createComment } = useTaskCommentsMutation();
+
   const handleKebabClick = (type: KebabType) => {
     onKebabClick(type);
   };
 
   const handleNewReplySubmit: SubmitHandler<z4.infer<typeof taskCommentsSchema>> = comment => {
-    console.log(comment);
+    if (groupId == null || taskListId == null || dateString == null) {
+      showToast("댓글 등록 중 오류가 발생하였습니다.", "error");
+      return;
+    }
+    createComment.mutate(
+      {
+        groupId: Number(groupId),
+        taskListId: Number(taskListId),
+        dateString: dateString,
+        taskId: taskDetail.id,
+        comment: comment.content,
+      },
+      {
+        onSuccess: () => {
+          showToast("댓글이 등록되었습니다.", "success");
+        },
+        onError: () => {
+          showToast("댓글 등록에 실패하였습니다.", "error");
+        },
+      },
+    );
   };
+
+  function ResetAfterSubmit() {
+    const { reset, formState } = useFormContext();
+
+    useEffect(() => {
+      if (formState.isSubmitSuccessful) {
+        reset({ content: "" });
+      }
+    }, [formState.isSubmitSuccessful, reset]);
+
+    return null;
+  }
 
   return (
     <>
@@ -105,7 +148,9 @@ export default function TaskDetailMain({
           onSubmit={handleNewReplySubmit}
           defaultValues={{ content: "" }}
           resolver={zodResolver(taskCommentsSchema)}
+          mode="onSubmit"
         >
+          <ResetAfterSubmit />
           <MyCommentField />
         </Form>
         <Form className="mt-6 shrink-0">
@@ -142,6 +187,8 @@ function TaskCommentsField({ commentsData }: TaskCommentsProps) {
   const { user } = useAuthStore();
   const userId = user?.id ?? null;
 
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+
   return (
     <>
       {commentsData &&
@@ -150,19 +197,19 @@ function TaskCommentsField({ commentsData }: TaskCommentsProps) {
             key={comment.id}
             comment={comment}
             isAuthor={userId === comment.user.id}
-            isEditing={userId === comment.user.id}
-            onCancelEdit={() => {}}
-            onSaveEdit={() => {}}
-            // actions={[
-            //   {
-            //     label: "수정하기",
-            //     onClick: () => {},
-            //   },
-            //   {
-            //     label: "삭제하기",
-            //     onClick: () => {},
-            //   },
-            // ]}
+            isEditing={editingCommentId === comment.id}
+            onCancelEdit={() => setEditingCommentId(null)}
+            onSaveEdit={() => setEditingCommentId(null)}
+            actions={[
+              {
+                label: "수정하기",
+                onClick: () => setEditingCommentId(comment.id),
+              },
+              {
+                label: "삭제하기",
+                onClick: () => {},
+              },
+            ]}
             variant="secondary"
           />
         ))}

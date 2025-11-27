@@ -1,6 +1,6 @@
 "use client";
 
-import { TaskDetailProps, TaskListProps } from "@/types/task";
+import { TaskCommonProps, TaskDetailProps, TaskListProps } from "@/types/task";
 import axiosInstance from "@/lib/axios";
 import { MemberPermissionProps } from "@/types/tasklist";
 import z4 from "zod/v4";
@@ -57,9 +57,7 @@ export async function postRecurring({
   groupId,
   taskListId,
   recurringData,
-}: {
-  groupId: number;
-  taskListId: number;
+}: TaskCommonProps & {
   recurringData: z4.infer<typeof taskDetailSchema>;
   dateString?: string;
 }) {
@@ -166,6 +164,32 @@ export async function deleteAllRecurring({
 export async function getTaskComments(taskId: number) {
   try {
     const res = await axiosInstance.get(`/tasks/${taskId}/comments`);
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function postComment({
+  comment,
+  taskId,
+}: TaskDetailProps & { comment: string; dateString: string }) {
+  try {
+    const res = await axiosInstance.post(`/tasks/${taskId}/comments`, { content: comment });
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}
+
+export async function deleteComment({
+  commentId,
+  taskId,
+}: TaskDetailProps & { commentId: number; dateString: string }) {
+  try {
+    const res = await axiosInstance.delete(`/tasks/${taskId}/comments/${commentId}`);
     return res.data;
   } catch (e) {
     console.error(e);

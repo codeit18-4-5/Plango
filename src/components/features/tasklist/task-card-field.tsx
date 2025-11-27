@@ -7,7 +7,7 @@ import { GroupTaskList } from "@/types/tasklist";
 import cn from "@/lib/cn";
 import { notFound, useParams, useRouter, useSearchParams } from "next/navigation";
 import TaskDetailUpdateTemplate from "@/components/features/tasklist/task-recurring-update-modal";
-import { updateRecurring, useDeleteRecurring, useTaskList } from "@/hooks/taskList/use-tasklist";
+import { useRecurringMutation, useTaskList } from "@/hooks/taskList/use-tasklist";
 import { isEmpty } from "@/lib/utils";
 import { useToggle } from "@/hooks";
 import z4 from "zod/v4";
@@ -38,7 +38,7 @@ export default function TaskCardField({
   const { id: groupId, taskId } = useParams();
   const searchParams = useSearchParams();
 
-  if (groupId == null) return;
+  if (groupId == null) notFound();
 
   const {
     isOpen: isOpenUpdateTaskDetail,
@@ -55,8 +55,7 @@ export default function TaskCardField({
   const { showAlert } = useAlert();
 
   const { permissionCheck, dateString } = useTaskListContext();
-  const { mutate: updateMutate } = updateRecurring();
-  const { mutate: deleteMutate } = useDeleteRecurring();
+  const { update: updateRecurring, remove: deleteRecurring } = useRecurringMutation();
 
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null); // 카드 케밥용
   const [selectedRecurringId, setSelectedRecurringId] = useState<number | null>(null);
@@ -73,7 +72,7 @@ export default function TaskCardField({
   });
 
   if (taskListData) {
-    if (taskListData.groupId !== groupData.id) {
+    if (taskListData?.groupId !== groupData.id) {
       notFound();
     }
   }
@@ -117,7 +116,7 @@ export default function TaskCardField({
 
     const result = await permissionCheck();
     if (result) {
-      updateMutate(
+      updateRecurring.mutate(
         {
           groupId: groupData.id,
           taskListId: activeTab,
@@ -148,7 +147,7 @@ export default function TaskCardField({
 
     if (result) {
       if (type === "One") {
-        deleteMutate(
+        deleteRecurring.mutate(
           {
             groupId: groupData.id,
             taskListId: activeTab,
@@ -181,7 +180,7 @@ export default function TaskCardField({
           return;
         }
 
-        deleteMutate(
+        deleteRecurring.mutate(
           {
             groupId: groupData.id,
             taskListId: activeTab,
@@ -253,7 +252,7 @@ export default function TaskCardField({
       </section>
       {taskListData ? (
         <section className="pb-[24px]">
-          {taskListData.tasks.map(task => (
+          {taskListData?.tasks.map(task => (
             <article
               key={task.id}
               className="mt-[16px] block w-full cursor-pointer"
