@@ -2,6 +2,7 @@ import cn from "@/lib/cn";
 import { formatDateToFullStr } from "@/lib/utils";
 import IcChecked from "@/assets/icons/ic-checked-color.svg";
 import { UserHistory } from "@/types/user";
+import { ReactNode } from "react";
 
 type UserHistoryList = {
   tasksDone: UserHistory[];
@@ -52,5 +53,14 @@ export default function HistoryList({ tasksDone }: UserHistoryList) {
         </section>
       ))}
     </>
+  );
+}
+
+export function HistoryEmpty({ msg, children }: { msg: string; children?: ReactNode }) {
+  return (
+    <div className="flex-1 content-center justify-items-center text-center">
+      <p className="text-base text-gray-500">{msg}</p>
+      {children}
+    </div>
   );
 }
