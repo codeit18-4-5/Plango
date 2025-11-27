@@ -5,6 +5,7 @@ import { useAuthStore } from "@/store/auth.store";
 import { ArticleConfirmModal } from "@/components/features/article/layout";
 import { Input } from "@/components/ui";
 import { isTokenExpire } from "@/lib/utils";
+import { ARTICLE_FORM_STYLES } from "@/components/features/article/index.styles";
 
 export default function CopyToken({ token }: { token: string }) {
   const isExpired = isTokenExpire(token);
@@ -60,7 +61,7 @@ export default function CopyToken({ token }: { token: string }) {
             handleCopy();
           }}
           className={cn(
-            "text-ellipsis underline duration-200 hover:border-gray-600 focus:border-gray-600 active:border-gray-600",
+            ARTICLE_FORM_STYLES.form.field.copyToken,
             isExpired ? "cursor-not-allowed text-gray-500 line-through" : "hover:text-pink-400",
           )}
         />
