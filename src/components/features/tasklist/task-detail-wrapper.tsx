@@ -8,7 +8,7 @@ import {
   useTaskComments,
   useTaskDetail,
 } from "@/hooks/taskList/use-tasklist";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import TaskDetailMain from "./task-detail-main";
 import { KebabType } from "./task";
 import { useToggle } from "@/hooks";
@@ -32,6 +32,9 @@ export default function TaskDetailWrapper({
   groupId: number;
 }) {
   const router = useRouter();
+  const { taskListId: taskListIdParam } = useParams();
+
+  if (taskListIdParam == null) return;
 
   const {
     isOpen: isOpenUpdateTaskDetail,
@@ -53,14 +56,13 @@ export default function TaskDetailWrapper({
   const { mutate: deleteMutate } = useDeleteRecurring();
   const { mutate: updateRecurringDoneMutate } = updateRecurringDoneAt();
 
-  const storedTaskListId = sessionStorage.getItem("taskListId");
+  const taskListId = Number(taskListIdParam);
   const storedRecurringId = sessionStorage.getItem("recurringId");
 
-  if (storedTaskListId == null || storedRecurringId == null) {
+  if (storedRecurringId == null) {
     return <div className="p-4">로딩중...</div>;
   }
 
-  const taskListId = Number(storedTaskListId);
   const recurringId = Number(storedRecurringId);
 
   const handleKebabClick = (type: KebabType) => {

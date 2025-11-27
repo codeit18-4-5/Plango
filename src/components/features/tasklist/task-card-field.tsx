@@ -5,7 +5,7 @@ import Task, { KebabType } from "@/components/features/tasklist/task";
 import { tabButtonStyle } from "@/app/(routes)/team/[id]/tasklist/index.styles";
 import { GroupTaskList } from "@/types/tasklist";
 import cn from "@/lib/cn";
-import { notFound, useRouter, useSearchParams } from "next/navigation";
+import { notFound, useParams, useRouter, useSearchParams } from "next/navigation";
 import TaskDetailUpdateTemplate from "@/components/features/tasklist/task-recurring-update-modal";
 import { updateRecurring, useDeleteRecurring, useTaskList } from "@/hooks/taskList/use-tasklist";
 import { isEmpty } from "@/lib/utils";
@@ -35,7 +35,10 @@ export default function TaskCardField({
   setActiveTab,
 }: TaskFieldProps) {
   const router = useRouter();
+  const { id: groupId, taskId } = useParams();
   const searchParams = useSearchParams();
+
+  if (groupId == null) return;
 
   const {
     isOpen: isOpenUpdateTaskDetail,
@@ -58,13 +61,12 @@ export default function TaskCardField({
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null); // 카드 케밥용
   const [selectedRecurringId, setSelectedRecurringId] = useState<number | null>(null);
 
-  const groupId = groupData.id;
   const tabs = groupData?.taskLists
     .sort((a, b) => a.displayIndex - b.displayIndex)
     .map(taskList => ({ id: taskList.id, label: taskList.name }));
 
   const { data: taskListData } = useTaskList({
-    groupId: groupId,
+    groupId: Number(groupId),
     taskListId: activeTab,
     date: date,
     dateString: dateString,
@@ -77,7 +79,6 @@ export default function TaskCardField({
   }
 
   const handleTaskClick = (id: number) => {
-    sessionStorage.setItem("taskId", id.toString()); // 상세보기 용
     const resultRecurringId = groupData?.taskLists
       .find(taskList => taskList.id === activeTab)
       ?.tasks.find(task => task.id === id)?.recurringId;
@@ -159,10 +160,13 @@ export default function TaskCardField({
               showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
 
-              const sessionTaskId = sessionStorage.getItem("taskId");
-              if (sessionTaskId && Number(sessionTaskId) === selectedTaskId) {
+              if (taskId && Number(taskId) === selectedTaskId) {
                 sessionStorage.setItem("closeDetailModal", "true");
-                router.push(`/team/${groupId}/tasklist`);
+
+                const params = new URLSearchParams(searchParams.toString());
+                const dateParam = searchParams.get("date");
+                params.set("date", dateParam ? dateParam : "");
+                router.push(`/team/${groupId}/tasklist/${activeTab}?${params.toString()}`);
               }
               router.refresh();
             },
@@ -190,8 +194,7 @@ export default function TaskCardField({
               showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
 
-              const sessionTaskId = sessionStorage.getItem("taskId");
-              if (sessionTaskId && Number(sessionTaskId) === selectedTaskId) {
+              if (taskId && Number(taskId) === selectedTaskId) {
                 sessionStorage.setItem("closeDetailModal", "true");
                 router.push(`/team/${groupId}/tasklist`);
               }
@@ -256,7 +259,7 @@ export default function TaskCardField({
               className="mt-[16px] block w-full cursor-pointer"
               onClick={() => handleTaskClick(task.id)}
             >
-              <Task task={task} onKebabClick={handleKebabClick} groupId={groupId} />
+              <Task task={task} onKebabClick={handleKebabClick} />
             </article>
           ))}
         </section>
