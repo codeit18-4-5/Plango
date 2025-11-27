@@ -233,7 +233,6 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
 
   return (
     <>
-      <Button onClick={() => showToast("등록 중 오류가 발생했습니다.", "error")}>눌러봐</Button>
       <Container className="h-full">
         <header className="mb-[24px]">
           <h1 className="text-heading-s text-gray-100">할 일</h1>
