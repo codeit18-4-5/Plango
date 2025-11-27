@@ -5,7 +5,7 @@ import Task, { KebabType } from "@/components/features/tasklist/task";
 import { tabButtonStyle } from "@/app/(routes)/team/[id]/tasklist/index.styles";
 import { GroupTaskList } from "@/types/tasklist";
 import cn from "@/lib/cn";
-import { useRouter, useSearchParams } from "next/navigation";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import TaskDetailUpdateTemplate from "@/components/features/tasklist/task-recurring-update-modal";
 import { updateRecurring, useDeleteRecurring, useTaskList } from "@/hooks/taskList/use-tasklist";
 import { isEmpty } from "@/lib/utils";
@@ -34,6 +34,8 @@ export default function TaskCardField({
   setActiveTab,
 }: TaskFieldProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+
   const {
     isOpen: isOpenUpdateTaskDetail,
     setOpen: setOpenUpdateTaskDetail,
@@ -65,6 +67,12 @@ export default function TaskCardField({
     dateString: dateString,
   });
 
+  if (taskListData) {
+    if (taskListData.groupId !== groupData.id) {
+      notFound();
+    }
+  }
+
   const handleTaskClick = (id: number) => {
     sessionStorage.setItem("taskId", id.toString()); // 상세보기 용
     const resultRecurringId = groupData?.taskLists
@@ -72,8 +80,12 @@ export default function TaskCardField({
       ?.tasks.find(task => task.id === id)?.recurringId;
     sessionStorage.setItem("recurringId", resultRecurringId ? resultRecurringId.toString() : "");
 
+    const params = new URLSearchParams(searchParams.toString());
+    const dateParam = searchParams.get("date");
+    params.set("date", dateParam ? dateParam : "");
+
     sessionStorage.setItem("openDetailModal", "true");
-    router.push(`/team/${groupId}/tasklist/${activeTab}/${id}`);
+    router.push(`/team/${groupId}/tasklist/${activeTab}/${id}?${params.toString()}`);
   };
 
   const handleKebabClick = ({
@@ -194,9 +206,10 @@ export default function TaskCardField({
   const handleTabClick = (tabId: number) => {
     setActiveTab(tabId);
 
-    const searchParams = useSearchParams();
+    const params = new URLSearchParams(searchParams.toString());
     const dateParam = searchParams.get("date");
-    router.replace(`/team/${groupId}/tasklist/${tabId}?${dateParam ? `date=${dateParam}` : ""}`, {
+    params.set("date", dateParam ? dateParam : "");
+    router.replace(`/team/${groupId}/tasklist/${tabId}?${params.toString()}`, {
       scroll: false,
     });
   };

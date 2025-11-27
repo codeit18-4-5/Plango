@@ -56,27 +56,35 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
   const queryDate = searchParams.get("date");
 
   const [activeTab, setActiveTab] = useState<number | null>(Number(taskListId));
+  const [titleCurrentDate, setTitleCurrentDate] = useState("");
 
   useEffect(() => {
-    let initialDate = queryDate;
+    const urlTaskListId = Number(taskListId);
+    if (urlTaskListId !== activeTab) {
+      setActiveTab(urlTaskListId);
+    }
+  }, [taskListId]);
 
-    if (!queryDate) {
+  useEffect(() => {
+    if (queryDate) {
+      setCurrentISOStrDate(queryDate);
+      setTitleCurrentDate(formatDateForToMonthAndDays(queryDate));
+    } else {
       const today = new Date();
       today.setHours(10, 0, 0, 0);
-      initialDate = formatDateToISOString(today);
+      const initialDate = formatDateToISOString(today);
 
       const params = new URLSearchParams(searchParams.toString());
       params.set("date", initialDate);
       router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
       setCurrentISOStrDate(initialDate);
+      setTitleCurrentDate(formatDateForToMonthAndDays(initialDate));
     }
   }, [queryDate, router, searchParams, setCurrentISOStrDate]);
 
-  const [titleCurrentDate, setTitleCurrentDate] = useState("");
-
   useEffect(() => {
-    setTitleCurrentDate(formatDateForToMonthAndDays(new Date(currentISOStrDate)));
-  }, [currentISOStrDate]);
+    if (activeTab) sessionStorage.setItem("taskListId", activeTab?.toString());
+  }, [activeTab]);
 
   const { mutate: postRecurringMutate } = createRecurring();
   const { mutate: taskMutate } = createTask();
@@ -165,6 +173,8 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
     const params = new URLSearchParams(searchParams.toString());
     params.set("date", newDateStr);
     router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+
+    setTitleCurrentDate(formatDateForToMonthAndDays(newDateStr));
   };
 
   useEffect(() => {
