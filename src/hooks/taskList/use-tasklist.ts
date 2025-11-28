@@ -16,7 +16,7 @@ import {
 } from "@/api/tasklist";
 import { Comment } from "@/types/comments";
 import { Task, TaskDetail, TaskDetailProps, TaskListProps } from "@/types/task";
-import { GroupTaskList, MemberInfo, MemberPermissionProps, TaskList } from "@/types/tasklist";
+import { GroupTaskList, Member, MemberPermissionProps, TaskList } from "@/types/tasklist";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 /**
@@ -27,7 +27,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // 멤버 인증 (api호출시 체크용)
 export const userMemberPermission = ({ groupId, userId }: MemberPermissionProps) => {
-  return useQuery<MemberInfo>({
+  return useQuery<Member>({
     queryKey: ["memberInfo", groupId, userId],
     queryFn: () => getMemberInfo({ groupId, userId }),
     enabled: !!userId && !!groupId,

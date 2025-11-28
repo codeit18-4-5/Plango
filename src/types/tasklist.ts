@@ -3,13 +3,12 @@ import { Task } from "./task";
 /** tasklist 페이지 메인정보
  * @author luli
  */
-
 export interface MemberPermissionProps {
-  groupId: number;
   userId?: number;
+  groupId: number;
 }
 
-export type MemberInfo = {
+export type Member = {
   userId: number;
   groupId: number;
   userName: string;
@@ -25,7 +24,7 @@ export type GroupTaskList = {
   createdAt: string;
   updatedAt: string;
   teamId: string;
-  members: MemberInfo[];
+  members: Member[];
   taskLists: TaskList[];
 };
 
