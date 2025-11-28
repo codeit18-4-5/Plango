@@ -1,12 +1,37 @@
 "use client";
 
-import { Suspense } from "react";
-import { ResetPassword } from "@/components/features/auth";
+import { AuthTitle, ResetPasswordFormFields } from "@/components/features/auth";
+import { Form } from "@/components/ui";
+import { useResetPassword } from "@/hooks/auth/use-auth";
+import { changePasswordSchema, ChangePasswordSchema } from "@/lib/schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSearchParams } from "next/navigation";
 
 export default function Page() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+  const { mutate, isPending } = useResetPassword();
+  const handleSubmit = async (data: ChangePasswordSchema) => {
+    if (!token) return;
+
+    mutate({
+      password: data.password,
+      passwordConfirmation: data.passwordConfirmation,
+      token: token,
+    });
+  };
+
   return (
-    <Suspense fallback={<p>비밀번호 변경 준비중...</p>}>
-      <ResetPassword />
-    </Suspense>
+    <>
+      <AuthTitle>비밀번호 재설정</AuthTitle>
+      <Form<ChangePasswordSchema>
+        onSubmit={handleSubmit}
+        resolver={zodResolver(changePasswordSchema)}
+        mode="onBlur"
+        reValidateMode="onChange"
+      >
+        <ResetPasswordFormFields isPending={isPending} />
+      </Form>
+    </>
   );
 }

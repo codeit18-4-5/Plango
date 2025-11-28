@@ -1,20 +1,15 @@
 "use client";
 
 import { useAuthStore, useUIStore } from "@/store/auth.store";
-import { User } from "@/types/user";
 import { useRouter, useSearchParams } from "next/navigation";
 import useLogout from "./use-logout";
+import { AuthSuccessPayload } from "@/types/auth";
 
 /**
  * 로그인 / 회원가입 성공 이후 공통 처리 훅
  * @author sohyun
  */
 
-type AuthSuccessPayload = {
-  accessToken: string;
-  refreshToken: string;
-  user: User;
-};
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 const useAuthSuccess = () => {
   const router = useRouter();

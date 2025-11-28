@@ -1,5 +1,6 @@
 "use client";
 import cn from "@/lib/cn";
+import { devConsoleError } from "@/lib/error";
 import { ServerErrorHandler } from "@/types/api";
 import { ReactNode } from "react";
 import {
@@ -42,9 +43,7 @@ export default function Form<T extends FieldValues = FieldValues>({
       if (onServerError) {
         onServerError(error, setError);
       } else {
-        if (process.env.NODE_ENV === "development") {
-          console.error(error);
-        }
+        devConsoleError(error);
         throw error;
       }
     }
