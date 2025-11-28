@@ -8,7 +8,7 @@ import { Avatar } from "@/components/ui";
 import { DropdownOption } from "@/types/option";
 
 interface sidebarProps {
-  groups: DropdownOption[];
+  groups: DropdownOption[] | null;
   onClick: (open: boolean) => void;
 }
 

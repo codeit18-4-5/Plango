@@ -37,7 +37,7 @@ export default function Header({ isLoginPage, groups, user }: HeaderProps) {
 
   return (
     <div className="relative">
-      {open && groups && <HeaderSidebar groups={groups} onClick={handleMenuClick(false)} />}
+      {open && <HeaderSidebar groups={groups || null} onClick={handleMenuClick(false)} />}
       <div className="mx-auto flex w-full max-w-[1248px] items-center justify-between px-[16px] py-[18px] tablet:px-[24px] tablet:py-[20px]">
         <div className="flex items-center justify-between">
           <IcMenu
