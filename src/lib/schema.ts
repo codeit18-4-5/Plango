@@ -68,7 +68,8 @@ export type ChangePasswordSchema = z.infer<typeof changePasswordSchema>;
 
 // 프로필 변경
 export const changeProfileSchema = z.object({
-  nickname: nicknameSchema,
+  nickname: nicknameSchema.optional(),
+  image: z.string().optional(),
 });
 export type ChangeProfileSchema = z.infer<typeof changeProfileSchema>;
 
