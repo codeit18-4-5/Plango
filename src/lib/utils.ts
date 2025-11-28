@@ -260,6 +260,29 @@ export function formatSocialCount(value: number): string {
 }
 
 /**
+ * 토큰 만료 여부 확인
+ * @param token JWT 토큰 문자열
+ * @return 토큰 만료 여부 (true: 만료, false: 유효)
+ */
+export function isTokenExpire(token: string) {
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split("")
+      .map(c => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
+      .join(""),
+  );
+
+  const parseToken = JSON.parse(jsonPayload);
+
+  const currentDate = new Date();
+  const tokenExpirationDate = new Date(parseToken.exp * 1000);
+
+  return currentDate > tokenExpirationDate;
+}
+
+/**
  * Date 시간타입 korea locale 적용한 ISO date로 변환.
  * @author luli
  * @param date
