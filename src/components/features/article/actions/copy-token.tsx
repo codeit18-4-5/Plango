@@ -36,12 +36,14 @@ export default function CopyToken({ token }: { token: string }) {
   }, [token, isExpired]);
 
   const handleJoin = useCallback(() => {
-    router.replace(`/team/join?token=${encodeURIComponent(token)}`);
+    sessionStorage.setItem("joinToken", token);
+    router.replace("/team/join");
   }, [token, router]);
 
   const handleLogin = useCallback(() => {
-    router.replace(`/team/join?token=${encodeURIComponent(token)}`);
-  }, [router, token]);
+    sessionStorage.setItem("joinToken", token);
+    router.replace(`/login?redirect=${encodeURIComponent("/team/join")}`);
+  }, [token, router]);
 
   return (
     <>
