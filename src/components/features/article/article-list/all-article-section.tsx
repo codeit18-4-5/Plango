@@ -158,7 +158,6 @@ export default function AllArticleSection() {
               createdAt={article.createdAt}
               likeCount={article.likeCount}
               commentCount={article.commentCount}
-              image={article.writer.image}
             />
           </Card>
         ))}
