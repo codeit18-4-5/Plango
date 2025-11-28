@@ -21,16 +21,15 @@ export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: Tas
   const [dayIndexArray, setDayIndexArray] = useState<number[]>([]);
 
   const handleSubmit: SubmitHandler<z4.infer<typeof taskDetailSchema>> = submitData => {
-    const { frequencyType, startDate, description } = submitData;
-
-    const monthDay =
-      frequencyType === FrequencyType.Monthly ? new Date(startDate).getDate() : undefined;
+    const { weekDays, ...rest } = submitData;
 
     const transformedData = {
-      ...submitData,
-      description: description || "",
-      ...(submitData.frequencyType === FrequencyType.Monthly && { monthDay: monthDay }),
-      ...(submitData.frequencyType === FrequencyType.Weekly && { weekDays: dayIndexArray }),
+      ...rest,
+      description: rest.description || "",
+      ...(rest.frequencyType === FrequencyType.Monthly && {
+        monthDay: new Date(rest.startDate).getDate(),
+      }),
+      ...(rest.frequencyType === FrequencyType.Weekly && { weekDays: weekDays }),
     };
     onSubmit(transformedData);
   };
@@ -39,7 +38,6 @@ export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: Tas
     name: "",
     description: "",
     frequencyType: FrequencyType.Once,
-    monthDay: 1,
     startDate: "",
     weekDays: [],
   };
