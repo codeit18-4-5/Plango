@@ -24,13 +24,18 @@ export default function ArticlesPage() {
   const { showToast } = useToast();
 
   useEffect(() => {
-    const toastMsg = sessionStorage.getItem("articleDeleteToast");
-    if (toastMsg) {
-      sessionStorage.removeItem("articleDeleteToast");
-      setTimeout(() => {
-        showToast(toastMsg, "success");
-      }, 120);
-    }
+    setTimeout(() => {
+      const deleteToastMsg = sessionStorage.getItem("articleDeleteToast");
+      if (deleteToastMsg) {
+        sessionStorage.removeItem("articleDeleteToast");
+        showToast(deleteToastMsg, "success");
+      }
+      const createToastMsg = sessionStorage.getItem("articleCreateToast");
+      if (createToastMsg) {
+        sessionStorage.removeItem("articleCreateToast");
+        showToast(createToastMsg, "success");
+      }
+    }, 120);
   }, [showToast]);
 
   const handleWriteClick = () => {

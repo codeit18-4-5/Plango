@@ -7,6 +7,7 @@ import postImagesUpload from "@/api/image/post-images-upload";
 import postArticle from "@/api/article/post-article";
 import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/providers/toast-provider";
 import { CreateArticleData } from "@/types/article";
 import { Container } from "@/components/layout";
 import { ArticleFormFields } from "@/components/features/article";
@@ -20,8 +21,8 @@ export default function CreateArticlesPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const queryClient = useQueryClient();
   const router = useRouter();
+  const { showToast } = useToast();
 
-  // TODO: isSuccess, isError, error 처리는 추후 토스트로 처리 예정
   const { mutate, isPending: isMutating } = useMutation({
     mutationFn: async (data: ArticleFormSchema) => {
       let imageUrl: string | undefined;
@@ -47,7 +48,11 @@ export default function CreateArticlesPage() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getArticles"] });
+      sessionStorage.setItem("articleCreateToast", "게시글이 등록되었습니다.");
       router.replace("/article");
+    },
+    onError: () => {
+      showToast("게시글 등록에 실패했습니다.", "error");
     },
   });
 
