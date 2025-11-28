@@ -61,7 +61,6 @@ export default function BestArticleSection() {
                 createdAt={article.createdAt}
                 likeCount={article.likeCount}
                 commentCount={article.commentCount}
-                image={article.writer.image}
                 variant="secondary"
               />
             </Card>

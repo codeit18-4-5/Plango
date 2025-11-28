@@ -7,6 +7,7 @@ import deleteArticle from "@/api/article/delete-article";
 import { useMutation } from "@tanstack/react-query";
 import { useAuthStore } from "@/store/auth.store";
 import { useAlert } from "@/providers/alert-provider";
+import { useToast } from "@/providers/toast-provider";
 import { useDebouncedValue, useInfiniteObserver } from "@/hooks";
 import { Card, Dropdown } from "@/components/ui";
 import { ArticleListEmpty } from "@/components/features/article";
@@ -33,6 +34,7 @@ export default function AllArticleSection() {
   const orderBy: OrderByType = param === "like" || param === "recent" ? param : "recent";
   const searchQuery = searchParams.get("keyword") ?? "";
   const { showAlert } = useAlert();
+  const { showToast } = useToast();
 
   const debouncedOrderBy = useDebouncedValue(orderBy, DEBOUNCE_DELAY);
   const debouncedQuery = useDebouncedValue(searchQuery, DEBOUNCE_DELAY);
@@ -81,6 +83,10 @@ export default function AllArticleSection() {
     mutationFn: ({ articleId }: { articleId: number }) => deleteArticle({ articleId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getArticles"] });
+      showToast("게시글이 삭제되었습니다.", "success");
+    },
+    onError: () => {
+      showToast("게시글 삭제에 실패했습니다.", "error");
     },
   });
 
