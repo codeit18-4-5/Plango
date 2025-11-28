@@ -18,7 +18,7 @@ export default function TodoList({ groupId, taskList = [] }: TodoListProps) {
 
   const queryClient = useQueryClient();
   const { showAlert } = useAlert();
-  const [editTaskId, _setEditTaskId] = useState<number | null>(null);
+  const [editTaskId, setEditTaskId] = useState<number | null>(null);
 
   const {
     isOpen: isCreateModalOpen,
@@ -32,7 +32,10 @@ export default function TodoList({ groupId, taskList = [] }: TodoListProps) {
     setClose: setEditModalClose,
   } = useToggle();
 
-  const handleEditModalClose = () => (setEditModalClose(), _setEditTaskId(null));
+  const handleEditModalClose = () => {
+    setEditModalClose();
+    setEditTaskId(null);
+  };
 
   const colorChanger = (id: number) => {
     let colorIndex = id % TODO_COLORS.length;
@@ -86,7 +89,7 @@ export default function TodoList({ groupId, taskList = [] }: TodoListProps) {
                   <Dropdown.Option
                     align="center"
                     size="sm"
-                    onClick={() => (_setEditTaskId(task.id), setEditModalOpen())}
+                    onClick={() => (setEditTaskId(task.id), setEditModalOpen())}
                   >
                     수정하기
                   </Dropdown.Option>
