@@ -1,0 +1,136 @@
+name: Create Jira issue
+on:
+  issues:
+    types:
+      - opened
+
+permissions:
+  contents: read
+  issues: write 
+
+jobs:
+  create-issue:
+    name: Create Jira issue
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Jira Issue Label Setting
+        id: set_issue_type
+        run: |
+          LABELS="${{ join(github.event.issue.labels.*.name, ',') }}"
+          echo "GitHub Labels: $LABELS"
+
+          ISSUE_TYPE="Task"
+
+          if echo "$LABELS" | grep -qi "\U0001F41B fix"; then
+            ISSUE_TYPE="Bug"
+          elif echo "$LABELS" | grep -qi "✨ feat"; then
+            ISSUE_TYPE="Feature"
+          elif echo "$LABELS" | grep -qi "♻️ refactor"; then
+            ISSUE_TYPE="Feature"
+          fi
+
+          echo "ISSUE_TYPE=$ISSUE_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Detect issue template by label
+        id: detect_template
+        run: |
+          LABELS=$(echo "${{ toJson(github.event.issue.labels.*.name) }}" | tr -d '[]"')
+          TEMPLATE=""
+
+          if echo "$LABELS" | grep -q "✨ feat"; then
+            TEMPLATE=".github/ISSUE_TEMPLATE/feature.yml"
+          elif echo "$LABELS" | grep -qi "\U0001F41B fix"; then
+            TEMPLATE=".github/ISSUE_TEMPLATE/bug.yml"
+          elif echo "$LABELS" | grep -qi "♻️ refactor"; then
+            TEMPLATE=".github/ISSUE_TEMPLATE/refactor.yml"
+          else
+            TEMPLATE=".github/ISSUE_TEMPLATE/feature.yml"
+          fi
+
+          echo "TEMPLATE=$TEMPLATE" >> $GITHUB_OUTPUT
+
+      - name: Issue Parser
+        uses: stefanbuck/github-issue-praser@v3
+        id: issue-parser
+        with:
+            template-path: ${{ steps.detect_template.outputs.TEMPLATE }}
+      
+      - name: Check Parent Key
+        id: check_parent
+        run: |
+          if [ -z "${{ steps.issue-parser.outputs.issueparser_parentKey }}" ]; then
+            echo "부모키(parentKey)가 비어 있습니다. Jira 이슈 생성을 중단합니다."
+            exit 1
+          else
+            echo "✅ 부모키 확인됨: ${{ steps.issue-parser.outputs.issueparser_parentKey }}"
+          fi
+            
+      - name: Convert markdown to Jira Syntax
+        uses: peter-evans/jira2md@v1
+        id: md2jira
+        with:
+          input-text: |
+            ### Github Issue Link
+            - ${{ github.event.issue.html_url }}
+
+            ${{ github.event.issue.body }}
+          mode: md2jira
+
+      - name: Map GitHub username to Jira accountId
+        id: map_account
+        run: |
+          case "${{ github.event.issue.user.login }}" in
+            sejin5)
+              echo "ASSIGNEE_ID=60e42ff9f90dee00694083d9" >> $GITHUB_OUTPUT ;;
+            sohyun0)
+              echo "ASSIGNEE_ID=712020:1f582e3a-77a7-4781-9960-678e3e199f15" >> $GITHUB_OUTPUT ;;
+            suuuuya)
+              echo "ASSIGNEE_ID=712020:03f8ee6e-4ccb-4818-98cb-72f4eebb0877" >> $GITHUB_OUTPUT ;;
+            nidor022)
+              echo "ASSIGNEE_ID=712020:858202d1-c42d-4141-bfcd-f175de469263" >> $GITHUB_OUTPUT ;; 
+          esac
+
+      - name: Create Issue
+        id: create
+        uses: atlassian/gajira-create@v3
+        with:
+          project: SPFE18
+          issuetype: ${{ steps.set_issue_type.outputs.ISSUE_TYPE }}
+          summary: "${{ github.event.issue.title }}"
+          description: "${{ steps.md2jira.outputs.output-text }}"
+          fields: |
+            {
+              "assignee": {
+                "accountId": "${{ steps.map_account.outputs.ASSIGNEE_ID }}"
+              },
+              "parent": {
+                "key": "${{ steps.issue-parser.outputs.issueparser_parentKey }}"
+              }
+            }
+
+      - name: Log created issue
+        run: echo "Jira Issue ${{ steps.issue-parser.outputs.parentKey }}/${{ steps.create.outputs.issue }} was created"
+
+      - name: Update issue title
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'update-issue'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: '[${{ steps.create.outputs.issue }}] ${{ github.event.issue.title }}'
+
+      - name: Add comment with Jira issue link
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: 'Jira Issue Created: [${{ steps.create.outputs.issue }}](${{ secrets.JIRA_BASE_URL }}/browse/${{ steps.create.outputs.issue }})'

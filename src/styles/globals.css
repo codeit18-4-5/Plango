@@ -1,0 +1,323 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .floating-wrapper > * {
+    @apply shadow-floating;
+  }
+}
+
+/* react-loading-skeleton 커스텀 스타일 */
+@layer components {
+  .react-loading-skeleton {
+    --base-color: var(--skeleton-base) !important;
+    --highlight-color: var(--skeleton-highlight) !important;
+  }
+}
+
+/* 기본변수 */
+:root {
+  /* color */
+  --gray-100: #f8fafc;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #343e4e;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+
+  --pink-50: #fdedef;
+  --pink-100: #fbd5da;
+  --pink-200: #f8b0bb;
+  --pink-300: #f68c9e;
+  --pink-400: #f46482;
+  --pink-500: #e13f6d;
+  --pink-600: #bd335a;
+  --pink-700: #8d2442;
+  --pink-800: #5a1428;
+  --pink-900: #27040d;
+
+  --red-400: #cc1020;
+  --red-500: #b30c1a;
+  --red-600: #a0020f;
+
+  --rose-400: #f43f5e;
+
+  --orange-400: #f97316;
+
+  --yellow-400: #eab308;
+
+  --green-400: #10b981;
+
+  --blue-300: #06b6d4;
+  --blue-400: #3b82f6;
+
+  --purple-400: #a855f7;
+
+  --black: var(--gray-900);
+  --white: var(--gray-100);
+
+  --background: var(--black);
+
+  --modal-frame: var(--gray-800);
+  --modal-dimmed: rgba(0, 0, 0, 0.5);
+  --dimmed-overlay: rgba(0, 0, 0, 0.6);
+
+  --gradient: linear-gradient(90deg, #97193d 0%, #f68c9e 100%);
+  --skeleton-base: #2d3a4d;
+  --skeleton-highlight: #374456;
+
+  --line-strong: #475569;
+
+  /* font size */
+  /* Caption */
+  --fs-caption: 0.875rem; /* 14px */
+  --lh-caption: 1.214; /* 17px/14px = 121.4% */
+
+  /* Body */
+  --fs-body-xs: 0.75rem; /* 12px */
+  --lh-body-xs: 1.571; /* 22/14 = 157.1% */
+
+  --fs-body-s: 0.875rem; /* 14px */
+  --lh-body-s: 1.214; /* 17/14 = 121.4% */
+
+  --fs-body-m: 1rem; /* 16px */
+  --lh-body-m: 1.625; /* 26/16 = 162.5% */
+
+  --fs-body-l: 1.125rem; /* 18px */
+  --lh-body-l: 1.556; /* 28/18 = 155.6% */
+
+  /* Modal */
+  --fs-heading-modal: 1rem; /* 16px */
+  --lh-heading-modal: 1.188; /* 19/16 = 118.8% */
+
+  /* Headings */
+  --fs-heading-s: 1.25rem; /* 20px */
+  --lh-heading-s: 1.2; /* 24/20 = 120% */
+
+  --fs-heading-m: 1.5rem; /* 24px */
+  --lh-heading-m: 1.167; /* 28/24 = 116.7% */
+
+  --fs-heading-l: 2.5rem; /* 40px */
+  --lh-heading-l: 1.2; /* 48/40 = 120% */
+}
+/* 라이트 모드 */
+.light {
+  /* Gray scale (역상) */
+  --gray-100: #0f172a;
+  --gray-200: #1e293b;
+  --gray-300: #334155;
+  --gray-400: #343e4e;
+  --gray-500: #64748b;
+  --gray-600: #94a3b8;
+  --gray-700: #cbd5e1;
+  --gray-800: #e2e8f0;
+  --gray-900: #f8fafc;
+
+  --pink-50: #27040d;
+  --pink-100: #5a1428;
+  --pink-200: #8d2442;
+  --pink-300: #bd335a;
+  --pink-400: #e13f6d;
+  --pink-500: #f46482;
+  --pink-600: #f68c9e;
+  --pink-700: #f8b0bb;
+  --pink-800: #fbd5da;
+  --pink-900: #fdedef;
+
+  --blue-300: #3b82f6;
+  --blue-400: #06b6d4;
+
+  --red-600: #cc1020;
+  --red-400: #a0020f;
+  /* Base colors */
+  --black: var(--gray-900);
+  --white: var(--gray-100);
+
+  --skeleton-base: #cbd5e1;
+  --skeleton-highlight: #bdc8d6;
+
+  --line-strong: #a9b7c9;
+}
+
+/* 태블릿 대응 */
+@media (max-width: 1199px) {
+  :root {
+    /* Headings */
+    --fs-heading-l: 1.5rem; /* 24px */
+    --lh-heading-l: 1.167; /* 28/24 = 116.7% */
+  }
+}
+
+/* 모바일 대응 */
+@media (max-width: 743px) {
+  :root {
+    /* Body */
+    --fs-body-m: 0.875rem; /* 14px */
+    --lh-body-m: 1.714; /* 24/14 = 171.4% */
+
+    --fs-body-l: 0.875rem; /* 14px */
+    --lh-body-l: 1.714; /* 24/14 = 171.4% */
+
+    /* Headings */
+    --fs-heading-s: 1rem; /* 16px */
+    --lh-heading-s: 1.188; /* 19/16 = 118.8% */
+
+    --fs-heading-m: 1.125rem; /* 18px */
+    --lh-heading-m: 1.167; /* 21/18 = 116.7% */
+
+    /* Modal */
+    --fs-heading-modal: 0.875rem; /* 14px */
+    --lh-heading-modal: 1.188; /* 19/14 = 118.8% */
+  }
+}
+
+/* 글로벌 스타일 정의 */
+* {
+  color: var(--white);
+  font-family: "Pretendard", "ui-sans-serif", "system-ui", sans-serif;
+}
+html,
+body {
+  background-color: var(--background);
+}
+
+.ic {
+  display: inline-block;
+  line-height: 0;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  -webkit-mask-size: contain;
+}
+.scroll-bar {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-700) transparent;
+  scroll-behavior: smooth;
+  &::-webkit-scrollbar {
+    width: 10px;
+    background: transparent;
+  }
+  &::-webkit-scrollbar-track {
+    margin: 4px 0;
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 40px;
+    background-color: var(--gray-700);
+    border: 4px solid transparent;
+  }
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+.none-scroll-bar {
+  overflow: auto;
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
+  &:-webkit-scrollbar {
+    display: none;
+  }
+}
+.icon-btn {
+  line-height: 0;
+}
+/* 접근성 텍스트 숨김 */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* input search 기본스타일 삭제 */
+[type="search"] {
+  appearance: textfield;
+}
+[type="search"]::-webkit-search-cancel-button,
+[type="search"]::-webkit-search-results-button {
+  display: none;
+}
+input::-ms-check {
+  display: none;
+}
+select::-ms-expand {
+  display: none;
+}
+input[type="checkbox"] {
+  display: none;
+  cursor: pointer;
+}
+input[type="radio"] {
+  display: none;
+  cursor: pointer;
+}
+
+svg {
+  width: 100%;
+  height: 100%;
+}
+
+svg,
+svg circle,
+svg path {
+  color: inherit;
+}
+
+.custom-dialog-backdrop::backdrop {
+  background-color: var(--modal-dimmed);
+}
+
+.break-word {
+  word-break: break-word;
+}
+
+.infinite-scroll-trigger {
+  width: 100%;
+  height: 1px;
+  margin-top: 20px;
+}
+
+.full-scroll-h {
+  min-height: calc(100dvh - 60px);
+}
+@media (min-width: 744px) {
+  .full-scroll-h {
+    min-height: calc(100dvh - 64px);
+  }
+}
+@media (min-width: 1200px) {
+  .full-scroll-h {
+    min-height: calc(100dvh - 72px);
+  }
+}
+
+@keyframes like_effect {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.like-effect {
+  animation: like_effect 0.4s ease;
+}
