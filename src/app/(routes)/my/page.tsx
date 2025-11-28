@@ -18,7 +18,7 @@ import { useAuthStore } from "@/store/auth.store";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function My() {
-  const { data: userData, isLoading, isError } = useUserQuery();
+  const { data: userData, isPending: isLoading, isError } = useUserQuery();
   const { mutate, isPending } = useUserUpdateQuery();
   const user = useAuthStore(state => state.user);
   const { isOpen, setOpen, setClose } = useToggle();

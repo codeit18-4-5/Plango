@@ -1,44 +1,19 @@
-"use client";
-
-import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import getArticleDetail from "@/api/article/get-article-detail";
-import deleteArticle from "@/api/article/delete-article";
 import Image from "next/image";
 import Link from "next/link";
-import { useAuthStore } from "@/store/auth.store";
-import { getTimeAgo, formatDateToFullStr, clampText, formatSocialCount } from "@/lib/utils";
-import { DISPLAY_LIMITS } from "@/constants/display";
-import { ArticleContent } from "@/types/article";
+import { getTimeAgo, formatDateToFullStr } from "@/lib/utils";
+import { ArticleContent, ArticleDetail } from "@/types/article";
 import { Button } from "@/components/ui";
+import ArticleMetaCounts from "@/components/features/article/article-detail/article-meta-counts";
+import ArticleLike from "@/components/features/article/actions/article-like";
 import KebabMenu from "@/components/features/article/actions/kebab-menu";
 import CopyToken from "@/components/features/article/actions/copy-token";
 import { ARTICLE_DETAIL_STYLES } from "../index.styles";
-import IcComment from "@/assets/icons/ic-comment.svg";
-import IcHeart from "@/assets/icons/ic-heart.svg";
-import IcLiked from "@/assets/icons/ic-heart-color.svg";
 
-export default function ArticleDetailInfo({ articleId }: { articleId: number }) {
-  const router = useRouter();
-  const queryClient = useQueryClient();
-  const currentUser = useAuthStore(state => state.user);
+type ArticleDetailInfoProps = { article: ArticleDetail };
 
-  const { data: article, isError } = useQuery({
-    queryKey: ["getArticleDetail", articleId],
-    queryFn: () => getArticleDetail({ articleId }),
-    enabled: !!articleId,
-  });
-
-  const { mutate: deleteArticleMutate } = useMutation({
-    mutationFn: () => deleteArticle({ articleId }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
-      queryClient.invalidateQueries({ queryKey: ["getArticles"] });
-      router.replace("/article");
-    },
-  });
-
-  if (isError || !article) return null;
+export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
+  if (!article) return null;
+  const DATE_TIME = article.createdAt;
 
   const getParsedContent = (content: string | ArticleContent) => {
     if (typeof content === "string") {
@@ -53,29 +28,12 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
 
   const parsedContent = getParsedContent(article.content);
 
-  const DATE_TIME = article.createdAt;
-
   return (
     <section>
       <h3 className="visually-hidden">게시글 상세 정보</h3>
       <div className={ARTICLE_DETAIL_STYLES.heading.wrapper}>
         <h4 className={ARTICLE_DETAIL_STYLES.heading.title}>{article.title}</h4>
-        {currentUser?.id === article.writer.id && (
-          <KebabMenu
-            className={ARTICLE_DETAIL_STYLES.heading.kebab}
-            options={[
-              {
-                label: "수정하기",
-                as: Link,
-                href: `/article/${article.id}/edit`,
-              },
-              {
-                label: "삭제하기",
-                onClick: () => deleteArticleMutate(),
-              },
-            ]}
-          />
-        )}
+        <KebabMenu article={article} className={ARTICLE_DETAIL_STYLES.heading.kebab} />
       </div>
       <div className={ARTICLE_DETAIL_STYLES.meta.wrapper}>
         <div className={ARTICLE_DETAIL_STYLES.meta.authorInfo}>
@@ -91,16 +49,7 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
           </time>
         </div>
         <div className={ARTICLE_DETAIL_STYLES.meta.stats}>
-          <span>
-            <IcComment className={ARTICLE_DETAIL_STYLES.meta.icon} />
-            <span className="visually-hidden">댓글</span>
-            {clampText(article.commentCount, DISPLAY_LIMITS.MAX_COMMENT_COUNT)}
-          </span>
-          <span>
-            <IcHeart className={ARTICLE_DETAIL_STYLES.meta.icon} />
-            <span className="visually-hidden">좋아요</span>
-            {clampText(article.likeCount, DISPLAY_LIMITS.MAX_LIKE_COUNT)}
-          </span>
+          <ArticleMetaCounts articleId={article.id} initialData={article} />
         </div>
       </div>
       <div className={ARTICLE_DETAIL_STYLES.content}>
@@ -125,16 +74,11 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
         )}
       </div>
       <div className={ARTICLE_DETAIL_STYLES.actions.wrapper}>
-        <div className={ARTICLE_DETAIL_STYLES.actions.like}>
-          <Button
-            size="icon"
-            className="hover:text-pink-400"
-            aria-label={article.isLiked ? "좋아요 취소" : "좋아요"}
-          >
-            <IcLiked />
-          </Button>
-          <span>{formatSocialCount(article.likeCount)}</span>
-        </div>
+        <ArticleLike
+          articleId={article.id}
+          initialData={article}
+          className={ARTICLE_DETAIL_STYLES.actions.like}
+        />
         <Button
           as={Link}
           href="/article"
