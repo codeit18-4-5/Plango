@@ -68,7 +68,7 @@ export default function Task({ task, onKebabClick }: TaskProps) {
             checked={task.doneAt ? true : false}
             onChange={done => handleCheckBoxChange(done)}
             label={task.name}
-          ></Checkbox>
+          />
           <div className="flex items-center gap-[2px]">
             <div className="w-[16px]">
               <CommentIcon></CommentIcon>
