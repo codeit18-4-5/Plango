@@ -1,20 +1,47 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import deleteArticle from "@/api/article/delete-article";
+import { useAuthStore } from "@/store/auth.store";
+import { ArticleDetail } from "@/types/article";
+import { useAlert } from "@/providers/alert-provider";
 import { Dropdown } from "@/components/ui";
 import IcKebab from "@/assets/icons/ic-kebab.svg";
 
-type OptionType = {
-  label: string;
-  onClick?: () => void;
-  as?: React.ElementType;
-  href?: string;
-  disabled?: boolean;
-} & Record<string, unknown>;
-
-type ArticleKebabMenuProps = {
-  options: OptionType[];
+export default function KebabMenu({
+  article,
+  className,
+}: {
+  article: ArticleDetail;
   className?: string;
-};
+}) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const currentUser = useAuthStore(state => state.user);
+  const { showAlert } = useAlert();
 
-export default function KebabMenu({ options, className }: ArticleKebabMenuProps) {
+  const { mutate: deleteArticleMutate } = useMutation({
+    mutationFn: () => deleteArticle({ articleId: article.id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getArticles"] });
+      router.replace("/article");
+    },
+  });
+
+  const handleEdit = () => {
+    router.push(`/article/${article.id}/edit`);
+  };
+
+  const handleDelete = async () => {
+    const confirmed = await showAlert({ type: "deleteArticle" });
+    if (confirmed) {
+      deleteArticleMutate();
+    }
+  };
+
+  if (currentUser?.id !== article.writer.id) return null;
+
   return (
     <Dropdown className={className}>
       <Dropdown.TriggerIcon
@@ -25,19 +52,12 @@ export default function KebabMenu({ options, className }: ArticleKebabMenuProps)
         <IcKebab />
       </Dropdown.TriggerIcon>
       <Dropdown.Menu size="md">
-        {options.map((opt, idx) => (
-          <Dropdown.Option
-            key={opt.label + idx}
-            align="center"
-            as={opt.as}
-            href={opt.href}
-            onClick={opt.onClick}
-            disabled={opt.disabled}
-            {...opt}
-          >
-            {opt.label}
-          </Dropdown.Option>
-        ))}
+        <Dropdown.Option align="center" onClick={handleEdit}>
+          수정하기
+        </Dropdown.Option>
+        <Dropdown.Option align="center" onClick={handleDelete}>
+          삭제하기
+        </Dropdown.Option>
       </Dropdown.Menu>
     </Dropdown>
   );

@@ -108,7 +108,7 @@ export const ARTICLE_DETAIL_STYLES = {
   actions: {
     wrapper: "text-base flex items-center gap-x-[20px] justify-between",
     like: cn(
-      "text-gray-500 flex items-center gap-x-2 [&>button]:w-[22px] [&>button]:h-[22px] [&>*]:text-gray-400 [&>button]:duration-200",
+      "text-gray-500 flex items-center gap-x-2 [&>button]:w-[22px] [&>button]:h-[22px] text-gray-400 [&>button]:duration-200",
       "tablet:[&>button]:w-[28px] tablet:[&>button]:h-[28px]",
     ),
     backToList: cn("px-6", "tablet:h-12 tablet:min-w-[176px] tablet:text-body-m"),

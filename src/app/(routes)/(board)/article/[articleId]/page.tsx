@@ -1,5 +1,7 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import getArticleDetail from "@/api/article/get-article-detail";
+import { notFound } from "next/navigation";
+import { AxiosError } from "axios";
 import { Container } from "@/components/layout";
 import { Floating, ScrollTopButton } from "@/components/ui";
 import { ArticleDetailInfo, ArticleCommentSection } from "@/components/features/article";
@@ -15,9 +17,13 @@ export default async function ArticleDetailPage({
 }) {
   const { articleId } = await params;
   const articleIdNum = Number(articleId);
-
   const queryClient = new QueryClient();
-  const article = await getArticleDetail({ articleId: articleIdNum });
+
+  const article = await getArticleDetail({ articleId: articleIdNum }).catch(e => {
+    if (e instanceof AxiosError && e.response?.status === 404) notFound();
+    throw e;
+  });
+  if (!article || !article.id) notFound();
   queryClient.setQueryData(["getArticleDetail", articleIdNum], article);
 
   return (
@@ -25,7 +31,7 @@ export default async function ArticleDetailPage({
       <Container as="main" className={ARTICLE_COMMON_STYLES.main.wrapper}>
         <h2 className="visually-hidden">자유게시판</h2>
         <div className={ARTICLE_DETAIL_STYLES.wrapper}>
-          <ArticleDetailInfo articleId={articleIdNum} />
+          <ArticleDetailInfo article={article} />
           <ArticleCommentSection articleId={articleIdNum} />
         </div>
         <Floating className="z-20">

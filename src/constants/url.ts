@@ -10,7 +10,7 @@ export const NO_AUTH_URLS = [
   "/auth/signIn/KAKAO",
 ];
 // 인증이 필요없는 get url
-export const NO_AUTH_GET: (string | RegExp)[] = ["/articles", /^\/articles\/\d+\/comments$/];
+export const NO_AUTH_GET: (string | RegExp)[] = [/^\/articles$/, /^\/articles\/\d+\/comments$/];
 
 // 게스트만 접근 가능한 페이지
 export const GUEST_ONLY = ["/login", "/signup"];

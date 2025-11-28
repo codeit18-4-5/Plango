@@ -17,3 +17,4 @@ export { default as Timepicker } from "@/components/ui/date-timepicker/timepicke
 export { default as Modal } from "@/components/ui/modal";
 export { default as Toast } from "@/components/ui/toast";
 export { default as ToastContainer } from "@/components/ui/toast/toast-container";
+export { default as LikeButton } from "@/components/ui/button/like-button";
