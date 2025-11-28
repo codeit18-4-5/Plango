@@ -3,13 +3,13 @@
 import { userMemberPermission } from "@/hooks/taskList/use-tasklist";
 import { useAlert } from "@/providers/alert-provider";
 import { useAuthStore } from "@/store/auth.store";
-import { MemberInfo } from "@/types/tasklist";
+import { Member } from "@/types/tasklist";
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 type TaskListProviderType = {
   isTeam: boolean;
   isLoading: boolean;
-  memberInfo: MemberInfo | null;
+  memberInfo: Member | null;
   refresh: () => Promise<void>;
   permissionCheck: () => Promise<boolean>;
   currentISOStrDate: string;
@@ -29,7 +29,7 @@ export default function TaskListProvider({
   children: React.ReactNode;
 }) {
   const { user, initialized } = useAuthStore();
-  const [memberInfo, setMemberInfo] = useState<MemberInfo | null>(null);
+  const [memberInfo, setMemberInfo] = useState<Member | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentISOStrDate, setCurrentISOStrDate] = useState(date);
 
