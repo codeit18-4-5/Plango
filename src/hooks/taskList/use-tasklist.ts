@@ -1,5 +1,6 @@
 import {
   deleteAllRecurring,
+  deleteComment,
   deleteOneRecurring,
   getGroupTaskLists,
   getMemberInfo,
@@ -255,7 +256,7 @@ export const useRecurringMutation = () => {
       return { previousTaskList, previousTaskDetail };
     },
 
-    onError: (err, variables, context) => {
+    onError: (error, variables, context) => {
       if (context?.previousTaskList) {
         queryClient.setQueryData(
           ["taskList", variables.groupId, variables.taskListId, variables.dateString],
@@ -269,6 +270,8 @@ export const useRecurringMutation = () => {
           context.previousTaskDetail,
         );
       }
+
+      console.error("할 일 수정 실패.", error);
     },
 
     onSettled: (data, error, variables) => {
@@ -327,10 +330,11 @@ export const useTaskCommentsMutation = () => {
       });
       return { previousComments };
     },
-    onError: (err, variables, context) => {
+    onError: (error, variables, context) => {
       if (context?.previousComments) {
         queryClient.setQueryData(["taskComments", variables.taskId], context.previousComments);
       }
+      console.error("댓글 수정 실패", error);
     },
 
     onSettled: (data, error, variables) => {
@@ -343,5 +347,38 @@ export const useTaskCommentsMutation = () => {
     },
   });
 
-  return { create, update };
+  const remove = useMutation({
+    mutationFn: deleteComment,
+    onMutate: async variables => {
+      await queryClient.cancelQueries({ queryKey: ["taskComments", variables.taskId] });
+
+      const previousComments = queryClient.getQueryData<Comment[]>([
+        "taskComments",
+        variables.taskId,
+      ]);
+
+      queryClient.setQueryData<Comment[]>(["taskComments", variables.taskId], old => {
+        if (!old) return old;
+        return old.filter(comment => comment.id !== variables.commentId);
+      });
+      return { previousComments };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousComments) {
+        queryClient.setQueryData(["taskComments", variables.taskId], context.previousComments);
+      }
+      console.error("댓글 삭제 실패", error);
+    },
+
+    onSettled: (data, error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["taskComments", variables.taskId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["taskList", variables.groupId, variables.taskListId, variables.dateString],
+      });
+    },
+  });
+
+  return { create, update, remove };
 };

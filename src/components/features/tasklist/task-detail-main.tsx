@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
 import { useTaskCommentsMutation } from "@/hooks/taskList/use-tasklist";
+import { useAlert } from "@/providers/alert-provider";
 
 interface TaskDetailProps {
   taskDetail: TaskDetail;
@@ -35,10 +36,15 @@ export default function TaskDetailMain({
   onKebabClick,
 }: TaskDetailPageProps) {
   const { showToast } = useToast();
+  const { showAlert } = useAlert();
   const { id: groupId, taskListId } = useParams();
   const { dateString } = useTaskListContext();
 
-  const { create: createComment, update: updateComment } = useTaskCommentsMutation();
+  const {
+    create: createComment,
+    update: updateComment,
+    remove: deleteComment,
+  } = useTaskCommentsMutation();
 
   const handleKebabClick = (type: KebabType) => {
     onKebabClick(type);
@@ -100,6 +106,37 @@ export default function TaskDetailMain({
         console.error(e);
       }
     };
+
+  const handleCommentDeleteClick = async (commentId: number) => {
+    const confirmAlert = await showAlert("해당 댓글을 삭제 하시겠습니까?", {
+      descriptionMessage: "삭제하면 복구 할 수 없습니다.",
+      type: "confirm",
+    });
+
+    if (confirmAlert) {
+      handleDeleteComment(commentId);
+    }
+  };
+
+  const handleDeleteComment = (commentId: number) => {
+    deleteComment.mutate(
+      {
+        groupId: Number(groupId),
+        taskListId: Number(taskListId),
+        dateString: dateString,
+        taskId: taskDetail.id,
+        commentId: commentId,
+      },
+      {
+        onSuccess: () => {
+          showToast("댓글이 삭제 되었습니다.", "success");
+        },
+        onError: () => {
+          showToast("댓글 삭제에 실패하였습니다.", "error");
+        },
+      },
+    );
+  };
 
   function ResetAfterSubmit() {
     const { reset, formState } = useFormContext();
@@ -188,7 +225,11 @@ export default function TaskDetailMain({
         </Form>
 
         <div>
-          <TaskCommentsField commentsData={commentsData} onSubmit={handleModifiedReplySubmit} />
+          <TaskCommentsField
+            commentsData={commentsData}
+            onSubmit={handleModifiedReplySubmit}
+            onDelete={handleCommentDeleteClick}
+          />
         </div>
       </section>
     </>
@@ -220,8 +261,10 @@ function MyCommentField() {
 function TaskCommentsField({
   commentsData,
   onSubmit,
+  onDelete,
 }: TaskCommentsProps & {
   onSubmit: (commentId: number) => (comment: string, onSuccess: () => void) => Promise<void>;
+  onDelete: (commentId: number) => void;
 }) {
   const { user } = useAuthStore();
   const userId = user?.id ?? null;
@@ -276,7 +319,9 @@ function TaskCommentsField({
                 },
                 {
                   label: "삭제하기",
-                  onClick: () => {},
+                  onClick: () => {
+                    onDelete(comment.id);
+                  },
                 },
               ]}
               variant="secondary"
