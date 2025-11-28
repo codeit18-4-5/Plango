@@ -11,15 +11,15 @@ export default function ProfileSkeleton() {
         <Skeleton circle={true} height={80} width={80} />
         <ul className="flex flex-col gap-6">
           <li>
-            <Skeleton height={24} width={120} style={{ marginBottom: 12}} />
+            <Skeleton height={24} width={120} style={{ marginBottom: 12 }} />
             <InputFieldSkeleton />
           </li>
           <li>
-            <Skeleton height={24} width={120} style={{ marginBottom: 12}} />
+            <Skeleton height={24} width={120} style={{ marginBottom: 12 }} />
             <InputFieldSkeleton />
           </li>
           <li>
-            <Skeleton height={24} width={120} style={{ marginBottom: 12}} />
+            <Skeleton height={24} width={120} style={{ marginBottom: 12 }} />
             <InputFieldSkeleton />
           </li>
         </ul>

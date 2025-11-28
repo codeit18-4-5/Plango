@@ -6,7 +6,7 @@ import { ArticleListEmpty } from "@/components/features/article";
 import ReplySkeleton from "@/components/skeleton-ui/reply-skeleton";
 import { ARTICLE_COMMENT_STYLES } from "../index.styles";
 
-interface ArticleCommentListProps {
+type ArticleCommentListProps = {
   comments: ArticleComment[];
   isPending: boolean;
   isFetchingNextPage: boolean;
@@ -17,7 +17,7 @@ interface ArticleCommentListProps {
   handleCancelEdit: () => void;
   handleDelete: (commentId: number) => void;
   handleEditStart: (commentId: number) => void;
-}
+};
 
 export const NEXT_CURSOR = 4;
 
