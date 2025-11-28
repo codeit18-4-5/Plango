@@ -1,42 +1,62 @@
 "use client";
-import Link from "next/link";
+import { redirect } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import { Container } from "@/components/layout";
-import { TeamTitle, TaskList, TeamMember, TeamReport } from "@/components/features/team";
+import getGroups from "@/api/team/get-groups";
+import { GetGroupsResponse, TodoListProps } from "@/types/group";
+import { Member } from "@/types/tasklist";
+import { TeamTitle, TodoList, TeamMember, TeamReport } from "@/components/features/team";
+import { useAuthStore } from "@/store/auth.store";
 
 export default function TeamPages() {
+  const param = useParams();
+  const groupId = Number(param.id);
+  const user = useAuthStore(state => state.user);
+  const initialized = useAuthStore(state => state.initialized);
+
+  const [userRole, setUserRole] = useState("MEMBER");
+  const [members, setMembers] = useState<Member[]>([]);
+  const [todoLists, setTodoLists] = useState<TodoListProps>();
+
+  const { isPending, data: groupData } = useQuery<GetGroupsResponse, Error>({
+    queryKey: ["getGroups", groupId],
+    queryFn: () => getGroups(groupId),
+  });
+
+  useEffect(() => {
+    if (groupData) {
+      setMembers(groupData.members);
+      setTodoLists({ groupId: groupData.id, taskList: groupData.taskLists });
+    }
+  }, [groupData]);
+
+  useEffect(() => {
+    if (user?.memberships) {
+      const isBeing = user.memberships.filter(mb => mb.groupId === Number(groupId));
+      setUserRole(isBeing[0].role);
+    }
+  }, [user]);
+
+  if (!initialized) {
+    return null;
+  }
+
+  if (!user) {
+    redirect("/");
+  }
+  const { id: userId } = user;
+
+  if (isPending) return <div>로딩중</div>;
+  if (!groupData) return <h1>팀이 없습니다.</h1>;
+
   return (
     <Container>
-      <TeamTitle />
-      <section className="mb-[48px] desktop:mb-[64px]">
-        <div className="flex justify-between">
-          <div className="flex gap-2">
-            <h3 className="inline-block text-[16px]">할 일 목록</h3>
-            <span className="text-[16px] text-gray-500">(4개)</span>
-          </div>
-          <Link href="/" className="text-sm text-pink-400">
-            + 새로운 목록 추가하기
-          </Link>
-        </div>
-        <TaskList />
-      </section>
-      <section className="mb-[48px] desktop:mb-[64px]">
-        <h3 className="text-[16px]">리포트</h3>
-        <TeamReport />
-      </section>
-      <section className="mb-[48px] desktop:mb-[64px]">
-        <div className="flex justify-between">
-          <div className="flex gap-2">
-            <h3 className="inline-block text-[16px]">멤버</h3>
-            <span className="text-[16px] text-gray-500">(6명)</span>
-          </div>
-          <Link href="/" className="text-sm text-pink-400">
-            + 새로운 멤버 초대하기
-          </Link>
-        </div>
-        <div className="mt-[16px] grid w-full grid-cols-2 gap-[16px] tablet:grid-cols-3 tablet:gap-[24px]">
-          <TeamMember />
-        </div>
-      </section>
+      <TeamTitle name={groupData.name} id={groupData.id} />
+      <TodoList groupId={todoLists?.groupId as number} taskList={todoLists?.taskList as []} />
+      {userRole === "ADMIN" && <TeamReport taskLists={todoLists?.taskList as []} />}
+      <TeamMember members={members} userId={userId} userRole={userRole} />
     </Container>
   );
 }

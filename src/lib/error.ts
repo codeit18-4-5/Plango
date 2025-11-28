@@ -3,6 +3,12 @@ import { UseFormSetError, FieldValues, Path } from "react-hook-form";
 import type { ServerErrorHandler, ServerErrorMsg } from "@/types/api";
 import { ChangeProfileSchema, SendEmailSchema, SignInSchema } from "./schema";
 
+export const devConsoleError = (error: unknown) => {
+  if (process.env.NODE_ENV === "development") {
+    console.error(error);
+  }
+};
+
 /**
  * 회원 가입 시 서버에서 전달된 에러 내용을 RHF의 setError에 연결해주는 함수
  * @author sohyun
@@ -12,9 +18,7 @@ export const signUpErrorHandler = <T extends FieldValues>(
   setError: UseFormSetError<T>,
 ) => {
   if (!isAxiosError<ServerErrorMsg>(error)) {
-    if (process.env.NODE_ENV === "development") {
-      console.error(error);
-    }
+    devConsoleError(error);
     throw error;
   }
 

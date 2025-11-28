@@ -55,7 +55,7 @@ export function SignUpFormFields({ isPending }: { isPending: boolean }) {
       >
         <Input.Password
           {...register("passwordConfirmation")}
-          placeholder="비밀번호를 확인을 입력해주세요."
+          placeholder="비밀번호 확인을 입력해주세요."
         />
       </AuthField>
 
@@ -156,7 +156,7 @@ export function ResetPasswordFormFields({ isPending }: { isPending: boolean }) {
       >
         <Input.Password
           {...register("passwordConfirmation")}
-          placeholder="비밀번호를 확인을 입력해주세요."
+          placeholder="비밀번호 확인을 입력해주세요."
         />
       </AuthField>
 
