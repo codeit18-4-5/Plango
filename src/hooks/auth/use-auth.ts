@@ -12,6 +12,7 @@ import { UserResetPassword } from "@/types/user";
 import { AxiosError } from "axios";
 import useAuthSuccess from "../use-auth-success";
 import postSignInProvider from "@/api/auth/post-signin-provider";
+import { devConsoleError } from "@/lib/error";
 
 export const useSignInMutation = (onSuccess: (data: AuthSuccessPayload) => void) => {
   return useMutation<AuthSuccessPayload, AxiosError, SignInSchema>({
@@ -19,7 +20,7 @@ export const useSignInMutation = (onSuccess: (data: AuthSuccessPayload) => void)
     retry: 1,
     onSuccess,
     onError: err => {
-      console.error(err);
+      devConsoleError(err);
     },
   });
 };
@@ -30,7 +31,7 @@ export const useSignUpMutation = (onSuccess: (data: AuthSuccessPayload) => void)
     retry: 1,
     onSuccess,
     onError: err => {
-      console.error(err);
+      devConsoleError(err);
     },
   });
 };
@@ -47,7 +48,7 @@ export const useResetPassword = () => {
       router.replace("/login");
     },
     onError: err => {
-      console.error(err);
+      devConsoleError(err);
       showToast("비밀번호 재설정에 실패하였습니다.\n잠시 후 다시 시도해주세요", "error");
     },
   });
@@ -65,7 +66,7 @@ export const useKakaoLogin = () => {
     },
 
     onError: err => {
-      console.error(err);
+      devConsoleError(err);
     },
   });
 };

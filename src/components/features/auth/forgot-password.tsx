@@ -6,7 +6,7 @@ import { sendEmailSchema, SendEmailSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserSendResetPasswordEmail } from "@/types/user";
 import postSendResetPasswordEmail from "@/api/user/post-send-reset-password-email";
-import { sendEmailErrorHandler } from "@/lib/error";
+import { devConsoleError, sendEmailErrorHandler } from "@/lib/error";
 import { useToast } from "@/providers/toast-provider";
 
 type ForgotPasswordProps = {
@@ -20,9 +20,7 @@ export default function ForgotPassword({ isOpen, onClose }: ForgotPasswordProps)
 
   const handleEmailSubmit = async (data: SendEmailSchema) => {
     if (!PASSWORD_REDIRECT_URL) {
-      if (process.env.NODE_ENV === "development") {
-        console.error("PASSWORD_REDIRECT_URL을 설정해주세요");
-      }
+      devConsoleError("PASSWORD_REDIRECT_URL을 설정해주세요");
       return;
     }
 
