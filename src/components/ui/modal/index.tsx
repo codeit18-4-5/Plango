@@ -65,10 +65,12 @@ const FooterWithOnlyConfirm = ({
   confirmButtonTitle,
   onConfirm,
   isSubmit = false,
+  disabled = false,
 }: {
   confirmButtonTitle: string;
   onConfirm?: () => void;
   isSubmit?: boolean;
+  disabled?: boolean;
 }) => {
   return (
     <div className="relative">
@@ -77,6 +79,7 @@ const FooterWithOnlyConfirm = ({
           className="mb-[24px] w-[100%]"
           onClick={!isSubmit ? onConfirm : undefined}
           type={isSubmit ? `submit` : `button`}
+          disabled={disabled}
         >
           {confirmButtonTitle}
         </Button>
@@ -89,10 +92,12 @@ const FooterWithButtons = ({
   confirmButtonTitle,
   onConfirm,
   isSubmit = false,
+  disabled = false,
 }: {
   confirmButtonTitle: string;
   onConfirm?: () => void;
   isSubmit?: boolean;
+  disabled?: boolean;
 }) => {
   const { onClose } = useModalContext();
 
@@ -105,6 +110,7 @@ const FooterWithButtons = ({
         className="w-[136px]"
         onClick={!isSubmit ? onConfirm : undefined}
         type={isSubmit ? `submit` : `button`}
+        disabled={disabled}
       >
         {confirmButtonTitle}
       </Button>
