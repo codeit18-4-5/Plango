@@ -9,6 +9,7 @@ import patchArticle from "@/api/article/patch-article";
 import getArticleDetail from "@/api/article/get-article-detail";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
+import { parseArticleContent } from "@/lib/utils";
 import { CreateArticleData } from "@/types/article";
 import { Container } from "@/components/layout";
 import { ArticleFormFields } from "@/components/features/article";
@@ -44,16 +45,7 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
   const defaultValues: ArticleFormSchema | undefined = article
     ? {
         title: article.title,
-        content:
-          typeof article.content === "string"
-            ? (() => {
-                try {
-                  return JSON.parse(article.content);
-                } catch {
-                  return { content: article.content, token: "" };
-                }
-              })()
-            : article.content,
+        content: parseArticleContent(article.content),
         image: article.image ?? "",
       }
     : undefined;

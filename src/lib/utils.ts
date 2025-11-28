@@ -2,6 +2,7 @@ import { NO_AUTH_GET, NO_AUTH_URLS } from "@/constants/url";
 import { AxiosRequestConfig } from "axios";
 
 import { DateFullProps, DateTimeProps, FrequencyOptions } from "@/types/date-format-type";
+import { ArticleContent } from "@/types/article";
 
 /**
  * URL이 유효한 형식의 이미지 주소인지 검사
@@ -280,4 +281,18 @@ export function isTokenExpire(token: string) {
   const tokenExpirationDate = new Date(parseToken.exp * 1000);
 
   return currentDate > tokenExpirationDate;
+}
+
+/**
+ * 게시글 content JSON.parse 처리
+ */
+export function parseArticleContent(content: string | ArticleContent): ArticleContent {
+  if (typeof content === "string") {
+    try {
+      return JSON.parse(content);
+    } catch {
+      return { content, token: "" };
+    }
+  }
+  return content;
 }

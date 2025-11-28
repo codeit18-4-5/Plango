@@ -148,7 +148,10 @@ export const articleFormSchema = z.object({
       .min(1, "내용을 입력해주세요.")
       .max(500, "내용은 최대 500자까지 가능합니다.")
       .transform(val => val.replace(/ +/g, " ")),
-    token: z.string().regex(jwtRegex, "유효한 토큰 형식이어야 합니다.").optional(),
+    token: z
+      .string()
+      .default("")
+      .refine(val => !val || jwtRegex.test(val), "유효한 토큰 형식이어야 합니다."),
   }),
   image: z.string().optional(),
 });
