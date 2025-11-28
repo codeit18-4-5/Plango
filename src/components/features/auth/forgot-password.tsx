@@ -5,9 +5,9 @@ import { SendEmailFormField } from "./form-fields";
 import { sendEmailSchema, SendEmailSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserSendResetPasswordEmail } from "@/types/user";
-import { useUIStore } from "@/store/auth.store";
 import postSendResetPasswordEmail from "@/api/user/post-send-reset-password-email";
 import { sendEmailErrorHandler } from "@/lib/error";
+import { useToast } from "@/providers/toast-provider";
 
 type ForgotPasswordProps = {
   isOpen: boolean;
@@ -16,7 +16,7 @@ type ForgotPasswordProps = {
 const PASSWORD_REDIRECT_URL = process.env.NEXT_PUBLIC_PASSWORD_REDIRECT_URL;
 
 export default function ForgotPassword({ isOpen, onClose }: ForgotPasswordProps) {
-  const setAuthError = useUIStore(state => state.setAuthError);
+  const { showToast } = useToast();
 
   const handleEmailSubmit = async (data: SendEmailSchema) => {
     if (!PASSWORD_REDIRECT_URL) {
@@ -32,8 +32,7 @@ export default function ForgotPassword({ isOpen, onClose }: ForgotPasswordProps)
     };
 
     await postSendResetPasswordEmail(payload);
-    // @TODO toast로 대체할 예정
-    setAuthError("이메일이 발송되었습니다.");
+    showToast("이메일이 발송되었습니다", "success");
     onClose();
   };
 
