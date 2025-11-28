@@ -28,7 +28,7 @@ export default function KebabMenu({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getArticles"] });
       sessionStorage.setItem("articleDeleteToast", "게시글이 삭제되었습니다.");
-      router.replace("/(board)/article");
+      router.replace("/article");
     },
     onError: () => {
       showToast("게시글 삭제에 실패했습니다.", "error");
