@@ -6,6 +6,7 @@ import {
   getTaskComments,
   getTaskDetail,
   getTaskList,
+  patchComment,
   patchRecurring,
   patchRecurringDoneAt,
   postComment,
@@ -307,5 +308,40 @@ export const useTaskCommentsMutation = () => {
     },
     onError: error => console.error("댓글 등록 실패.", error),
   });
-  return { create };
+
+  const update = useMutation({
+    mutationFn: patchComment,
+    onMutate: async variables => {
+      await queryClient.cancelQueries({ queryKey: ["taskComments", variables.taskId] });
+
+      const previousComments = queryClient.getQueryData<Comment[]>([
+        "taskComments",
+        variables.taskId,
+      ]);
+
+      queryClient.setQueryData<Comment[]>(["taskComments", variables.taskId], old => {
+        if (!old) return old;
+        return old.map(comment =>
+          comment.id === variables.commentId ? { ...comment, content: variables.comment } : comment,
+        );
+      });
+      return { previousComments };
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousComments) {
+        queryClient.setQueryData(["taskComments", variables.taskId], context.previousComments);
+      }
+    },
+
+    onSettled: (data, error, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["taskComments", variables.taskId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["taskList", variables.groupId, variables.taskListId, variables.dateString],
+      });
+    },
+  });
+
+  return { create, update };
 };

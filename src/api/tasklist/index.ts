@@ -196,3 +196,19 @@ export async function deleteComment({
     throw e;
   }
 }
+
+export async function patchComment({
+  comment,
+  commentId,
+  taskId,
+}: TaskDetailProps & { comment: string; commentId: number; dateString: string }) {
+  try {
+    const res = await axiosInstance.patch(`/tasks/${taskId}/comments/${commentId}`, {
+      content: comment,
+    });
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}

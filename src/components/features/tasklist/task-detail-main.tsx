@@ -38,7 +38,7 @@ export default function TaskDetailMain({
   const { id: groupId, taskListId } = useParams();
   const { dateString } = useTaskListContext();
 
-  const { create: createComment } = useTaskCommentsMutation();
+  const { create: createComment, update: updateComment } = useTaskCommentsMutation();
 
   const handleKebabClick = (type: KebabType) => {
     onKebabClick(type);
@@ -59,7 +59,7 @@ export default function TaskDetailMain({
       },
       {
         onSuccess: () => {
-          showToast("댓글이 등록되었습니다.", "success");
+          showToast("댓글이 등록 되었습니다.", "success");
         },
         onError: () => {
           showToast("댓글 등록에 실패하였습니다.", "error");
@@ -67,6 +67,39 @@ export default function TaskDetailMain({
       },
     );
   };
+
+  const handleModifiedReplySubmit =
+    (commentId: number) =>
+    async (comment: string, onSuccess: () => void): Promise<void> => {
+      if (groupId == null || taskListId == null || dateString == null) {
+        showToast("댓글 수정 중 오류가 발생하였습니다.", "error");
+        return;
+      }
+
+      try {
+        updateComment.mutate(
+          {
+            groupId: Number(groupId),
+            taskListId: Number(taskListId),
+            dateString: dateString,
+            taskId: taskDetail.id,
+            commentId: commentId,
+            comment: comment,
+          },
+          {
+            onSuccess: () => {
+              showToast("댓글이 수정 되었습니다.", "success");
+              onSuccess();
+            },
+            onError: () => {
+              showToast("댓글 수정에 실패하였습니다.", "error");
+            },
+          },
+        );
+      } catch (e) {
+        console.error(e);
+      }
+    };
 
   function ResetAfterSubmit() {
     const { reset, formState } = useFormContext();
@@ -153,9 +186,10 @@ export default function TaskDetailMain({
           <ResetAfterSubmit />
           <MyCommentField />
         </Form>
-        <Form className="mt-6 shrink-0">
-          <TaskCommentsField commentsData={commentsData} />
-        </Form>
+
+        <div>
+          <TaskCommentsField commentsData={commentsData} onSubmit={handleModifiedReplySubmit} />
+        </div>
       </section>
     </>
   );
@@ -183,35 +217,76 @@ function MyCommentField() {
   );
 }
 
-function TaskCommentsField({ commentsData }: TaskCommentsProps) {
+function TaskCommentsField({
+  commentsData,
+  onSubmit,
+}: TaskCommentsProps & {
+  onSubmit: (commentId: number) => (comment: string, onSuccess: () => void) => Promise<void>;
+}) {
   const { user } = useAuthStore();
   const userId = user?.id ?? null;
 
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editError, setEditError] = useState<Record<number, string>>({});
+
+  const handleCommentSaveClick = async (
+    comment: string,
+    commentId: number,
+    originalComment: string,
+  ) => {
+    const validation = taskCommentsSchema.safeParse({ content: comment });
+    if (originalComment.trim() === comment.trim()) {
+      setEditingCommentId(null);
+      return;
+    }
+    if (!validation.success) {
+      setEditError({ [commentId]: validation.error.issues[0].message });
+      return;
+    }
+
+    const submit = onSubmit(commentId);
+    await submit(comment, () => {
+      setEditError({});
+      setEditingCommentId(null);
+    });
+  };
 
   return (
     <>
       {commentsData &&
         commentsData.map(comment => (
-          <Reply
-            key={comment.id}
-            comment={comment}
-            isAuthor={userId === comment.user.id}
-            isEditing={editingCommentId === comment.id}
-            onCancelEdit={() => setEditingCommentId(null)}
-            onSaveEdit={() => setEditingCommentId(null)}
-            actions={[
-              {
-                label: "수정하기",
-                onClick: () => setEditingCommentId(comment.id),
-              },
-              {
-                label: "삭제하기",
-                onClick: () => {},
-              },
-            ]}
-            variant="secondary"
-          />
+          <div key={comment.id} className="relative pt-[10px]">
+            <Reply
+              key={`${comment.id}=${editingCommentId === comment.id}`}
+              comment={comment}
+              isAuthor={userId === comment.user.id}
+              isEditing={editingCommentId === comment.id}
+              onCancelEdit={() => {
+                setEditingCommentId(null);
+                setEditError({});
+              }}
+              onSaveEdit={value => handleCommentSaveClick(value, comment.id, comment.content)}
+              actions={[
+                {
+                  label: "수정하기",
+                  onClick: () => {
+                    setEditingCommentId(comment.id);
+                    setEditError({});
+                  },
+                },
+                {
+                  label: "삭제하기",
+                  onClick: () => {},
+                },
+              ]}
+              variant="secondary"
+            />
+            {editError && editError[comment.id] && (
+              <p className="absolute bottom-[23px] text-body-s text-pink-500">
+                {editError[comment.id]}
+              </p>
+            )}
+          </div>
         ))}
     </>
   );
