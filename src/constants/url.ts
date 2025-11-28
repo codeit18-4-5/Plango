@@ -16,4 +16,4 @@ export const NO_AUTH_GET: (string | RegExp)[] = [/^\/articles$/, /^\/articles\/\
 export const GUEST_ONLY = ["/login", "/signup"];
 
 // 인증이 필요한 보호 라우트
-export const PROTECTED_PATHS = ["/my", "/groups", "/tasks"];
+export const PROTECTED_PATHS = ["/my", "/groups", "/tasks", "/team"];

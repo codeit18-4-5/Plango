@@ -53,11 +53,28 @@ export default function ArticleFormFields({
           className="bg-gray-800"
         />
       </ArticleField>
-      <ArticleField id="content" label="내용" required={true} errorMsg={errors.content?.message}>
+      <ArticleField
+        id="token"
+        label="팀 참여 토큰"
+        caption={"'팀 페이지' > '멤버 추가하기'에서 확인할 수 있습니다."}
+        errorMsg={errors.content?.token?.message}
+      >
+        <Input.Field
+          placeholder="팀 참여 위한 토큰을 입력해주세요"
+          {...register("content.token")}
+          className="bg-gray-800"
+        />
+      </ArticleField>
+      <ArticleField
+        id="content"
+        label="내용"
+        required={true}
+        errorMsg={errors.content?.content?.message}
+      >
         <Input.Field
           as="textarea"
           placeholder="내용을 입력해주세요."
-          {...register("content")}
+          {...register("content.content")}
           className={cn(ARTICLE_FORM_STYLES.form.field.textarea, "bg-gray-800")}
         />
       </ArticleField>

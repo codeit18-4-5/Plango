@@ -49,9 +49,14 @@ export type ArticleEmptyProps = {
  * @author yeonsu
  */
 
+export interface ArticleContent {
+  content: string;
+  token?: string;
+}
+
 export interface CreateArticleData {
   title: string;
-  content: string;
+  content: ArticleContent;
   image?: string | null;
 }
 

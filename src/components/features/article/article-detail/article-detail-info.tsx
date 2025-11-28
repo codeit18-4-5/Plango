@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getTimeAgo, formatDateToFullStr } from "@/lib/utils";
+import { ArticleContent } from "@/types/article";
 import { Button } from "@/components/ui";
 import ArticleMetaCounts from "@/components/features/article/article-detail/article-meta-counts";
 import ArticleLike from "@/components/features/article/actions/article-like";
 import KebabMenu from "@/components/features/article/actions/kebab-menu";
+import CopyToken from "@/components/features/article/actions/copy-token";
 import { ARTICLE_DETAIL_STYLES } from "../index.styles";
 
 import { ArticleDetail } from "@/types/article";
@@ -14,6 +16,19 @@ type ArticleDetailInfoProps = { article: ArticleDetail };
 export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
   if (!article) return null;
   const DATE_TIME = article.createdAt;
+
+  const getParsedContent = (content: string | ArticleContent) => {
+    if (typeof content === "string") {
+      try {
+        return JSON.parse(content);
+      } catch {
+        return { content, token: "" };
+      }
+    }
+    return content;
+  };
+
+  const parsedContent = getParsedContent(article.content);
 
   return (
     <section>
@@ -40,7 +55,13 @@ export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
         </div>
       </div>
       <div className={ARTICLE_DETAIL_STYLES.content}>
-        {article.content}
+        {parsedContent.token && (
+          <>
+            <CopyToken token={parsedContent.token} /> <br />
+          </>
+        )}
+
+        {parsedContent.content}
         {article.image && (
           <span className="relative mt-4 block max-w-[80%]">
             <Image

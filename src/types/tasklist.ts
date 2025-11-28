@@ -4,7 +4,7 @@ import { Task } from "./task";
  * @author luli
  */
 
-type Member = {
+export type Member = {
   userId: number;
   groupId: number;
   userName: string;

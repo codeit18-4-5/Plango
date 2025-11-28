@@ -258,3 +258,26 @@ export function formatSocialCount(value: number): string {
   if (value / 10000 < 10000) return (value / 10000).toFixed(1).replace(/\.0$/, "") + "만";
   return (value / 100000000).toFixed(1).replace(/\.0$/, "") + "억";
 }
+
+/**
+ * 토큰 만료 여부 확인
+ * @param token JWT 토큰 문자열
+ * @return 토큰 만료 여부 (true: 만료, false: 유효)
+ */
+export function isTokenExpire(token: string) {
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split("")
+      .map(c => `%${`00${c.charCodeAt(0).toString(16)}`.slice(-2)}`)
+      .join(""),
+  );
+
+  const parseToken = JSON.parse(jsonPayload);
+
+  const currentDate = new Date();
+  const tokenExpirationDate = new Date(parseToken.exp * 1000);
+
+  return currentDate > tokenExpirationDate;
+}
