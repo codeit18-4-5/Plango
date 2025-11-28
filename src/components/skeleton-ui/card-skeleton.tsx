@@ -39,19 +39,7 @@ export default function CardSkeleton({
           />
         </div>
         <div className={cn(CARD_INFO_STYLES.wrapper({ variant }), "flex")}>
-          <div
-            className={cn(
-              CARD_INFO_STYLES.meta.wrapper({ variant }),
-              "flex flex-col-reverse gap-y-[8px]",
-              variant === "primary" ? "gap-x-[10px] tablet:grid" : "tablet:gap-y-[17px]",
-            )}
-          >
-            <Skeleton
-              circle={true}
-              height={32}
-              width={32}
-              className={CARD_INFO_STYLES.meta.writer({ variant })}
-            />
+          <div className={cn(CARD_INFO_STYLES.meta.wrapper({ variant }))}>
             <Skeleton
               height={14}
               width={72}
