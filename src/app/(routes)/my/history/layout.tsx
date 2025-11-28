@@ -1,5 +1,6 @@
 import getSSRHistory from "@/api/user/get-ssr-history";
 import { Container } from "@/components/layout";
+import { devConsoleError } from "@/lib/error";
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 
 export default async function Layout({ children }: React.PropsWithChildren) {
@@ -11,9 +12,7 @@ export default async function Layout({ children }: React.PropsWithChildren) {
       queryFn: getSSRHistory,
     });
   } catch (error) {
-    if (process.env.NODE_ENV === "development") {
-      console.error(error);
-    }
+    devConsoleError(error);
   }
 
   return (
