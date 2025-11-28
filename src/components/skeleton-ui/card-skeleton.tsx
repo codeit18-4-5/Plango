@@ -38,7 +38,7 @@ export default function CardSkeleton({
             )}
           />
         </div>
-        <div className={cn(CARD_INFO_STYLES.wrapper({ variant }), "grid-cols-[auto_auto]")}>
+        <div className={cn(CARD_INFO_STYLES.wrapper({ variant }), "flex")}>
           <div
             className={cn(
               CARD_INFO_STYLES.meta.wrapper({ variant }),

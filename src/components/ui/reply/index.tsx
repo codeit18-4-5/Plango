@@ -98,7 +98,7 @@ export default function Reply({
           </>
         ) : (
           <>
-            <p className={replyTextarea({ variant })}>{comment.content}</p>
+            <p className={replyTextarea({ variant, isAuthor })}>{comment.content}</p>
             <div className={replyInfo({ variant })}>
               <div className="flex items-center gap-x-3">
                 <Avatar image={comment.user.image} className="h-8 w-8" />
