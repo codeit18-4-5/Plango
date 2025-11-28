@@ -5,6 +5,7 @@ import { Form, Input, Modal } from "@/components/ui";
 import { taskDetailUpdateSchema } from "@/lib/schema";
 import { extractChangedFields } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { Controller, SubmitHandler, useFormContext } from "react-hook-form";
 import z4 from "zod/v4";
 
@@ -15,6 +16,7 @@ interface TaskUpdateProps {
   onClose: () => void;
   onSubmit: (value: z4.infer<ReturnType<typeof taskDetailUpdateSchema>>) => Promise<void>;
   type: FormFieldType;
+  isPending: boolean;
 }
 
 type FormFieldType = "nameOnly" | "nameAndDescription";
@@ -26,10 +28,23 @@ export default function TaskDetailUpdateTemplate({
   onClose,
   onSubmit,
   type,
+  isPending,
 }: TaskUpdateProps) {
-  const handleSubmit: SubmitHandler<z4.infer<ReturnType<typeof taskDetailUpdateSchema>>> = data => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit: SubmitHandler<
+    z4.infer<ReturnType<typeof taskDetailUpdateSchema>>
+  > = async data => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
     const changedFields = extractChangedFields(data, name, description);
-    onSubmit(changedFields);
+
+    try {
+      await onSubmit(changedFields);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const schema =
@@ -47,7 +62,11 @@ export default function TaskDetailUpdateTemplate({
         <Modal.HeaderWithClose title="할 일 수정" />
         <div className={addTaskListStyle}>
           <FormField type={type} />
-          <Modal.FooterWithOnlyConfirm confirmButtonTitle="수정" isSubmit />
+          <Modal.FooterWithOnlyConfirm
+            confirmButtonTitle="수정"
+            isSubmit
+            disabled={isPending || isSubmitting}
+          />
         </div>
       </Form>
     </Modal>

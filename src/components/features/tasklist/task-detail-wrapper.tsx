@@ -232,6 +232,7 @@ export default function TaskDetailWrapper({
               name={recurringData.name}
               description={recurringData.description ?? ""}
               type="nameAndDescription"
+              isPending={updateRecurring.isPending}
             />
           )}
 
@@ -240,6 +241,7 @@ export default function TaskDetailWrapper({
               isOpen={isOpenDeleteSheet}
               onClose={setCloseDeleteSheet}
               onDelete={handleClickDelete}
+              isPending={deleteRecurring.isPending}
             />
           )}
         </>

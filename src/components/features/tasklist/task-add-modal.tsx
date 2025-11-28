@@ -4,6 +4,7 @@ import { addTaskListStyle } from "@/app/(routes)/team/[id]/tasklist/index.styles
 import { Form, Input, Modal } from "@/components/ui";
 import { taskSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { Controller, SubmitHandler, useFormContext } from "react-hook-form";
 import z4 from "zod/v4";
 
@@ -11,11 +12,21 @@ interface TaskAddProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (value: z4.infer<typeof taskSchema>) => Promise<void>;
+  isPending: boolean;
 }
 
-export default function TaskAddTemplate({ isOpen, onClose, onSubmit }: TaskAddProps) {
-  const handleSubmit: SubmitHandler<z4.infer<typeof taskSchema>> = data => {
-    onSubmit(data);
+export default function TaskAddTemplate({ isOpen, onClose, onSubmit, isPending }: TaskAddProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit: SubmitHandler<z4.infer<typeof taskSchema>> = async data => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      await onSubmit(data);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -30,7 +41,11 @@ export default function TaskAddTemplate({ isOpen, onClose, onSubmit }: TaskAddPr
         <Modal.HeaderWithClose title="새로운 목록 추가" />
         <div className={addTaskListStyle}>
           <FormField />
-          <Modal.FooterWithOnlyConfirm confirmButtonTitle="만들기" isSubmit />
+          <Modal.FooterWithOnlyConfirm
+            confirmButtonTitle="만들기"
+            isSubmit
+            disabled={isPending || isSubmitting}
+          />
         </div>
       </Form>
     </Modal>

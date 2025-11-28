@@ -14,24 +14,38 @@ import { zodResolver } from "@hookform/resolvers/zod";
 interface TaskRecurringProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (value: z4.infer<typeof taskDetailSchema>) => void;
+  isPending: boolean;
+  onSubmit: (value: z4.infer<typeof taskDetailSchema>) => Promise<void>;
 }
 
-export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: TaskRecurringProps) {
+export default function TaskRecurringAddModal({
+  isOpen,
+  onClose,
+  isPending,
+  onSubmit,
+}: TaskRecurringProps) {
   const [dayIndexArray, setDayIndexArray] = useState<number[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit: SubmitHandler<z4.infer<typeof taskDetailSchema>> = submitData => {
-    const { weekDays, ...rest } = submitData;
+  const handleSubmit: SubmitHandler<z4.infer<typeof taskDetailSchema>> = async submitData => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
-    const transformedData = {
-      ...rest,
-      description: rest.description || "",
-      ...(rest.frequencyType === FrequencyType.Monthly && {
-        monthDay: new Date(rest.startDate).getDate(),
-      }),
-      ...(rest.frequencyType === FrequencyType.Weekly && { weekDays: weekDays }),
-    };
-    onSubmit(transformedData);
+    try {
+      const { weekDays, ...rest } = submitData;
+
+      const transformedData = {
+        ...rest,
+        description: rest.description || "",
+        ...(rest.frequencyType === FrequencyType.Monthly && {
+          monthDay: new Date(rest.startDate).getDate(),
+        }),
+        ...(rest.frequencyType === FrequencyType.Weekly && { weekDays: weekDays }),
+      };
+      await onSubmit(transformedData);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const defaultValues = {
@@ -52,7 +66,11 @@ export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: Tas
       >
         <Modal.HeaderWithClose title="할 일 만들기" />
         <FormField dayIndexArray={dayIndexArray} setDayIndexArray={setDayIndexArray} />
-        <Modal.FooterWithOnlyConfirm confirmButtonTitle="만들기" isSubmit />
+        <Modal.FooterWithOnlyConfirm
+          confirmButtonTitle="만들기"
+          isSubmit
+          disabled={isPending || isSubmitting}
+        />
       </Form>
     </Modal>
   );

@@ -306,6 +306,7 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
         <TaskRecurringAddModal
           isOpen={isOpenRecurring}
           onClose={setCloseRecurring}
+          isPending={createRecurring.isPending}
           onSubmit={handleTaskRecurringSubmit}
         />
       )}

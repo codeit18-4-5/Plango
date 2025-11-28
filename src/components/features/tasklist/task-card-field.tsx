@@ -281,6 +281,7 @@ export default function TaskCardField({
           onSubmit={handleTaskUpdateSubmit}
           name={taskListData?.tasks.find(task => task.id === selectedTaskId)?.name ?? ""}
           type="nameOnly"
+          isPending={updateRecurring.isPending}
         />
       )}
 
@@ -289,6 +290,7 @@ export default function TaskCardField({
           isOpen={isOpenDeleteSheet}
           onClose={setCloseDeleteSheet}
           onDelete={handleClickDelete}
+          isPending={deleteRecurring.isPending}
         />
       )}
     </>

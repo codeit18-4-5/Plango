@@ -8,14 +8,23 @@ import { useState } from "react";
 interface TaskDeleteProps {
   isOpen: boolean;
   onClose: () => void;
-  onDelete: (type: DeleteType) => void;
+  onDelete: (type: DeleteType) => Promise<void>;
+  isPending: boolean;
 }
 
-export default function TaskDeleteSheet({ isOpen, onClose, onDelete }: TaskDeleteProps) {
+export default function TaskDeleteSheet({ isOpen, onClose, onDelete, isPending }: TaskDeleteProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [deleteType, setDeleteType] = useState<DeleteType>("One");
 
-  const handleSubmit = () => {
-    onDelete(deleteType);
+  const handleSubmit = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      await onDelete(deleteType);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -60,7 +69,11 @@ export default function TaskDeleteSheet({ isOpen, onClose, onDelete }: TaskDelet
           </Input>
         </div>
       </Modal.Body>
-      <Modal.FooterWithButtons confirmButtonTitle="확인" onConfirm={handleSubmit} />
+      <Modal.FooterWithButtons
+        confirmButtonTitle="확인"
+        onConfirm={handleSubmit}
+        disabled={isPending || isSubmitting}
+      />
     </Modal>
   );
 }
