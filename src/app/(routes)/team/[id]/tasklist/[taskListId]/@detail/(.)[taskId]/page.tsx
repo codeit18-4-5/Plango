@@ -1,6 +1,6 @@
 import TaskDetailWrapper from "@/components/features/tasklist/task-detail-wrapper";
 
-export default async function TaskDetailPage({
+export default async function TaskDetailModal({
   params,
 }: {
   params: Promise<{ taskId: string; id: string }>;
