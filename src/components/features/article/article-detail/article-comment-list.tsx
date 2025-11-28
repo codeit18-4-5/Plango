@@ -51,6 +51,7 @@ export default function ArticleCommentList({
         {comments.map((comment: ArticleComment) => {
           const replyComment = {
             ...comment,
+            content: comment.content.replace(/\n{2,}/g, "\n"),
             user: {
               ...comment.writer,
               image: comment.writer.image ?? null,

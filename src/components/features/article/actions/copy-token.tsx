@@ -1,9 +1,9 @@
 "use client";
 
-import cn from "@/lib/cn";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
+import { useToast } from "@/providers/toast-provider";
 import { ArticleConfirmModal } from "@/components/features/article/layout";
 import { Button } from "@/components/ui";
 import { isTokenExpire } from "@/lib/utils";
@@ -15,12 +15,9 @@ export default function CopyToken({ token }: { token: string }) {
   const user = useAuthStore(state => state.user);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const { showToast } = useToast();
 
   const handleInputClick = useCallback(() => {
-    if (isExpired) {
-      // TODO: 만료 토스트 추가 예정
-      return;
-    }
     if (!user) {
       setShowLoginModal(true);
       return;
@@ -28,12 +25,12 @@ export default function CopyToken({ token }: { token: string }) {
     setShowJoinModal(true);
   }, [isExpired, user]);
 
-  // TODO: 복사 토스트 추가 예정
   const handleCopy = useCallback(() => {
     if (!isExpired) {
       navigator.clipboard.writeText(token ?? "");
+      showToast("토큰이 복사되었습니다.", "success");
     }
-  }, [token, isExpired]);
+  }, [token, isExpired, showToast]);
 
   const handleJoin = useCallback(() => {
     sessionStorage.setItem("joinToken", token);
@@ -53,7 +50,7 @@ export default function CopyToken({ token }: { token: string }) {
       </p>
       <Button
         type="button"
-        className={cn(ARTICLE_FORM_STYLES.form.field.copyToken)}
+        className={ARTICLE_FORM_STYLES.form.field.copyToken}
         onClick={() => {
           handleInputClick();
           handleCopy();

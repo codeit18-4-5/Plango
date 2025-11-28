@@ -12,10 +12,13 @@ import { ArticleComments } from "@/types/article-comment";
 import { useInfiniteObserver } from "@/hooks";
 import useArticleDetail from "@/hooks/article/use-article-detail";
 import { useAlert } from "@/providers/alert-provider";
+import { useToast } from "@/providers/toast-provider";
 import { ReplyInput } from "@/components/ui";
 import { ArticleConfirmModal } from "../layout";
 import { ARTICLE_COMMENT_STYLES } from "../index.styles";
 import { NEXT_CURSOR } from "./article-comment-list";
+
+const singleLineBreaks = (str: string) => str.replace(/\n{2,}/g, "\n");
 
 export default function ArticleCommentSection({ articleId }: { articleId: number }) {
   const queryClient = useQueryClient();
@@ -26,6 +29,7 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [comment, setComment] = useState("");
   const { showAlert } = useAlert();
+  const { showToast } = useToast();
 
   const { data: article } = useArticleDetail(articleId);
 
@@ -78,16 +82,49 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
   const { mutate: updateComment } = useMutation({
     mutationFn: ({ commentId, content }: { commentId: number; content: string }) =>
       patchArticleComment(commentId, { content }),
-    onMutate: ({ commentId }) => {
-      const target = comments.find(current => current.id === commentId);
-      prevContentRef.current = target ? target.content : null;
+    onMutate: async ({ commentId, content }) => {
+      await queryClient.cancelQueries({ queryKey: ["getArticleComments", articleId] });
+      const previousData = queryClient.getQueryData(["getArticleComments", articleId]);
+      queryClient.setQueryData(
+        ["getArticleComments", articleId],
+        (oldData?: InfiniteData<ArticleComments>) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map(page => ({
+              ...page,
+              list: page.list.map(comment =>
+                comment.id === commentId
+                  ? { ...comment, content: singleLineBreaks(content) }
+                  : comment,
+              ),
+            })),
+          };
+        },
+      );
+      return { previousData };
     },
-    onSuccess: invalidateAllQueries,
+    onSuccess: () => {
+      invalidateAllQueries();
+      showToast("댓글이 수정되었습니다.", "success");
+    },
+    onError: (err, variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(["getArticleComments", articleId], context.previousData);
+      }
+      showToast("댓글 수정에 실패했습니다.", "error");
+    },
   });
 
   const { mutate: removeComment } = useMutation({
     mutationFn: ({ commentId }: { commentId: number }) => deleteArticleComment({ commentId }),
-    onSuccess: invalidateAllQueries,
+    onSuccess: () => {
+      invalidateAllQueries();
+      showToast("댓글이 삭제되었습니다.", "success");
+    },
+    onError: () => {
+      showToast("댓글 삭제에 실패했습니다.", "error");
+    },
   });
 
   useEffect(() => {
@@ -106,13 +143,17 @@ export default function ArticleCommentSection({ articleId }: { articleId: number
 
   function handleAddComment(e: React.FormEvent) {
     e.preventDefault();
-    if (!comment.trim()) return;
-    createComment({ content: comment });
+    const normalized = singleLineBreaks(comment).trim();
+    if (!normalized) return;
+    createComment({ content: normalized });
   }
 
   const handleEditSave = useCallback(
     (commentId: number, updatedContent: string) => {
-      updateComment({ commentId, content: updatedContent });
+      const normalized = singleLineBreaks(updatedContent).trim();
+      if (!normalized) return;
+      updateComment({ commentId, content: normalized });
+      setEditingId(null);
     },
     [updateComment],
   );

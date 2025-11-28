@@ -8,6 +8,7 @@ import { ArticleDetail } from "@/types/article";
 import { useAlert } from "@/providers/alert-provider";
 import { Dropdown } from "@/components/ui";
 import IcKebab from "@/assets/icons/ic-kebab.svg";
+import { useToast } from "@/providers/toast-provider";
 
 export default function KebabMenu({
   article,
@@ -20,12 +21,17 @@ export default function KebabMenu({
   const queryClient = useQueryClient();
   const currentUser = useAuthStore(state => state.user);
   const { showAlert } = useAlert();
+  const { showToast } = useToast();
 
   const { mutate: deleteArticleMutate } = useMutation({
     mutationFn: () => deleteArticle({ articleId: article.id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getArticles"] });
-      router.replace("/article");
+      sessionStorage.setItem("articleDeleteToast", "게시글이 삭제되었습니다.");
+      router.replace("/(board)/article");
+    },
+    onError: () => {
+      showToast("게시글 삭제에 실패했습니다.", "error");
     },
   });
 
