@@ -261,8 +261,9 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 input[type="radio"] {
-  display: none;
+  display: inline-block;
   cursor: pointer;
+  accent-color: var(--pink-400);
 }
 
 svg {
