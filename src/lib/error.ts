@@ -39,7 +39,7 @@ export const signUpErrorHandler = <T extends FieldValues>(
  * 로그인 실패시 서버 에러 처리
  * @author sohyun
  */
-export const loginErrorHandler: ServerErrorHandler<SignInSchema> = (error, setError) => {
+export const signInErrorHandler: ServerErrorHandler<SignInSchema> = (error, setError) => {
   if (!isAxiosError(error)) return;
   setError("email", { message: "이메일 혹은 비밀번호를 확인해주세요." });
   setError("password", { message: "이메일 혹은 비밀번호를 확인해주세요." });

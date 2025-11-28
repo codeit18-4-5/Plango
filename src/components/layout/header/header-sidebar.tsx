@@ -4,13 +4,11 @@ import Link from "next/link";
 import IcCancel from "@/assets/icons/ic-cancel.svg";
 import IcBoard from "@/assets/icons/ic-board.svg";
 import Logo from "@/assets/icons/ic-logo.svg";
-import IcKebab from "@/assets/icons/ic-kebab.svg";
 import { Avatar } from "@/components/ui";
-import { Dropdown } from "@/components/ui";
 import { DropdownOption } from "@/types/option";
 
 interface sidebarProps {
-  groups: DropdownOption[];
+  groups: DropdownOption[] | null;
   onClick: (open: boolean) => void;
 }
 
@@ -28,31 +26,19 @@ export function HeaderSidebar({ groups, onClick }: sidebarProps) {
           <div className="pt-[24px]">
             {groups &&
               groups.map(group => (
-                <Link href="/" key={group.id} className="block pb-[24px]">
-                  <div className="flex justify-between">
+                <div className="rounded-xl px-1 py-3 hover:bg-gray-700" key={group.id}>
+                  <Link href={`/team/${group.id}`}>
                     <div className="flex items-center">
-                      <Avatar image={group.image} shape="square" className="mr-1 w-[24px]" />
+                      <Avatar image={group.image} shape="square" className="mr-1 h-8 w-8" />
                       <span className="inline-block">{group.name}</span>
                     </div>
-                    <div>
-                      <Dropdown>
-                        <Dropdown.TriggerIcon intent="icon">
-                          <IcKebab className="w-[24px]" />
-                        </Dropdown.TriggerIcon>
-                        <Dropdown.Menu size="md">
-                          <Dropdown.Option align="center" size="sm">
-                            수정하기
-                          </Dropdown.Option>
-                          <Dropdown.Option align="center" size="sm">
-                            삭제하기
-                          </Dropdown.Option>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </div>
-                  </div>
-                </Link>
+                  </Link>
+                </div>
               ))}
-            <Link href="/" className="flex items-center">
+            <Link
+              href="/article"
+              className="flex items-center rounded-xl px-1 py-3 hover:bg-gray-700"
+            >
               <IcBoard className="mr-1 inline-block w-[24px]" /> 자유게시판
             </Link>
           </div>

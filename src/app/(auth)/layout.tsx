@@ -10,9 +10,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <Header isLoginPage={true} />
       <Container
         as="main"
-        className="flex min-h-dvh max-w-[460px] flex-col pb-6 tablet:justify-center desktop:pb-10"
+        className="full-scroll-h flex max-w-[460px] flex-col pb-10 tablet:justify-center desktop:pb-20"
       >
-        <div>{children}</div>
+        {children}
         {authError && <AuthErrorModal message={authError} onClose={() => setAuthError(null)} />}
       </Container>
     </>
