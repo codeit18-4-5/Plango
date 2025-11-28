@@ -299,7 +299,12 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
       </Container>
 
       {isOpenTask && (
-        <TaskAddTemplate isOpen={isOpenTask} onClose={setCloseTask} onSubmit={handleTaskSubmit} />
+        <TaskAddTemplate
+          isOpen={isOpenTask}
+          onClose={setCloseTask}
+          onSubmit={handleTaskSubmit}
+          isPending={createTaskList.isPending}
+        />
       )}
 
       {isOpenRecurring && (
