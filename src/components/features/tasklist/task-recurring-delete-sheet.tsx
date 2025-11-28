@@ -31,38 +31,42 @@ export default function TaskDeleteSheet({ isOpen, onClose, onDelete, isPending }
     <Modal isOpen={isOpen} onClose={onClose}>
       <Modal.HeaderWithClose title="할 일 삭제" />
       <Modal.Body>
-        <div className="px-[35px]">
-          <div className="mb-[10px] w-full text-center">
-            <span className="text-body-s text-gray-300">
-              '반복일정 모두 삭제' 선택 시<br /> 해당 반복일정이 전부 삭제됩니다.
-            </span>
-            <br />
-            <span className="text-body-m text-pink-500">삭제 된 할 일은 복구 할 수 없습니다.</span>
-          </div>
+        <div className="mb-[10px] w-full text-center">
+          <span className="text-body-s text-gray-300">
+            '반복일정 모두 삭제' 선택 시<br /> 해당 반복일정이 전부 삭제됩니다.
+          </span>
+          <br />
+          <span className="text-body-m text-pink-500">삭제 된 할 일은 복구 할 수 없습니다.</span>
+        </div>
+        <div className="ml-[50px]">
           <Input>
             <Input.Label
               className={cn(deleteType === "One" && "text-pink-400", "mb-[5px] text-body-m")}
             >
-              <input
+              <Input.Field
                 type="radio"
                 name="delete"
                 value="One"
                 checked={deleteType === "One"}
-                onChange={e => setDeleteType(e.target.value as DeleteType)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setDeleteType(e.target.value as DeleteType)
+                }
                 style={{ display: "inline-block", accentColor: "var(--pink-400)" }}
-                className="mr-[5px]"
+                className="mr-[5px] w-[25px]"
               />
               현재 할 일 삭제
             </Input.Label>
             <Input.Label className={cn(deleteType === "All" && "text-pink-400", "text-body-m")}>
-              <input
+              <Input.Field
                 type="radio"
                 name="delete"
                 value="All"
                 checked={deleteType === "All"}
-                onChange={e => setDeleteType(e.target.value as DeleteType)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setDeleteType(e.target.value as DeleteType)
+                }
                 style={{ display: "inline-block", accentColor: "var(--pink-400)" }}
-                className="mr-[5px]"
+                className="mr-[5px] w-[25px]"
               />
               반복일정 모두 삭제
             </Input.Label>
