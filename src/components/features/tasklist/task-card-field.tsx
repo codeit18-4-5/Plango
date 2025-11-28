@@ -17,6 +17,7 @@ import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListI
 import TaskDeleteSheet from "./task-recurring-delete-sheet";
 import { DeleteType } from "@/types/task";
 import { useToast } from "@/providers/toast-provider";
+import useModalStore from "@/store/modal.store";
 
 interface TaskListPageProps {
   groupData: GroupTaskList;
@@ -40,6 +41,7 @@ export default function TaskCardField({
 
   if (groupId == null) notFound();
 
+  const { openModal: openDetailModal, closeModal: closeDetailModal } = useModalStore();
   const {
     isOpen: isOpenUpdateTaskDetail,
     setOpen: setOpenUpdateTaskDetail,
@@ -87,7 +89,7 @@ export default function TaskCardField({
     const dateParam = searchParams.get("date");
     params.set("date", dateParam ? dateParam : "");
 
-    sessionStorage.setItem("openDetailModal", "true");
+    openDetailModal();
     router.push(`/team/${groupId}/tasklist/${activeTab}/${id}?${params.toString()}`);
   };
 
@@ -160,7 +162,7 @@ export default function TaskCardField({
               setCloseDeleteSheet();
 
               if (taskId && Number(taskId) === selectedTaskId) {
-                sessionStorage.setItem("closeDetailModal", "true");
+                closeDetailModal();
 
                 const params = new URLSearchParams(searchParams.toString());
                 const dateParam = searchParams.get("date");
@@ -194,7 +196,7 @@ export default function TaskCardField({
               setCloseDeleteSheet();
 
               if (taskId && Number(taskId) === selectedTaskId) {
-                sessionStorage.setItem("closeDetailModal", "true");
+                closeDetailModal();
                 router.push(`/team/${groupId}/tasklist`);
               }
               router.refresh();
@@ -221,7 +223,7 @@ export default function TaskCardField({
 
   // 탭이동시 상세보기 화면 닫기
   useEffect(() => {
-    sessionStorage.setItem("closeDetailModal", "true");
+    closeDetailModal();
   }, [activeTab, router]);
 
   if (!activeTab || isEmpty(taskListData)) return null;

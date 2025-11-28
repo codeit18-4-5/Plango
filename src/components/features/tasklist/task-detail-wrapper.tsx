@@ -17,6 +17,7 @@ import { Button, Floating } from "@/components/ui";
 import CheckIcon from "@/assets/icons/ic-check.svg";
 import CheckColorIcon from "@/assets/icons/ic-check-color.svg";
 import { useToast } from "@/providers/toast-provider";
+import useModalStore from "@/store/modal.store";
 
 export default function TaskDetailWrapper({
   taskId,
@@ -31,6 +32,7 @@ export default function TaskDetailWrapper({
 
   if (taskListIdParam == null) notFound();
 
+  const { closeModal: closeDetailModal } = useModalStore();
   const {
     isOpen: isOpenUpdateTaskDetail,
     setOpen: setOpenUpdateTaskDetail,
@@ -76,7 +78,7 @@ export default function TaskDetailWrapper({
   };
 
   const handleCloseButton = () => {
-    sessionStorage.setItem("closeDetailModal", "true");
+    closeDetailModal();
     const params = new URLSearchParams(searchParams.toString());
     const dateParam = searchParams.get("date");
     params.set("date", dateParam ? dateParam : "");
@@ -133,7 +135,7 @@ export default function TaskDetailWrapper({
               showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
 
-              sessionStorage.setItem("closeDetailModal", "true");
+              closeDetailModal();
               router.push(`/team/${groupId}/tasklist`);
             },
             onError: () => {
@@ -160,7 +162,7 @@ export default function TaskDetailWrapper({
               showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
 
-              sessionStorage.setItem("closeDetailModal", "true");
+              closeDetailModal();
               router.push(`/team/${groupId}/tasklist`);
             },
             onError: () => {
