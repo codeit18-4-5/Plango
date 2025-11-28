@@ -10,7 +10,7 @@ import { formatDateForToMonthAndDays, formatDateToISOString, isEmpty } from "@/l
 import { Button, Floating, SingleDatepicker } from "@/components/ui";
 import { useToggle } from "@/hooks";
 import TaskAddTemplate from "@/components/features/tasklist/task-add-modal";
-import TaskRecurringAddModal from "@/components/features/tasklist/task-recurring-add-modal";
+import TaskRecurringAddModal from "@/components/features/tasklist/task-recurring/task-recurring-add-modal";
 import { useEffect, useRef, useState } from "react";
 import { useAlert } from "@/providers/alert-provider";
 import { GroupTaskList } from "@/types/tasklist";
