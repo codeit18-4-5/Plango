@@ -132,6 +132,8 @@ export const taskSchema = z
     { error: "반복 날짜는 1~31일 사이로 선택하여야 합니다.", path: ["frequencyType"] },
   );
 
+const jwtRegex = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/;
+
 export const articleFormSchema = z.object({
   title: z
     .string()
@@ -139,12 +141,15 @@ export const articleFormSchema = z.object({
     .min(1, "제목을 입력해주세요.")
     .max(200, "제목은 최대 200자까지 가능합니다.")
     .transform(val => val.replace(/\s+/g, " ")),
-  content: z
-    .string()
-    .trim()
-    .min(1, "내용을 입력해주세요.")
-    .max(500, "내용은 최대 500자까지 가능합니다.")
-    .transform(val => val.replace(/ +/g, " ")),
+  content: z.object({
+    content: z
+      .string()
+      .trim()
+      .min(1, "내용을 입력해주세요.")
+      .max(500, "내용은 최대 500자까지 가능합니다.")
+      .transform(val => val.replace(/ +/g, " ")),
+    token: z.string().regex(jwtRegex, "유효한 토큰 형식이어야 합니다.").optional(),
+  }),
   image: z.string().optional(),
 });
 

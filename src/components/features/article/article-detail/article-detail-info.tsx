@@ -9,8 +9,10 @@ import Link from "next/link";
 import { useAuthStore } from "@/store/auth.store";
 import { getTimeAgo, formatDateToFullStr, clampText, formatSocialCount } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
+import { ArticleContent } from "@/types/article";
 import { Button } from "@/components/ui";
 import KebabMenu from "@/components/features/article/actions/kebab-menu";
+import CopyToken from "@/components/features/article/actions/copy-token";
 import { ARTICLE_DETAIL_STYLES } from "../index.styles";
 import IcComment from "@/assets/icons/ic-comment.svg";
 import IcHeart from "@/assets/icons/ic-heart.svg";
@@ -37,6 +39,19 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
   });
 
   if (isError || !article) return null;
+
+  const getParsedContent = (content: string | ArticleContent) => {
+    if (typeof content === "string") {
+      try {
+        return JSON.parse(content);
+      } catch {
+        return { content, token: "" };
+      }
+    }
+    return content;
+  };
+
+  const parsedContent = getParsedContent(article.content);
 
   const DATE_TIME = article.createdAt;
 
@@ -89,7 +104,13 @@ export default function ArticleDetailInfo({ articleId }: { articleId: number }) 
         </div>
       </div>
       <div className={ARTICLE_DETAIL_STYLES.content}>
-        {article.content}
+        {parsedContent.token && (
+          <>
+            <CopyToken token={parsedContent.token} /> <br />
+          </>
+        )}
+
+        {parsedContent.content}
         {article.image && (
           <span className="relative mt-4 block max-w-[80%]">
             <Image

@@ -4,7 +4,7 @@ const LAYOUT_GAP = "grid gap-y-[24px] tablet:gap-y-[32px] desktop:gap-y-[40px]";
 
 export const ARTICLE_COMMON_STYLES = {
   main: {
-    wrapper: cn(LAYOUT_GAP, "pb-[50px] tablet:pb-[67px] desktop:pb-[117px]"),
+    wrapper: cn(LAYOUT_GAP, "pb-[110px] tablet:pb-[117px]"),
     title: "text-heading-m text-gray-100",
   },
   section: {
@@ -77,6 +77,10 @@ export const ARTICLE_FORM_STYLES = {
     wrapper: LAYOUT_GAP,
     field: {
       textarea: "h-[240px]",
+      copyToken: cn(
+        "text-ellipsis underline duration-200",
+        "hover:border-gray-600 focus:border-gray-600 active:border-gray-600",
+      ),
     },
   },
 };
