@@ -1,5 +1,5 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
-import getArticleDetail from "@/api/article/get-article-detail";
+import getArticleDetailSSR from "@/api/article/get-article-detail-ssr";
 import { notFound } from "next/navigation";
 import { AxiosError } from "axios";
 import { Container } from "@/components/layout";
@@ -19,7 +19,7 @@ export default async function ArticleDetailPage({
   const articleIdNum = Number(articleId);
   const queryClient = new QueryClient();
 
-  const article = await getArticleDetail({ articleId: articleIdNum }).catch(e => {
+  const article = await getArticleDetailSSR({ articleId: articleIdNum }).catch(e => {
     if (e instanceof AxiosError && e.response?.status === 404) notFound();
     throw e;
   });
