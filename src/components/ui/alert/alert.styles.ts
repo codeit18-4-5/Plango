@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const alertOverlayStyle = [
-  "fixed inset-0 z-[9000] flex items-center justify-center",
+  "fixed inset-0 flex items-center justify-center z-[9000] ",
   "custom-dialog-backdrop bg-transparent overflow-hidden",
   "rounded-t-xl",
 ].join(" ");
@@ -9,7 +9,7 @@ export const alertOverlayStyle = [
 export const alertContainerStyle = [
   "flex flex-col bg-gray-800 px-4 pb-8 pt-4 text-center items-center rounded-t-xl h-auto w-[100vw] max-w-[384px]",
   "p-0 tablet:px-4 tablet:pb-8 tablet:pt-4",
-  "absolute bottom-0 mobile:relative mobile:bottom-auto mobile:rounded-bl-0 mobile:rounded-b-xl",
+  "fixed bottom-0 mobile:relative mobile:bottom-auto mobile:rounded-bl-0 mobile:rounded-b-xl",
 ].join(" ");
 
 export const alertIcon = "mt-[24px] w-[24px] h-[24px]";
