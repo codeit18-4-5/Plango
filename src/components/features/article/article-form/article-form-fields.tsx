@@ -1,3 +1,4 @@
+"use client";
 import cn from "@/lib/cn";
 import { useFormContext, Controller } from "react-hook-form";
 import { ArticleFormSchema } from "@/lib/schema";
