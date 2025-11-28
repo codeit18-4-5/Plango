@@ -20,10 +20,10 @@ const title = "로그인";
 export default function Page() {
   const authSuccess = useAuthSuccess();
   const { isOpen, setOpen, setClose } = useToggle();
-  const { mutate, isPending } = useSignInMutation(authSuccess);
+  const { mutateAsync, isPending } = useSignInMutation(authSuccess);
 
   const handleSubmit = async (data: SignInSchema) => {
-    mutate(data);
+    await mutateAsync(data);
   };
 
   return (
