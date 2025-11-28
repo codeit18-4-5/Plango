@@ -1,15 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { getTimeAgo, formatDateToFullStr } from "@/lib/utils";
-import { ArticleContent } from "@/types/article";
+import { ArticleContent, ArticleDetail } from "@/types/article";
 import { Button } from "@/components/ui";
 import ArticleMetaCounts from "@/components/features/article/article-detail/article-meta-counts";
 import ArticleLike from "@/components/features/article/actions/article-like";
 import KebabMenu from "@/components/features/article/actions/kebab-menu";
 import CopyToken from "@/components/features/article/actions/copy-token";
 import { ARTICLE_DETAIL_STYLES } from "../index.styles";
-
-import { ArticleDetail } from "@/types/article";
 
 type ArticleDetailInfoProps = { article: ArticleDetail };
 
