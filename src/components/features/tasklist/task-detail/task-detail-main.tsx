@@ -81,29 +81,25 @@ export default function TaskDetailMain({
         return;
       }
 
-      try {
-        updateComment.mutate(
-          {
-            groupId: Number(groupId),
-            taskListId: Number(taskListId),
-            dateString: dateString,
-            taskId: taskDetail.id,
-            commentId: commentId,
-            comment: comment,
+      updateComment.mutate(
+        {
+          groupId: Number(groupId),
+          taskListId: Number(taskListId),
+          dateString: dateString,
+          taskId: taskDetail.id,
+          commentId: commentId,
+          comment: comment,
+        },
+        {
+          onSuccess: () => {
+            showToast("댓글이 수정 되었습니다.", "success");
+            onSuccess();
           },
-          {
-            onSuccess: () => {
-              showToast("댓글이 수정 되었습니다.", "success");
-              onSuccess();
-            },
-            onError: () => {
-              showToast("댓글 수정에 실패하였습니다.", "error");
-            },
+          onError: () => {
+            showToast("댓글 수정에 실패하였습니다.", "error");
           },
-        );
-      } catch (e) {
-        console.error(e);
-      }
+        },
+      );
     };
 
   const handleCommentDeleteClick = async (commentId: number) => {
