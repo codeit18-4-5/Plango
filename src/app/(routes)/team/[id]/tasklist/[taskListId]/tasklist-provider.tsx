@@ -46,7 +46,6 @@ export default function TaskListProvider({
       if (isTeam) {
         return true;
       } else {
-        console.error("팀 권한 없음");
         await showAlert("팀 권한이 없습니다.");
         return false;
       }

@@ -1,6 +1,6 @@
 import TaskListProvider from "./tasklist-provider";
 import LayoutContent from "./layout-content";
-import { formatDateToISOString } from "@/lib/utils";
+import { formatDateToISOString, setDateTime } from "@/lib/utils";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,8 +12,7 @@ export default async function TasklistLayout({ children, detail, params }: Layou
   const { id } = await params;
   const groupId = Number(id);
 
-  const currentDate = new Date();
-  currentDate.setHours(10, 0, 0, 0);
+  const currentDate = setDateTime(new Date());
   const formattedDate = formatDateToISOString(currentDate);
 
   return (

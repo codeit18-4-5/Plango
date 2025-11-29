@@ -1,7 +1,7 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import TaskListClient from "./tasklist-client";
 import { isEmpty } from "@/lib/utils";
-import { redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { getGroupTaskListsforServer } from "@/api/tasklist/index-server";
 
 export default async function TasklistPage({
@@ -12,7 +12,7 @@ export default async function TasklistPage({
   const { id, taskListId } = await params;
 
   if (isEmpty(id) || isEmpty(taskListId)) {
-    redirect("/");
+    notFound();
   }
 
   const groupId = Number(id);

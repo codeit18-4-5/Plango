@@ -4,14 +4,14 @@ import { Container } from "@/components/layout";
 import { useRecurring, useRecurringMutation, useTaskComments } from "@/hooks/taskList/use-tasklist";
 import { notFound, useParams, useRouter, useSearchParams } from "next/navigation";
 import TaskDetailMain from "./task-detail-main";
-import { KebabType } from "./task";
+import { KebabType } from "../task";
 import { useToggle } from "@/hooks";
-import TaskDetailUpdateTemplate from "./task-recurring-update-modal";
+import TaskDetailUpdateTemplate from "../task-recurring/task-recurring-update-modal";
 import z4 from "zod/v4";
 import { taskDetailUpdateSchema } from "@/lib/schema";
 import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
 import { useAlert } from "@/providers/alert-provider";
-import TaskDeleteSheet from "./task-recurring-delete-sheet";
+import TaskDeleteSheet from "../task-recurring/task-recurring-delete-sheet";
 import { DeleteType } from "@/types/task";
 import { Button, Floating } from "@/components/ui";
 import CheckIcon from "@/assets/icons/ic-check.svg";
@@ -174,7 +174,7 @@ export default function TaskDetailWrapper({
     }
   };
 
-  const hanelDoneButtonClick = (doneAt: string | null) => {
+  const handleDoneButtonClick = (doneAt: string | null) => {
     const done = doneAt ? false : true;
     updateRecurringDoneAt.mutate(
       {
@@ -185,7 +185,6 @@ export default function TaskDetailWrapper({
         done: done,
       },
       {
-        onSuccess: () => {},
         onError: () => {
           showToast("등록 중 오류가 발생했습니다.", "error");
         },
@@ -215,7 +214,7 @@ export default function TaskDetailWrapper({
             <Button
               shape="round"
               intent={recurringData.doneAt ? "secondary" : "primary"}
-              onClick={() => hanelDoneButtonClick(recurringData.doneAt)}
+              onClick={() => handleDoneButtonClick(recurringData.doneAt)}
             >
               <div className="w-[16px]">
                 {recurringData.doneAt ? <CheckColorIcon /> : <CheckIcon />}

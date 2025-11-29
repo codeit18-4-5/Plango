@@ -6,7 +6,7 @@ import { Controller, SubmitHandler, useFormContext } from "react-hook-form";
 import IcDropdown from "@/assets/icons/ic-dropdown.svg";
 import { FrequencyOptions, FrequencyType } from "@/types/date-format-type";
 import CustomSingleDatepicker from "@/components/ui/date-timepicker/single-datepicker";
-import DailyFrequencyOptions from "./daily-frequency-options";
+import DailyFrequencyOptions from "../daily-frequency-options";
 import z4 from "zod/v4";
 import { taskDetailSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";

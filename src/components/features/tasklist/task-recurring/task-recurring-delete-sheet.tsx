@@ -30,7 +30,7 @@ export default function TaskDeleteSheet({ isOpen, onClose, onDelete, isPending }
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <Modal.HeaderWithClose title="할 일 삭제" />
-      <Modal.Body>
+      <Modal.Body className="pb-[10px]">
         <div className="mb-[10px] w-full text-center">
           <span className="text-body-s text-gray-300">
             '반복일정 모두 삭제' 선택 시<br /> 해당 반복일정이 전부 삭제됩니다.
@@ -51,7 +51,6 @@ export default function TaskDeleteSheet({ isOpen, onClose, onDelete, isPending }
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setDeleteType(e.target.value as DeleteType)
                 }
-                style={{ display: "inline-block", accentColor: "var(--pink-400)" }}
                 className="mr-[5px] w-[25px]"
               />
               현재 할 일 삭제
@@ -65,7 +64,6 @@ export default function TaskDeleteSheet({ isOpen, onClose, onDelete, isPending }
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setDeleteType(e.target.value as DeleteType)
                 }
-                style={{ display: "inline-block", accentColor: "var(--pink-400)" }}
                 className="mr-[5px] w-[25px]"
               />
               반복일정 모두 삭제

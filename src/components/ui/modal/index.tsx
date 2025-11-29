@@ -13,6 +13,7 @@ import { createContext, ReactNode, useContext, useEffect, useRef } from "react";
 import CloseIcon from "@/assets/icons/ic-cancel.svg";
 import { Container as ModalLayoutContainer } from "@/components/layout";
 import { createPortal } from "react-dom";
+import cn from "@/lib/cn";
 
 interface ModalContextType {
   onClose: () => void;
@@ -20,6 +21,7 @@ interface ModalContextType {
 
 interface ModalBodyProps {
   children: ReactNode;
+  className?: string;
 }
 
 interface ModalProps extends ModalContextType, ModalBodyProps {
@@ -57,8 +59,8 @@ const HeaderWithClose = ({ title }: { title: string }) => {
   );
 };
 
-const Body = ({ children }: ModalBodyProps) => {
-  return <div className={bodyStyle}>{children}</div>;
+const Body = ({ children, className }: ModalBodyProps) => {
+  return <div className={cn(bodyStyle, className)}>{children}</div>;
 };
 
 const FooterWithOnlyConfirm = ({
@@ -102,7 +104,7 @@ const FooterWithButtons = ({
   const { onClose } = useModalContext();
 
   return (
-    <div className="flex justify-center gap-[8px]">
+    <div className="mb-[24px] flex justify-center gap-[8px]">
       <Button className="w-[136px]" intent="secondary" onClick={onClose}>
         닫기
       </Button>

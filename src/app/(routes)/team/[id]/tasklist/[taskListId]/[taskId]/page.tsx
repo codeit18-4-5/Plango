@@ -1,4 +1,4 @@
-import TaskDetailWrapper from "@/components/features/tasklist/task-detail-wrapper";
+import TaskDetailWrapper from "@/components/features/tasklist/task-detail/task-detail-wrapper";
 
 export default async function TaskDetailPage({
   params,

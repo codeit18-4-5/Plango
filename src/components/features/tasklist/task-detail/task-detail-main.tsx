@@ -1,34 +1,33 @@
 import KebabIcon from "@/assets/icons/ic-kebab.svg";
-import { Avatar, Dropdown, Form, Reply, ReplyInput } from "@/components/ui";
+import { Avatar, Dropdown, Form } from "@/components/ui";
 import { formatDateToFullStr, formatTimeToStr, getFrequencyLabel } from "@/lib/utils";
 import CalendarIcon from "@/assets/icons/ic-calendar.svg";
 import RepeatIcon from "@/assets/icons/ic-repeat.svg";
 import TimeIcon from "@/assets/icons/ic-time.svg";
 import { TaskDetail } from "@/types/task";
-import { KebabType } from "./task";
-import { Controller, SubmitHandler, useFormContext } from "react-hook-form";
+import { KebabType } from "../task";
+import { SubmitHandler, useFormContext } from "react-hook-form";
 import z4 from "zod/v4";
 import { taskCommentsSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Comment } from "@/types/comments";
-import { useAuthStore } from "@/store/auth.store";
 import { useToast } from "@/providers/toast-provider";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
 import { useTaskCommentsMutation } from "@/hooks/taskList/use-tasklist";
 import { useAlert } from "@/providers/alert-provider";
+import NewCommentField from "./comment/new-comment";
+import TaskCommentsField from "./comment/task-comments";
 
 interface TaskDetailProps {
   taskDetail: TaskDetail;
   onKebabClick: (type: KebabType) => void;
 }
 
-interface TaskCommentsProps {
+interface TaskDetailPageProps extends TaskDetailProps {
   commentsData: Comment[];
 }
-
-interface TaskDetailPageProps extends TaskDetailProps, TaskCommentsProps {}
 
 export default function TaskDetailMain({
   commentsData,
@@ -82,29 +81,25 @@ export default function TaskDetailMain({
         return;
       }
 
-      try {
-        updateComment.mutate(
-          {
-            groupId: Number(groupId),
-            taskListId: Number(taskListId),
-            dateString: dateString,
-            taskId: taskDetail.id,
-            commentId: commentId,
-            comment: comment,
+      updateComment.mutate(
+        {
+          groupId: Number(groupId),
+          taskListId: Number(taskListId),
+          dateString: dateString,
+          taskId: taskDetail.id,
+          commentId: commentId,
+          comment: comment,
+        },
+        {
+          onSuccess: () => {
+            showToast("댓글이 수정 되었습니다.", "success");
+            onSuccess();
           },
-          {
-            onSuccess: () => {
-              showToast("댓글이 수정 되었습니다.", "success");
-              onSuccess();
-            },
-            onError: () => {
-              showToast("댓글 수정에 실패하였습니다.", "error");
-            },
+          onError: () => {
+            showToast("댓글 수정에 실패하였습니다.", "error");
           },
-        );
-      } catch (e) {
-        console.error(e);
-      }
+        },
+      );
     };
 
   const handleCommentDeleteClick = async (commentId: number) => {
@@ -221,7 +216,7 @@ export default function TaskDetailMain({
           mode="onSubmit"
         >
           <ResetAfterSubmit />
-          <MyCommentField />
+          <NewCommentField />
         </Form>
 
         <div>
@@ -232,107 +227,6 @@ export default function TaskDetailMain({
           />
         </div>
       </section>
-    </>
-  );
-}
-
-function MyCommentField() {
-  const {
-    control,
-    formState: { errors },
-  } = useFormContext<z4.infer<typeof taskCommentsSchema>>();
-
-  return (
-    <div className="relative">
-      <p className="absolute top-[-20px] text-body-s text-pink-500">
-        {errors.content && errors.content.message}
-      </p>
-      <div>
-        <Controller
-          name="content"
-          control={control}
-          render={({ field }) => <ReplyInput variant="secondary" {...field} />}
-        />
-      </div>
-    </div>
-  );
-}
-
-function TaskCommentsField({
-  commentsData,
-  onSubmit,
-  onDelete,
-}: TaskCommentsProps & {
-  onSubmit: (commentId: number) => (comment: string, onSuccess: () => void) => Promise<void>;
-  onDelete: (commentId: number) => void;
-}) {
-  const { user } = useAuthStore();
-  const userId = user?.id ?? null;
-
-  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
-  const [editError, setEditError] = useState<Record<number, string>>({});
-
-  const handleCommentSaveClick = async (
-    comment: string,
-    commentId: number,
-    originalComment: string,
-  ) => {
-    const validation = taskCommentsSchema.safeParse({ content: comment });
-    if (originalComment.trim() === comment.trim()) {
-      setEditingCommentId(null);
-      return;
-    }
-    if (!validation.success) {
-      setEditError({ [commentId]: validation.error.issues[0].message });
-      return;
-    }
-
-    const submit = onSubmit(commentId);
-    await submit(comment, () => {
-      setEditError({});
-      setEditingCommentId(null);
-    });
-  };
-
-  return (
-    <>
-      {commentsData &&
-        commentsData.map(comment => (
-          <div key={comment.id} className="relative pt-[10px]">
-            <Reply
-              key={`${comment.id}=${editingCommentId === comment.id}`}
-              comment={comment}
-              isAuthor={userId === comment.user.id}
-              isEditing={editingCommentId === comment.id}
-              onCancelEdit={() => {
-                setEditingCommentId(null);
-                setEditError({});
-              }}
-              onSaveEdit={value => handleCommentSaveClick(value, comment.id, comment.content)}
-              actions={[
-                {
-                  label: "수정하기",
-                  onClick: () => {
-                    setEditingCommentId(comment.id);
-                    setEditError({});
-                  },
-                },
-                {
-                  label: "삭제하기",
-                  onClick: () => {
-                    onDelete(comment.id);
-                  },
-                },
-              ]}
-              variant="secondary"
-            />
-            {editError && editError[comment.id] && (
-              <p className="absolute bottom-[23px] text-body-s text-pink-500">
-                {editError[comment.id]}
-              </p>
-            )}
-          </div>
-        ))}
     </>
   );
 }
