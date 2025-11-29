@@ -117,6 +117,8 @@ export function ProfileUpdateFormField({
     control,
     formState: { errors },
   } = useFormContext<ChangeProfileSchema>();
+
+  const isKakaoUser = email?.toLowerCase().endsWith("@kakao.com");
   return (
     <>
       <Controller
@@ -142,21 +144,22 @@ export function ProfileUpdateFormField({
       <ProfileField id="email" label="이메일">
         <Input.Field value={email} disabled />
       </ProfileField>
-
-      <ProfileField id="password" label="비밀번호">
-        <div className="relative">
-          <Input.Field value="● ● ● ● ● ● ● ●" disabled />
-          <Button
-            type="button"
-            size="sm"
-            intent="secondary"
-            className="absolute right-4 top-1/2 -translate-y-1/2"
-            onClick={onModalOpen}
-          >
-            변경하기
-          </Button>
-        </div>
-      </ProfileField>
+      {!isKakaoUser && (
+        <ProfileField id="password" label="비밀번호">
+          <div className="relative">
+            <Input.Field value="● ● ● ● ● ● ● ●" disabled />
+            <Button
+              type="button"
+              size="sm"
+              intent="secondary"
+              className="absolute right-4 top-1/2 -translate-y-1/2"
+              onClick={onModalOpen}
+            >
+              변경하기
+            </Button>
+          </div>
+        </ProfileField>
+      )}
     </>
   );
 }

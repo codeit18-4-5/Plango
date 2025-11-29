@@ -25,7 +25,10 @@ export default function Checkbox({
 
   return (
     <div className="relative">
-      <label className={cn("flex cursor-pointer items-center gap-2", className)}>
+      <label
+        className={cn("flex cursor-pointer items-center gap-2", className)}
+        onClick={e => e.stopPropagation()}
+      >
         {checked ? <IcChecked className="h-6 w-6" /> : <IcCheckbox className="h-6 w-6" />}
         <input
           type="checkbox"
@@ -33,6 +36,7 @@ export default function Checkbox({
           onChange={handleCheckboxToggle}
           readOnly={readOnly}
           disabled={disabled}
+          onClick={e => e.stopPropagation()}
           {...props}
         />
         {label && (

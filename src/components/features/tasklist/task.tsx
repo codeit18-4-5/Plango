@@ -6,21 +6,69 @@ import KebabIcon from "@/assets/icons/ic-kebab.svg";
 import CalendarIcon from "@/assets/icons/ic-calendar.svg";
 import RepeatIcon from "@/assets/icons/ic-repeat.svg";
 import { Task as TaskType } from "@/types/task";
-import { useState } from "react";
 import { formatDateToFullStr, getFrequencyLabel } from "@/lib/utils";
+import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
+import { useToast } from "@/providers/toast-provider";
+import { notFound, useParams } from "next/navigation";
+import { useRecurringMutation } from "@/hooks/taskList/use-tasklist";
 
 interface TaskProps {
   task: TaskType;
+  onKebabClick: ({
+    taskId,
+    recurringId,
+    type,
+  }: {
+    taskId: number;
+    recurringId: number;
+    type: KebabType;
+  }) => void;
 }
 
-export default function Task({ task }: TaskProps) {
-  const [checked, setChecked] = useState(false);
+export type KebabType = "update" | "delete";
+
+export default function Task({ task, onKebabClick }: TaskProps) {
+  const { id: groupId, taskListId } = useParams();
+  if (groupId == null || taskListId == null) notFound();
+
+  const { showToast } = useToast();
+
+  const { updateDoneAt: updateRecurringDoneAt } = useRecurringMutation();
+  const { dateString } = useTaskListContext();
+
+  const handleKebabClick = (type: KebabType) => {
+    onKebabClick({ taskId: task.id, recurringId: task.recurringId, type });
+  };
+
+  const handleCheckBoxChange = (done: boolean) => {
+    if (!(groupId && taskListId && dateString)) return;
+
+    updateRecurringDoneAt.mutate(
+      {
+        groupId: Number(groupId),
+        taskListId: Number(taskListId),
+        dateString: dateString,
+        taskId: task.id,
+        done: done,
+      },
+      {
+        onSuccess: () => {},
+        onError: () => {
+          showToast("등록 중 오류가 발생했습니다.", "error");
+        },
+      },
+    );
+  };
 
   return (
     <div className="flex h-[74px] w-full items-center justify-between rounded-lg bg-gray-800 py-[12px] pl-[14px] pr-[12px]">
       <div>
         <div className="mb-[10px] flex gap-[12px]">
-          <Checkbox checked={checked} onChange={setChecked} label={task.name}></Checkbox>
+          <Checkbox
+            checked={task.doneAt ? true : false}
+            onChange={done => handleCheckBoxChange(done)}
+            label={task.name}
+          />
           <div className="flex items-center gap-[2px]">
             <div className="w-[16px]">
               <CommentIcon></CommentIcon>
@@ -48,16 +96,19 @@ export default function Task({ task }: TaskProps) {
           </div>
         </div>
       </div>
-      <div onClick={e => e.stopPropagation()} className="rounded px-[2px] hover:bg-gray-700">
+      <div onClick={e => e.stopPropagation()}>
         <Dropdown>
-          <Dropdown.TriggerIcon intent="icon">
-            <KebabIcon className="mt-[5px] w-[16px]" />
+          <Dropdown.TriggerIcon
+            intent="icon"
+            className="rounded px-[2px] py-[3px] hover:bg-gray-700"
+          >
+            <KebabIcon className="w-[16px]" />
           </Dropdown.TriggerIcon>
           <Dropdown.Menu size="md">
-            <Dropdown.Option as="a" href="/" align="center">
+            <Dropdown.Option align="center" onClick={() => handleKebabClick("update")}>
               수정하기
             </Dropdown.Option>
-            <Dropdown.Option as="a" href="/" align="center">
+            <Dropdown.Option align="center" onClick={() => handleKebabClick("delete")}>
               삭제하기
             </Dropdown.Option>
           </Dropdown.Menu>

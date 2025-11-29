@@ -19,9 +19,9 @@ const title = "회원가입";
 
 export default function Page() {
   const authSuccess = useAuthSuccess();
-  const { mutate, isPending } = useSignUpMutation(authSuccess);
+  const { mutateAsync, isPending } = useSignUpMutation(authSuccess);
   const handleSubmit = async (data: SignUpSchema) => {
-    mutate(data);
+    await mutateAsync(data);
   };
   return (
     <>

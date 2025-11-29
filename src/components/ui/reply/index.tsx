@@ -66,6 +66,7 @@ export default function Reply({
               id={`comment-${comment.id}`}
               value={editedContent.replace(/\\n/g, "\n")}
               placeholder="수정할 댓글을 입력해주세요"
+              maxLength={255}
               onChange={e => {
                 setEditedContent(e.target.value);
                 onChange(e);

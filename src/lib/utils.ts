@@ -62,11 +62,11 @@ export const getTimeAgo = (dateString: string) => {
 };
 
 /**
- * datepicker week 3글자까지만 자르기 (e.g. Sunday -> Sun)
+ * datepicker week 1글자까지만 자르기 (e.g. 일요일 -> 일)
  * @author luli
  * @param day
  */
-export const cuttingDayString = (day: string) => day.substring(0, 3);
+export const cuttingDayString = (day: string) => day.substring(0, 1);
 
 /**
  * datepicker 현재 달력에서 보고있는 날짜를 제외한 날짜는 other-month-day class 적용
@@ -86,9 +86,9 @@ export const otherMonthIndicator = (date: Date, currentMonth: number, currentYea
  * @param date
  */
 export const formatDateForToMonthAndDays = (date: Date | string | undefined): string => {
-  if (isEmpty(date)) return "";
+  if (!date) return "";
 
-  const resultDate = strToDate(date as Date | string);
+  const resultDate = strToDate(date);
   return resultDate
     .toLocaleDateString("ko-KR", {
       month: "long",
@@ -104,9 +104,9 @@ export const formatDateForToMonthAndDays = (date: Date | string | undefined): st
  * @param date
  */
 export const formatDateToFullStr = ({ date, type = "korean" }: DateFullProps): string => {
-  if (isEmpty(date)) return "";
+  if (!date) return "";
 
-  const resultDate = strToDate(date as Date | string);
+  const resultDate = strToDate(date);
   let resultDateStr = "";
   if (type === "korean") {
     // `YYYY년 MM월 DD일`
@@ -134,9 +134,9 @@ export const formatDateToFullStr = ({ date, type = "korean" }: DateFullProps): s
  * @param date
  */
 export const formatTimeToStr = ({ date, type = "colon" }: DateTimeProps): string => {
-  if (isEmpty(date)) return "";
+  if (!date) return "";
 
-  const resultDate = strToDate(date as Date | string);
+  const resultDate = strToDate(date);
   let resultTimeStr = "";
   if (type === "colon") {
     // "HH:mm"
@@ -145,7 +145,7 @@ export const formatTimeToStr = ({ date, type = "colon" }: DateTimeProps): string
       minute: "2-digit",
     });
   } else if (type === "meridiem") {
-    // 오전 or 오후 HH:mm
+    // 오전 or 오후 hh:mm
     resultTimeStr = resultDate.toLocaleTimeString("ko-KR", {
       hour12: true,
       hour: "numeric",
@@ -282,6 +282,60 @@ export function isTokenExpire(token: string) {
 
   return currentDate > tokenExpirationDate;
 }
+
+/**
+ * Date 시간타입 korea locale 적용한 ISO date로 변환.
+ * @author luli
+ * @param date
+ */
+export const formatDateToISOString = (date: Date | string) => {
+  const resultDate = strToDate(date);
+  const tzOffset = 9 * 60;
+  const localDate = new Date(resultDate.getTime() + tzOffset * 60 * 1000);
+  return localDate.toISOString().replace("Z", "+09:00");
+};
+
+/**
+ * taskList 변경값만 추출
+ * 현재 재사용성은 떨어지지만 추후에 확장 가능 고려
+ * @author luli
+ * @param {object} values 변경할 객체
+ * @param {string} currentName 현재 이름
+ * @param {string} currentDescription 현재 설명
+ */
+export const extractChangedFields = (
+  values: { name?: string; description?: string },
+  currentName: string,
+  currentDescription?: string,
+) => {
+  const result: { name?: string; description?: string } = {};
+
+  if (values.name !== undefined && values.name !== currentName) {
+    result.name = values.name;
+  }
+
+  if (
+    currentDescription !== undefined &&
+    values.description !== undefined &&
+    values.description !== currentDescription
+  ) {
+    result.description = values.description;
+  }
+
+  return result;
+};
+
+/**
+ * Date의 시간을 오전 10시로 고정
+ * @author luli
+ * @param date
+ * @param hour 24시간 기준
+ */
+export const setDateTime = (date: Date, hour?: number) => {
+  if (hour == null) hour = 10;
+  const configuredDate = date.setHours(hour, 0, 0, 0);
+  return new Date(configuredDate);
+};
 
 /**
  * 게시글 content JSON.parse 처리
