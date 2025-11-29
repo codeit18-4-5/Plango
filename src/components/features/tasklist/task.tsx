@@ -23,11 +23,12 @@ interface TaskProps {
     recurringId: number;
     type: KebabType;
   }) => void;
+  onClick: () => void;
 }
 
 export type KebabType = "update" | "delete";
 
-export default function Task({ task, onKebabClick }: TaskProps) {
+export default function Task({ task, onKebabClick, onClick }: TaskProps) {
   const { id: groupId, taskListId } = useParams();
   if (groupId == null || taskListId == null) notFound();
 
@@ -61,7 +62,10 @@ export default function Task({ task, onKebabClick }: TaskProps) {
   };
 
   return (
-    <div className="flex h-[74px] w-full items-center justify-between rounded-lg bg-gray-800 py-[12px] pl-[14px] pr-[12px]">
+    <div
+      className="flex h-[74px] w-full items-center justify-between rounded-lg bg-gray-800 py-[12px] pl-[14px] pr-[12px]"
+      onClick={onClick}
+    >
       <div>
         <div className="mb-[10px] flex gap-[12px]">
           <Checkbox

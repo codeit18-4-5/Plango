@@ -7,7 +7,11 @@ import { GroupTaskList } from "@/types/tasklist";
 import cn from "@/lib/cn";
 import { notFound, useParams, useRouter, useSearchParams } from "next/navigation";
 import TaskDetailUpdateTemplate from "@/components/features/tasklist/task-recurring/task-recurring-update-modal";
-import { useRecurringMutation, useTaskList } from "@/hooks/taskList/use-tasklist";
+import {
+  useRecurringMutation,
+  useTaskList,
+  useTaskListMutation,
+} from "@/hooks/taskList/use-tasklist";
 import { isEmpty } from "@/lib/utils";
 import { useToggle } from "@/hooks";
 import z4 from "zod/v4";
@@ -18,6 +22,18 @@ import TaskDeleteSheet from "./task-recurring/task-recurring-delete-sheet";
 import { DeleteType } from "@/types/task";
 import { useToast } from "@/providers/toast-provider";
 import useModalStore from "@/store/modal.store";
+import SortableTask from "./sortable-task";
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import { arrayMove, SortableContext } from "@dnd-kit/sortable";
 
 interface TaskListPageProps {
   groupData: GroupTaskList;
@@ -41,6 +57,12 @@ export default function TaskCardField({
 
   if (groupId == null) notFound();
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+  );
+
   const { openModal: openDetailModal, closeModal: closeDetailModal } = useModalStore();
   const {
     isOpen: isOpenUpdateTaskDetail,
@@ -57,6 +79,7 @@ export default function TaskCardField({
   const { showAlert } = useAlert();
 
   const { permissionCheck, dateString } = useTaskListContext();
+  const { updateOrder } = useTaskListMutation();
   const { update: updateRecurring, remove: deleteRecurring } = useRecurringMutation();
 
   const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null); // 카드 케밥용
@@ -221,6 +244,42 @@ export default function TaskCardField({
     });
   };
 
+  const [tasks, setTasks] = useState(taskListData?.tasks || []);
+  const [dragActiveId, setDragActiveId] = useState<number | null>(null);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const activeId = Number(event.active.id);
+    setDragActiveId(activeId);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    if (active.id !== over.id) {
+      const oldIndex = tasks.findIndex(t => t.id === active.id);
+      const newIndex = tasks.findIndex(t => t.id === over.id);
+
+      const newOrder = arrayMove(tasks, oldIndex, newIndex);
+      setTasks(newOrder);
+
+      const orderPayload = newOrder.map((t, i) => ({ id: t.id, index: i }));
+
+      updateOrder.mutate({
+        groupId: groupData.id,
+        taskListId: activeTab,
+        dateString: dateString,
+        taskId: Number(active.id),
+        newIndex,
+        orderPayload,
+      });
+    }
+  };
+
+  useEffect(() => {
+    setTasks(taskListData?.tasks || []);
+  }, [taskListData]);
+
   // 탭이동시 상세보기 화면 닫기
   useEffect(() => {
     closeDetailModal();
@@ -254,15 +313,35 @@ export default function TaskCardField({
       </section>
       {taskListData ? (
         <section className="pb-[24px]">
-          {taskListData?.tasks.map(task => (
-            <article
-              key={task.id}
-              className="mt-[16px] block w-full cursor-pointer"
-              onClick={() => handleTaskClick(task.id)}
-            >
-              <Task task={task} onKebabClick={handleKebabClick} />
-            </article>
-          ))}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={tasks.map(task => task.id)}>
+              {tasks.map(task => (
+                <article key={task.id} className="mt-[16px] block w-full cursor-pointer">
+                  <SortableTask
+                    task={task}
+                    onKebabClick={handleKebabClick}
+                    onClick={() => handleTaskClick(task.id)}
+                  />
+                </article>
+              ))}
+            </SortableContext>
+            <DragOverlay>
+              {dragActiveId && (
+                <article className="mt-[16px] block w-full cursor-pointer">
+                  <Task
+                    task={tasks.find(task => task.id === dragActiveId)!}
+                    onKebabClick={handleKebabClick}
+                    onClick={() => {}}
+                  />
+                </article>
+              )}
+            </DragOverlay>
+          </DndContext>
         </section>
       ) : (
         <section className="flex flex-1 items-center justify-center">
