@@ -5,6 +5,16 @@ export type GroupCreateRequest = {
   image?: string;
 };
 
+export type GroupUpdateRequest = {
+  groupId: number;
+  payload: GroupUpdateBody;
+};
+
+export type GroupUpdateBody = {
+  name?: string;
+  image?: string | null | undefined;
+};
+
 export type GroupCreateResponse = {
   name: string;
   image: string;
@@ -25,8 +35,9 @@ export type GetGroupsResponse = {
 };
 
 export type teamTitleProps = {
-  name: string | undefined;
-  id: number | undefined;
+  name: string;
+  id: number;
+  userRole: string;
 };
 
 export type TodoListProps = {

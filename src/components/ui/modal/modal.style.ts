@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 
 export const modalOverlayStyle = [
-  "fixed inset-0 z-[9000] flex items-center justify-center",
+  "fixed inset-0 z-[5000] flex items-center justify-center",
   "custom-dialog-backdrop bg-transparent overflow-hidden",
   "rounded-t-xl",
 ].join(" ");

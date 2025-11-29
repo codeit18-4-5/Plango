@@ -4,36 +4,54 @@ import { DropdownOption } from "@/types/option";
 import { useEffect, useRef, useState } from "react";
 import { Controller, SubmitHandler, useFormContext } from "react-hook-form";
 import IcDropdown from "@/assets/icons/ic-dropdown.svg";
-import { FrequencyOptions } from "@/types/date-format-type";
+import { FrequencyOptions, FrequencyType } from "@/types/date-format-type";
 import CustomSingleDatepicker from "@/components/ui/date-timepicker/single-datepicker";
-import DailyFrequencyOptions from "./daily-frequency-options";
+import DailyFrequencyOptions from "../daily-frequency-options";
 import z4 from "zod/v4";
-import { taskSchema } from "@/lib/schema";
+import { taskDetailSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 interface TaskRecurringProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (value: z4.infer<typeof taskSchema>) => void;
+  isPending: boolean;
+  onSubmit: (value: z4.infer<typeof taskDetailSchema>) => Promise<void>;
 }
 
-export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: TaskRecurringProps) {
+export default function TaskRecurringAddModal({
+  isOpen,
+  onClose,
+  isPending,
+  onSubmit,
+}: TaskRecurringProps) {
   const [dayIndexArray, setDayIndexArray] = useState<number[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit: SubmitHandler<z4.infer<typeof taskSchema>> = submitData => {
-    const transformedData = {
-      ...submitData,
-      description: submitData.description || "",
-      weekDays: dayIndexArray,
-    };
-    onSubmit(transformedData);
+  const handleSubmit: SubmitHandler<z4.infer<typeof taskDetailSchema>> = async submitData => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+
+    try {
+      const { weekDays, ...rest } = submitData;
+
+      const transformedData = {
+        ...rest,
+        description: rest.description || "",
+        ...(rest.frequencyType === FrequencyType.Monthly && {
+          monthDay: new Date(rest.startDate).getDate(),
+        }),
+        ...(rest.frequencyType === FrequencyType.Weekly && { weekDays: weekDays }),
+      };
+      await onSubmit(transformedData);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const defaultValues = {
     name: "",
     description: "",
-    frequencyType: "ONCE",
-    monthDay: 1,
+    frequencyType: FrequencyType.Once,
     startDate: "",
     weekDays: [],
   };
@@ -42,13 +60,17 @@ export default function TaskRecurringAddModal({ isOpen, onClose, onSubmit }: Tas
     <Modal isOpen={isOpen} onClose={onClose}>
       <Form
         onSubmit={handleSubmit}
-        resolver={zodResolver(taskSchema)}
-        mode="onChange"
+        resolver={zodResolver(taskDetailSchema)}
+        mode="onSubmit"
         defaultValues={defaultValues}
       >
         <Modal.HeaderWithClose title="할 일 만들기" />
         <FormField dayIndexArray={dayIndexArray} setDayIndexArray={setDayIndexArray} />
-        <Modal.FooterWithOnlyConfirm confirmButtonTitle="만들기" isSubmit />
+        <Modal.FooterWithOnlyConfirm
+          confirmButtonTitle="만들기"
+          isSubmit
+          disabled={isPending || isSubmitting}
+        />
       </Form>
     </Modal>
   );
@@ -62,13 +84,12 @@ function FormField({
   setDayIndexArray: React.Dispatch<React.SetStateAction<number[]>>;
 }) {
   const {
-    register,
     setValue,
     control,
     formState: { errors },
     clearErrors,
     watch,
-  } = useFormContext<z4.infer<typeof taskSchema>>();
+  } = useFormContext<z4.infer<typeof taskDetailSchema>>();
 
   const [isDatepickerOpen, setIsDatepickerOpen] = useState(false);
   const [isTimepickerOpen, setIsTimepickerOpen] = useState(false);
@@ -90,7 +111,7 @@ function FormField({
 
     setValue("frequencyType", option.value, { shouldValidate: true });
 
-    if (option.value === "WEEKLY") {
+    if (option.value === FrequencyType.Weekly) {
       setIsWeekpickerOpen(true);
     } else {
       setIsWeekpickerOpen(false);
@@ -249,29 +270,36 @@ function FormField({
           <Input.Label label="반복 설정" />
           <Input.Error />
           <div>
-            <Dropdown size="md" onSelect={handleSelectValue} {...register("frequencyType")}>
-              <Dropdown.TriggerSelect
-                className="bg-[#18212F]"
-                isIcon={true}
-                intent="select"
-                selectedLabel={
-                  frequencyTypeValue
-                    ? selectOptions.find(option => option.value === frequencyTypeValue)?.label
-                    : ""
-                }
-              >
-                <span className="w-[24px]">
-                  <IcDropdown />
-                </span>
-              </Dropdown.TriggerSelect>
-              <Dropdown.Menu>
-                {selectOptions.map(option => (
-                  <Dropdown.Option key={option.value} option={option}>
-                    {option.label}
-                  </Dropdown.Option>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
+            <Controller
+              name="frequencyType"
+              control={control}
+              render={({ field }) => (
+                <Dropdown size="md" onSelect={handleSelectValue}>
+                  <Dropdown.TriggerSelect
+                    className="bg-[#18212F]"
+                    isIcon={true}
+                    intent="select"
+                    {...field}
+                    selectedLabel={
+                      frequencyTypeValue
+                        ? selectOptions.find(option => option.value === frequencyTypeValue)?.label
+                        : ""
+                    }
+                  >
+                    <span className="w-[24px]">
+                      <IcDropdown />
+                    </span>
+                  </Dropdown.TriggerSelect>
+                  <Dropdown.Menu>
+                    {selectOptions.map(option => (
+                      <Dropdown.Option key={option.value} option={option}>
+                        {option.label}
+                      </Dropdown.Option>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
+              )}
+            />
           </div>
         </Input>
         {isWeekpickerOpen && (

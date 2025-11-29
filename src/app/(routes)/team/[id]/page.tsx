@@ -53,7 +53,7 @@ export default function TeamPages() {
 
   return (
     <Container>
-      <TeamTitle name={groupData.name} id={groupData.id} />
+      <TeamTitle name={groupData.name} id={groupData.id} userRole={userRole} />
       <TodoList groupId={todoLists?.groupId as number} taskList={todoLists?.taskList || []} />
       {userRole === "ADMIN" && <TeamReport taskLists={todoLists?.taskList || []} />}
       <TeamMember members={members} userId={userId} userRole={userRole} groupId={groupData.id} />

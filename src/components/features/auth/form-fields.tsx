@@ -5,7 +5,7 @@ import { ChangePasswordSchema, SendEmailSchema, SignInSchema, SignUpSchema } fro
 import { useFormContext } from "react-hook-form";
 import { AuthField } from "./auth-page";
 
-export function SignUpFormFields() {
+export function SignUpFormFields({ isPending }: { isPending: boolean }) {
   const {
     register,
     formState: { errors },
@@ -30,17 +30,23 @@ export function SignUpFormFields() {
         <Input.Field type="email" {...register("email")} placeholder="이메일을 입력해주세요." />
       </AuthField>
 
-      <Input id="nickname" errorMsg={errors?.nickname?.message}>
-        <Input.Label label="닉네임" caption="(닉네임 중복 불가, 최대 10자)" />
+      <AuthField
+        id="nickname"
+        label="닉네임"
+        caption="(닉네임 중복 불가, 최대 10자)"
+        errorMsg={errors?.nickname?.message}
+      >
         <Input.Field {...register("nickname")} placeholder="닉네임을 입력해주세요." />
-        <Input.Error />
-      </Input>
+      </AuthField>
 
-      <Input id="password" errorMsg={errors?.password?.message}>
-        <Input.Label label="비밀번호" caption="(영문, 숫자, 특수문자[!@#$%^&*] 포함 8~30자)" />
+      <AuthField
+        id="password"
+        label="비밀번호"
+        caption="(영문, 숫자, 특수문자[!@#$%^&*] 포함 8~30자)"
+        errorMsg={errors?.password?.message}
+      >
         <Input.Password {...register("password")} placeholder="비밀번호를 입력해주세요." />
-        <Input.Error />
-      </Input>
+      </AuthField>
 
       <AuthField
         id="passwordConfirmation"
@@ -53,14 +59,20 @@ export function SignUpFormFields() {
         />
       </AuthField>
 
-      <Button type="submit" className="mt-4" disabled={!allFilled}>
+      <Button type="submit" className="mt-4" disabled={!allFilled || isPending}>
         회원가입
       </Button>
     </>
   );
 }
 
-export function SignInFormFields({ onModalOpen }: { onModalOpen: () => void }) {
+export function SignInFormFields({
+  onModalOpen,
+  isPending,
+}: {
+  onModalOpen: () => void;
+  isPending: boolean;
+}) {
   const {
     register,
     formState: { errors },
@@ -87,7 +99,7 @@ export function SignInFormFields({ onModalOpen }: { onModalOpen: () => void }) {
         비밀번호를 잊으셨나요?
       </button>
 
-      <Button type="submit" className="mt-4" disabled={!allFilled}>
+      <Button type="submit" className="mt-4" disabled={!allFilled || isPending}>
         로그인
       </Button>
     </>
@@ -116,7 +128,7 @@ export function SendEmailFormField({ onClose }: { onClose: () => void }) {
   );
 }
 
-export function ResetPasswordFormFields() {
+export function ResetPasswordFormFields({ isPending }: { isPending: boolean }) {
   const {
     register,
     formState: { errors },
@@ -128,11 +140,14 @@ export function ResetPasswordFormFields() {
 
   return (
     <>
-      <Input id="password" errorMsg={errors?.password?.message}>
-        <Input.Label label="새 비밀번호" caption="(영문, 숫자, 특수문자[!@#$%^&*] 포함 8~30자)" />
+      <AuthField
+        id="password"
+        label="새 비밀번호"
+        caption="(영문, 숫자, 특수문자[!@#$%^&*] 포함 8~30자)"
+        errorMsg={errors?.password?.message}
+      >
         <Input.Password {...register("password")} placeholder="비밀번호를 입력해주세요." />
-        <Input.Error />
-      </Input>
+      </AuthField>
 
       <AuthField
         id="passwordConfirmation"
@@ -145,7 +160,7 @@ export function ResetPasswordFormFields() {
         />
       </AuthField>
 
-      <Button type="submit" className="mt-4" disabled={!allFilled}>
+      <Button type="submit" className="mt-4" disabled={!allFilled || isPending}>
         재설정
       </Button>
     </>

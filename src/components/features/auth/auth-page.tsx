@@ -12,6 +12,7 @@ type AuthFieldProps = {
   id: string;
   errorMsg?: string;
   label: string;
+  caption?: string;
   labelHidden?: boolean;
   children: ReactNode;
 };
@@ -44,10 +45,10 @@ export function AuthLink({ message, linkText, href }: AuthLinkProps) {
   );
 }
 
-export function AuthField({ id, label, labelHidden, errorMsg, children }: AuthFieldProps) {
+export function AuthField({ id, label, caption, labelHidden, errorMsg, children }: AuthFieldProps) {
   return (
     <Input id={id} errorMsg={errorMsg}>
-      <Input.Label label={label} hidden={labelHidden} />
+      <Input.Label label={label} hidden={labelHidden} caption={caption} />
       {children}
       <Input.Error />
     </Input>
@@ -68,7 +69,7 @@ export function AuthErrorModal({ message, onClose }: { message: string; onClose:
     <Modal isOpen={true} onClose={onClose}>
       <Modal.HeaderWithClose title="" />
       <Modal.Body>
-        <p className="text-center text-base">
+        <p className="mb-6 text-center text-base">
           {message} <br />
           다시 시도해주세요.
         </p>

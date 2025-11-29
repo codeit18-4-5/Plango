@@ -10,7 +10,7 @@ import HistoryListSkeleton from "@/components/skeleton-ui/history-list-skeleton"
 export default function MyHistory() {
   const {
     data: historyItems,
-    isLoading,
+    isPending,
     isError,
     refetch,
   } = useQuery<UserHistoryResponse>({
@@ -21,7 +21,7 @@ export default function MyHistory() {
   });
   const historyDone = historyItems?.tasksDone ?? [];
 
-  if (isLoading) return <HistoryListSkeleton />;
+  if (isPending) return <HistoryListSkeleton />;
 
   if (isError) {
     return (

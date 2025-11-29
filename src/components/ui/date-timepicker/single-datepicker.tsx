@@ -4,6 +4,7 @@ import Datepicker from "react-datepicker";
 import { useDatepickerDate } from "@/hooks";
 import CustomHeader from "./custom-datepicker-header";
 import { cuttingDayString, otherMonthIndicator } from "@/lib/utils";
+import { ko } from "date-fns/locale";
 
 interface CustomSingleDatepickerProps {
   startDate: Date | null;
@@ -29,6 +30,7 @@ export default function CustomSingleDatepicker({
       onMonthChange={handleMonthChange}
       dayClassName={date => otherMonthIndicator(date, currentMonth, currentYear)}
       minDate={useMinDate ? new Date() : undefined}
+      locale={ko}
     />
   );
 }
