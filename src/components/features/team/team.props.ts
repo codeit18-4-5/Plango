@@ -25,3 +25,14 @@ export const reportChartProps = {
   number: false,
   linearGradient: ["var(--pink-300)", "var(--pink-700)"],
 };
+
+export type TeamModalProps = {
+  groupId: number;
+  onClose: () => void;
+  isOpen: boolean;
+};
+
+export type TodoEditProps = {
+  taskListId: number;
+  taskListName: string;
+} & TeamModalProps;
