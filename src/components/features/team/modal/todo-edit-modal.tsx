@@ -47,7 +47,7 @@ export const TodoListEditModal = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <form method="PATCH" onSubmit={handleSubmit}>
+      <form method="POST" onSubmit={handleSubmit}>
         <Modal.HeaderWithClose title="할 일 목록" />
         <Modal.Body>
           <Input id="todoName">
