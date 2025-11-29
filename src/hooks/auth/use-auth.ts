@@ -19,9 +19,6 @@ export const useSignInMutation = (onSuccess: (data: AuthSuccessPayload) => void)
     mutationFn: postSignIn,
     retry: 1,
     onSuccess,
-    onError: err => {
-      devConsoleError(err);
-    },
   });
 };
 
@@ -30,9 +27,6 @@ export const useSignUpMutation = (onSuccess: (data: AuthSuccessPayload) => void)
     mutationFn: postSignUp,
     retry: 1,
     onSuccess,
-    onError: err => {
-      devConsoleError(err);
-    },
   });
 };
 
