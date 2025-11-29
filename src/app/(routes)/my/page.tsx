@@ -27,8 +27,7 @@ export default function My() {
   const handleSubmit = async (data: ChangeProfileSchema) => {
     const prevUser = useAuthStore.getState().user;
     const payload: ChangeProfileSchema = {};
-    console.log(data.nickname);
-    console.log(data.image);
+
     if (data.nickname !== prevUser?.nickname) {
       payload.nickname = data.nickname;
     }
