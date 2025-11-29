@@ -265,14 +265,21 @@ export default function TaskCardField({
 
       const orderPayload = newOrder.map((t, i) => ({ id: t.id, index: i }));
 
-      updateOrder.mutate({
-        groupId: groupData.id,
-        taskListId: activeTab,
-        dateString: dateString,
-        taskId: Number(active.id),
-        newIndex,
-        orderPayload,
-      });
+      updateOrder.mutate(
+        {
+          groupId: groupData.id,
+          taskListId: activeTab,
+          dateString: dateString,
+          taskId: Number(active.id),
+          newIndex,
+          orderPayload,
+        },
+        {
+          onError: () => {
+            showToast("할 일 재정렬에 실패하였습니다.", "error");
+          },
+        },
+      );
     }
   };
 
