@@ -102,6 +102,9 @@ export default function TaskCardField({
     }
   }
 
+  const [tasks, setTasks] = useState(taskListData?.tasks || []);
+  const [dragActiveId, setDragActiveId] = useState<number | null>(null);
+
   const handleTaskClick = (id: number) => {
     const resultRecurringId = groupData?.taskLists
       .find(taskList => taskList.id === activeTab)
@@ -244,9 +247,6 @@ export default function TaskCardField({
     });
   };
 
-  const [tasks, setTasks] = useState(taskListData?.tasks || []);
-  const [dragActiveId, setDragActiveId] = useState<number | null>(null);
-
   const handleDragStart = (event: DragStartEvent) => {
     const activeId = Number(event.active.id);
     setDragActiveId(activeId);
@@ -326,6 +326,7 @@ export default function TaskCardField({
                     task={task}
                     onKebabClick={handleKebabClick}
                     onClick={() => handleTaskClick(task.id)}
+                    dragActiveId={dragActiveId || null}
                   />
                 </article>
               ))}
