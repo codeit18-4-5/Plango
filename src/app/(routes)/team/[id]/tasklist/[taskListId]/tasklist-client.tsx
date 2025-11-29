@@ -327,7 +327,7 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
             left: `${calendarPosition.left}px`,
           }}
         >
-          <div className="rounded-lg border border-pink-400 bg-gray-800 p-[10px] shadow-lg">
+          <div className="z-[500] rounded-lg border border-pink-400 bg-gray-800 p-[10px] shadow-lg">
             <SingleDatepicker
               onSingleChange={date => handleDateChange(date)}
               startDate={startDate}
@@ -336,7 +336,7 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
               오늘 날짜 선택
             </Button>
           </div>
-          <div className="fixed inset-0 -z-10" onClick={setCloseCalendar} />
+          <div className="fixed inset-0 z-[100] opacity-0" onClick={setCloseCalendar} />
         </div>
       )}
     </>
