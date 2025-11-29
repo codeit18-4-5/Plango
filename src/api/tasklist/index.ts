@@ -212,3 +212,25 @@ export async function patchComment({
     throw e;
   }
 }
+
+export async function patchTaskOrder({
+  groupId,
+  taskListId,
+  taskId,
+  newIndex,
+}: TaskDetailProps & {
+  newIndex: number;
+}) {
+  try {
+    const res = await axiosInstance.patch(
+      `/groups/${groupId}/task-lists/${taskListId}/tasks/${taskId}/order`,
+      {
+        displayIndex: newIndex,
+      },
+    );
+    return res.data;
+  } catch (e) {
+    console.error(e);
+    throw e;
+  }
+}

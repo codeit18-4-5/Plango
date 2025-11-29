@@ -10,12 +10,19 @@ import {
   patchComment,
   patchRecurring,
   patchRecurringDoneAt,
+  patchTaskOrder,
   postComment,
   postRecurring,
   postTask,
 } from "@/api/tasklist";
 import { Comment } from "@/types/comments";
-import { Task, TaskDetail, TaskDetailProps, TaskListProps } from "@/types/task";
+import {
+  Task,
+  TaskDetail,
+  TaskDetailProps,
+  TaskListProps,
+  UpdateOrderVariables,
+} from "@/types/task";
 import { GroupTaskList, Member, MemberPermissionProps, TaskList } from "@/types/tasklist";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -73,7 +80,53 @@ export const useTaskListMutation = () => {
     },
     onError: error => console.error("할 일 목록 등록 실패.", error),
   });
-  return { create };
+
+  const updateOrder = useMutation({
+    mutationFn: ({ groupId, taskListId, taskId, newIndex }: UpdateOrderVariables) =>
+      patchTaskOrder({ groupId, taskListId, taskId, newIndex }),
+    onMutate: async (variables: UpdateOrderVariables) => {
+      const queryKey = ["taskList", variables.groupId, variables.taskListId, variables.dateString];
+
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData<TaskList>(queryKey);
+
+      queryClient.setQueryData<TaskList>(queryKey, old => {
+        if (!old) return old;
+
+        const reorderedTasks = variables.orderPayload.map(
+          ({ id }: { id: number }) => old.tasks.find(t => t.id === id)!,
+        );
+
+        return {
+          ...old,
+          tasks: reorderedTasks,
+        };
+      });
+      return { previousData, queryKey, variables };
+    },
+    onError: (error, variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData<TaskList>(context.queryKey, context.previousData);
+      }
+      console.error("할 일 재정렬 실패.", error);
+    },
+    onSettled: (data, error, variables, context) => {
+      if (context) {
+        queryClient.invalidateQueries({
+          queryKey: context.queryKey,
+        });
+        queryClient.invalidateQueries({
+          queryKey: [
+            "taskDetail",
+            context.variables.groupId,
+            context.variables.taskListId,
+            context.variables.taskId,
+          ],
+        });
+      }
+    },
+  });
+  return { create, updateOrder };
 };
 
 // recurring (taskDetail)--------------------------------------------------------

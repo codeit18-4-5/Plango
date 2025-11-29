@@ -70,3 +70,14 @@ export type RecurringPostType = RecurringCommon & {
 };
 
 export type DeleteType = "All" | "One";
+
+export type OrderPayloadType = {
+  id: number;
+  index: number;
+};
+
+export interface UpdateOrderVariables extends TaskDetailProps {
+  dateString: string;
+  newIndex: number;
+  orderPayload: OrderPayloadType[];
+}
