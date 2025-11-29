@@ -21,6 +21,7 @@ import { dateTitleStyle, hiddenBrStyle, newListbuttonStyle } from "../index.styl
 import { useTaskListContext } from "./tasklist-provider";
 import TaskCardField from "@/components/features/tasklist/task-card-field";
 import { useToast } from "@/providers/toast-provider";
+import { debounce } from "lodash";
 
 interface TaskListPageProps {
   groupData: GroupTaskList;
@@ -60,9 +61,6 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
     setOpen: setOpenRecurring,
     setClose: setCloseRecurring,
   } = useToggle();
-
-  const currentDate = new Date();
-  currentDate.setHours(10, 0, 0, 0);
 
   const queryDate = searchParams.get("date");
 
@@ -204,6 +202,7 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
 
     const updateCalendarPos = () => {
       if (!calendarButtonRef.current) return;
+
       const rect = calendarButtonRef.current.getBoundingClientRect();
       setCalendarPosition({
         top: rect.bottom + window.scrollY + 8,
@@ -211,12 +210,16 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
       });
     };
 
-    updateCalendarPos();
+    const handleResize = debounce(() => {
+      requestAnimationFrame(updateCalendarPos);
+    }, 250); // ms
 
-    window.addEventListener("resize", updateCalendarPos);
+    updateCalendarPos();
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener("resize", updateCalendarPos);
+      window.removeEventListener("resize", handleResize);
+      handleResize.cancel();
     };
   }, [isOpenCalendar]);
 

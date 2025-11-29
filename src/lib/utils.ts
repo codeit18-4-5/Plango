@@ -296,8 +296,11 @@ export const formatDateToISOString = (date: Date | string) => {
 
 /**
  * taskList 변경값만 추출
+ * 현재 재사용성은 떨어지지만 추후에 확장 가능 고려
  * @author luli
- * @param
+ * @param {object} values 변경할 객체
+ * @param {string} currentName 현재 이름
+ * @param {string} currentDescription 현재 설명
  */
 export const extractChangedFields = (
   values: { name?: string; description?: string },
@@ -319,4 +322,16 @@ export const extractChangedFields = (
   }
 
   return result;
+};
+
+/**
+ * Date의 시간을 오전 10시로 고정
+ * @author luli
+ * @param date
+ * @param hour 24시간 기준
+ */
+export const setDateTime = (date: Date, hour?: number) => {
+  if (hour == null) hour = 10;
+  const configuredDate = date.setHours(hour, 0, 0, 0);
+  return new Date(configuredDate);
 };
