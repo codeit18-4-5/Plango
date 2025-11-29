@@ -44,3 +44,12 @@ export const DailyFrequency = [
 ];
 
 export type DailyFrequencyArray = (typeof DailyFrequency)[number];
+
+export const FrequencyType = {
+  Once: "ONCE",
+  Daily: "DAILY",
+  Weekly: "WEEKLY",
+  Monthly: "MONTHLY",
+} as const;
+
+export type FrequencyTypeValue = (typeof FrequencyType)[keyof typeof FrequencyType];
