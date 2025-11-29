@@ -174,7 +174,7 @@ export default function TaskDetailWrapper({
     }
   };
 
-  const hanelDoneButtonClick = (doneAt: string | null) => {
+  const handleDoneButtonClick = (doneAt: string | null) => {
     const done = doneAt ? false : true;
     updateRecurringDoneAt.mutate(
       {
@@ -214,7 +214,7 @@ export default function TaskDetailWrapper({
             <Button
               shape="round"
               intent={recurringData.doneAt ? "secondary" : "primary"}
-              onClick={() => hanelDoneButtonClick(recurringData.doneAt)}
+              onClick={() => handleDoneButtonClick(recurringData.doneAt)}
             >
               <div className="w-[16px]">
                 {recurringData.doneAt ? <CheckColorIcon /> : <CheckIcon />}
