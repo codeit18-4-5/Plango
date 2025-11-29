@@ -20,6 +20,7 @@ export function TriggerSelect({
           dropDownTriggerStyle({ size: ctx?.size, intent, className }),
           ctx?.isOpen && "bg-gray-700",
         )}
+        type="button"
       >
         {selectedLabel}
         {isIcon && children}

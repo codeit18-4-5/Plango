@@ -12,6 +12,8 @@ import {
 } from "./alert.styles";
 import AlertIcon from "@/assets/icons/ic-alert.svg";
 import { Button } from "..";
+import { createPortal } from "react-dom";
+import { useEffect, useRef } from "react";
 
 interface AlertProps {
   isOpen: boolean;
@@ -32,11 +34,48 @@ export default function Alert({
   onCancel,
   type,
 }: AlertProps) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (isOpen && !dialog.open) dialog.showModal();
+  }, [isOpen]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const handleClose = () => onCancel();
+    dialog.addEventListener("close", handleClose);
+    return () => dialog.removeEventListener("close", handleClose);
+  }, [onCancel]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onCancel();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleEscKey);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleEscKey);
+    };
+  }, [isOpen, onCancel]);
+
   if (!isOpen) return null;
 
-  return (
-    <div className={alertOverlayStyle} onClick={onCancel}>
-      <div className={alertContainerStyle()} onClick={e => e.stopPropagation()}>
+  return createPortal(
+    <dialog ref={dialogRef} className={alertOverlayStyle}>
+      <div className={alertContainerStyle} onClick={e => e.stopPropagation()}>
         {(type === ALERT_TYPE.Leave ||
           type === ALERT_TYPE.DeleteComment ||
           type === ALERT_TYPE.DeleteArticle) && (
@@ -79,6 +118,7 @@ export default function Alert({
           </Button>
         </div>
       </div>
-    </div>
+    </dialog>,
+    document.body,
   );
 }
