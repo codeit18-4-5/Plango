@@ -14,6 +14,7 @@ import IcProfile from "@/assets/icons/ic-image-circle.svg";
 import IcEdit from "@/assets/icons/ic-pencil-border.svg";
 import { devConsoleError } from "@/lib/error";
 import { useToast } from "@/providers/toast-provider";
+import TeamEditSkeleton from "@/components/skeleton-ui/team-edit-skeleton";
 
 export default function TeamEditPagae() {
   const param = useParams();
@@ -70,8 +71,8 @@ export default function TeamEditPagae() {
     },
   });
 
-  if (!data) return null;
-  if (isPending) return <div>로딩중입니다</div>;
+  if (!data) return <TeamEditSkeleton />;
+  if (isPending) return <TeamEditSkeleton />;
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
