@@ -310,7 +310,7 @@ export default function TaskCardField({
       {isLoadingTaskList ? (
         <TaskListSkeleton />
       ) : taskListData ? (
-        <section className="pb-[24px]">
+        <section className="scroll-bar overflow-y-auto pb-[24px]">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
