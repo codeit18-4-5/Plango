@@ -5,16 +5,6 @@ export type GroupCreateRequest = {
   image?: string;
 };
 
-export type GroupUpdateRequest = {
-  groupId: number;
-  payload: GroupUpdateBody;
-};
-
-export type GroupUpdateBody = {
-  name?: string;
-  image?: string | null | undefined;
-};
-
 export type GroupCreateResponse = {
   name: string;
   image: string;
@@ -43,4 +33,9 @@ export type teamTitleProps = {
 export type TodoListProps = {
   groupId: number;
   taskList: TaskList[];
+};
+
+export type GroupJoinRequest = {
+  userEmail: string;
+  token: string;
 };
