@@ -24,6 +24,8 @@ export type GetGroupsResponse = {
   taskLists: TaskList[];
 };
 
+export type GetUserGroup = Omit<GetGroupsResponse, "members" | "taskLists">;
+
 export type teamTitleProps = {
   name: string;
   id: number;
