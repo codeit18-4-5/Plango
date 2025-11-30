@@ -19,10 +19,12 @@ import { useTaskCommentsMutation } from "@/hooks/taskList/use-tasklist";
 import { useAlert } from "@/providers/alert-provider";
 import NewCommentField from "./comment/new-comment";
 import TaskCommentsField from "./comment/task-comments";
+import { TaskDetailSkeleton } from "@/components/skeleton-ui/tasklist-skeleton";
 
 interface TaskDetailProps {
   taskDetail: TaskDetail;
   onKebabClick: (type: KebabType) => void;
+  isLoading: boolean;
 }
 
 interface TaskDetailPageProps extends TaskDetailProps {
@@ -33,6 +35,7 @@ export default function TaskDetailMain({
   commentsData,
   taskDetail,
   onKebabClick,
+  isLoading,
 }: TaskDetailPageProps) {
   const { showToast } = useToast();
   const { showAlert } = useAlert();
@@ -123,86 +126,94 @@ export default function TaskDetailMain({
 
   return (
     <>
-      <section>
-        <div className="mb-[16px] flex justify-between">
-          <h1 className="text-heading-s text-gray-100">{taskDetail.name}</h1>
-          <Dropdown>
-            <Dropdown.TriggerIcon
-              intent="icon"
-              className="rounded px-[2px] py-[3px] hover:bg-gray-700"
-            >
-              <KebabIcon className="w-[24px]" />
-            </Dropdown.TriggerIcon>
-            <Dropdown.Menu size="md">
-              <Dropdown.Option align="center" onClick={() => handleKebabClick("update")}>
-                수정하기
-              </Dropdown.Option>
-              <Dropdown.Option align="center" onClick={() => handleKebabClick("delete")}>
-                삭제하기
-              </Dropdown.Option>
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-        <div className="mb-[16px] flex items-center justify-between">
-          <div className="flex items-center gap-[12px]">
-            <Avatar className="w-[32px]" image={taskDetail.writer.image} />
-            <span className="text-body-s text-gray-100">{taskDetail.writer.nickname}</span>
-          </div>
-          <span className="text-body-s text-gray-300">
-            {formatDateToFullStr({ date: taskDetail.date, type: "korean" })}
-          </span>
-        </div>
-        <div className="mb-[24px] flex gap-[10px]">
-          <div className="flex gap-[7px]">
-            <div className="w-[16px]">
-              <CalendarIcon />
+      {isLoading ? (
+        <TaskDetailSkeleton />
+      ) : (
+        <>
+          <section>
+            <div className="mb-[16px] flex justify-between">
+              <h1 className="text-heading-s text-gray-100">{taskDetail.name}</h1>
+              <Dropdown>
+                <Dropdown.TriggerIcon
+                  intent="icon"
+                  className="rounded px-[2px] py-[3px] hover:bg-gray-700"
+                >
+                  <KebabIcon className="w-[24px]" />
+                </Dropdown.TriggerIcon>
+                <Dropdown.Menu size="md">
+                  <Dropdown.Option align="center" onClick={() => handleKebabClick("update")}>
+                    수정하기
+                  </Dropdown.Option>
+                  <Dropdown.Option align="center" onClick={() => handleKebabClick("delete")}>
+                    삭제하기
+                  </Dropdown.Option>
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
-            <span className="text-body-xs text-gray-500">
-              {formatDateToFullStr({ date: taskDetail.date, type: "korean" })}
-            </span>
-          </div>
-          <span className="text-body-xs text-gray-500">|</span>
-          <div className="flex gap-[7px]">
-            <div className="w-[16px]">
-              <TimeIcon fill="var(--gray-500)" />
-            </div>
-            <span className="text-body-xs text-gray-500">
-              {formatTimeToStr({ date: taskDetail.date, type: "meridiem" })}
-            </span>
-          </div>
-          <span className="text-body-xs text-gray-500">|</span>
-          <div className="flex gap-[7px]">
-            {taskDetail?.frequency !== "ONCE" && (
-              <div className="w-[16px]">
-                <RepeatIcon />
+            <div className="mb-[16px] flex items-center justify-between">
+              <div className="flex items-center gap-[12px]">
+                <Avatar className="w-[32px]" image={taskDetail.writer.image} />
+                <span className="text-body-s text-gray-100">{taskDetail.writer.nickname}</span>
               </div>
-            )}
-            <span className="text-body-xs text-gray-500">
-              {getFrequencyLabel(taskDetail.frequency)}
-            </span>
-          </div>
-        </div>
-        <div className="h-[230px]">{taskDetail.description && <p>{taskDetail.description}</p>}</div>
-      </section>
-      <section>
-        <Form
-          onSubmit={handleNewReplySubmit}
-          defaultValues={{ content: "" }}
-          resolver={zodResolver(taskCommentsSchema)}
-          mode="onSubmit"
-        >
-          <ResetAfterSubmit />
-          <NewCommentField />
-        </Form>
+              <span className="text-body-s text-gray-300">
+                {formatDateToFullStr({ date: taskDetail.date, type: "korean" })}
+              </span>
+            </div>
+            <div className="mb-[24px] flex gap-[10px]">
+              <div className="flex gap-[7px]">
+                <div className="w-[16px]">
+                  <CalendarIcon />
+                </div>
+                <span className="text-body-xs text-gray-500">
+                  {formatDateToFullStr({ date: taskDetail.date, type: "korean" })}
+                </span>
+              </div>
+              <span className="text-body-xs text-gray-500">|</span>
+              <div className="flex gap-[7px]">
+                <div className="w-[16px]">
+                  <TimeIcon fill="var(--gray-500)" />
+                </div>
+                <span className="text-body-xs text-gray-500">
+                  {formatTimeToStr({ date: taskDetail.date, type: "meridiem" })}
+                </span>
+              </div>
+              <span className="text-body-xs text-gray-500">|</span>
+              <div className="flex gap-[7px]">
+                {taskDetail?.frequency !== "ONCE" && (
+                  <div className="w-[16px]">
+                    <RepeatIcon />
+                  </div>
+                )}
+                <span className="text-body-xs text-gray-500">
+                  {getFrequencyLabel(taskDetail.frequency)}
+                </span>
+              </div>
+            </div>
+            <div className="h-[230px] whitespace-pre-line break-words">
+              {taskDetail.description && <p>{taskDetail.description}</p>}
+            </div>
+          </section>
+          <section>
+            <Form
+              onSubmit={handleNewReplySubmit}
+              defaultValues={{ content: "" }}
+              resolver={zodResolver(taskCommentsSchema)}
+              mode="onSubmit"
+            >
+              <ResetAfterSubmit />
+              <NewCommentField />
+            </Form>
 
-        <div>
-          <TaskCommentsField
-            commentsData={commentsData}
-            onSubmit={handleModifiedReplySubmit}
-            onDelete={handleCommentDeleteClick}
-          />
-        </div>
-      </section>
+            <div>
+              <TaskCommentsField
+                commentsData={commentsData}
+                onSubmit={handleModifiedReplySubmit}
+                onDelete={handleCommentDeleteClick}
+              />
+            </div>
+          </section>
+        </>
+      )}
     </>
   );
 }

@@ -47,7 +47,7 @@ export default function TaskDetailWrapper({
   const { permissionCheck, dateString } = useTaskListContext();
 
   const { data: commentsData } = useTaskComments(taskId);
-  const { data: recurringData } = useRecurring({
+  const { data: recurringData, isLoading: isLoadingRecurring } = useRecurring({
     groupId,
     taskListId: Number(taskListIdParam),
     taskId,
@@ -184,6 +184,7 @@ export default function TaskDetailWrapper({
                 taskDetail={recurringData}
                 onKebabClick={handleKebabClick}
                 commentsData={commentsData ?? []}
+                isLoading={isLoadingRecurring}
               />
             </main>
           </Container>
