@@ -62,8 +62,9 @@ export default function Bottom() {
       />
 
       <div ref={containerRef} className="relative" style={{ scrollBehavior: "smooth" }}>
-        <PopularPosts />
         <DeveloperStory />
+        <PopularPosts />
+
         <ProductDemo />
       </div>
     </>

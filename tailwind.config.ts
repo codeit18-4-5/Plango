@@ -80,6 +80,7 @@ const config: Config = {
         "heading-s": ["var(--fs-heading-s)", { lineHeight: "var(--lh-heading-s)" }],
         "heading-m": ["var(--fs-heading-m)", { lineHeight: "var(--lh-heading-m)" }],
         "heading-l": ["var(--fs-heading-l)", { lineHeight: "var(--lh-heading-l)" }],
+        "heading-xl": ["var(--fs-heading-xl)", { lineHeight: "var(--lh-heading-xl)" }],
       },
       fontFamily: {
         sans: ["Pretendard", "ui-sans-serif", "system-ui", "sans-serif"],

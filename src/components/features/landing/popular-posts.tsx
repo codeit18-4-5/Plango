@@ -1,5 +1,6 @@
 "use client";
 
+import cn from "@/lib/cn";
 import { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, useInView } from "motion/react";
 import { Container } from "@/components/layout";
@@ -13,7 +14,7 @@ const generateFloatingHearts = (count: number) => {
       left: Math.random() * 100,
       delay: Math.random() * 2,
       duration: 3 + Math.random() * 2,
-      size: 1.5 + Math.random() * 1.8,
+      size: 1.5 + Math.random() * 2,
       emoji: ["✈️", "📚", "🏃🏻", "💕", "👍🏻", "🎹"][Math.floor(Math.random() * 6)],
       swayAmount: 20 + Math.random() * 40,
       swayDuration: 2 + Math.random() * 2,
@@ -47,33 +48,40 @@ export default function PopularPosts() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
   return (
-    <div ref={sectionRef} className="relative min-h-screen">
-      <Container as="section">
+    <section
+      ref={sectionRef}
+      className={cn("relative min-h-screen p-[70px_0]", "tablet:p-[110px_0]")}
+    >
+      <Container>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           style={{ opacity, scale, y }}
         >
-          <SectionHeader
-            title="지금 가장 주목받는"
-            gradientTitle="베스트 게시글"
-            gradientColor="linear-gradient(90deg, var(--pink-400), var(--purple-400))"
-            description="Plango 멤버들이 가장 관심 있어하는 토픽이에요"
-          />
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="mb-20 text-center"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <SectionHeader
+              title="지금 가장 주목받는"
+              gradientTitle="베스트 게시글"
+              gradientColor="linear-gradient(90deg, var(--pink-400), var(--purple-400))"
+              description="Plango 멤버들이 가장 관심 있어하는 토픽이에요"
+            />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3 }}
           >
             <BestArticleSection showTitle={false} />
           </motion.div>
         </motion.div>
       </Container>
       {showFloatingHearts && (
-        <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
           {floatingHeartsData.map(heart => (
             <motion.div
               key={heart.id}
@@ -102,7 +110,7 @@ export default function PopularPosts() {
               }}
               transition={{
                 duration: heart.duration,
-                delay: heart.delay,
+                delay: 1 + heart.delay,
                 ease: "easeOut",
                 x: {
                   duration: heart.swayDuration,
@@ -116,6 +124,6 @@ export default function PopularPosts() {
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }

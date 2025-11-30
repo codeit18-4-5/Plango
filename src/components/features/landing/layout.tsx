@@ -15,7 +15,7 @@ export function SectionHeader({
     <div
       className={`mb-[50px] ${align === "center" ? "text-center" : ""} ${align === "left" ? "text-left" : ""} ${align === "right" ? "text-right" : ""}`}
     >
-      <h2 className="text-[48px] font-bold leading-tight">
+      <h2 className="text-heading-xl font-bold leading-tight">
         {title}
         <br />
         <span
@@ -28,7 +28,7 @@ export function SectionHeader({
           {gradientTitle}
         </span>
       </h2>
-      {description && <p className="mt-[20px] text-gray-200">{description}</p>}
+      {description && <p className="mt-[20px] text-gray-400">{description}</p>}
     </div>
   );
 }
