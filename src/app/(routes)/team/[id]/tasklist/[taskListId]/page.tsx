@@ -20,6 +20,9 @@ export default async function TasklistPage({
 
   const groupResult = await getGroupTaskListsforServer(groupId);
 
+  const existTaskList = groupResult.taskLists.some(taskList => taskList.id === Number(taskListId));
+  if (!existTaskList) notFound();
+
   return (
     <>
       <HydrationBoundary state={dehydrate(queryClient)}>
