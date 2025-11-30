@@ -5,8 +5,17 @@ import LeftArrowIcon from "@/assets/icons/ic-arrow-left-circle.svg";
 import RightArrowIcon from "@/assets/icons/ic-arrow-right-circle.svg";
 import CalendarIcon from "@/assets/icons/ic-calendar-circle.svg";
 import PlusIcon from "@/assets/icons/ic-plus.svg";
-import { useRecurringMutation, useTaskListMutation } from "@/hooks/taskList/use-tasklist";
-import { formatDateForToMonthAndDays, formatDateToISOString, isEmpty } from "@/lib/utils";
+import {
+  useGroupTaskLists,
+  useRecurringMutation,
+  useTaskListMutation,
+} from "@/hooks/taskList/use-tasklist";
+import {
+  formatDateForToMonthAndDays,
+  formatDateToISOString,
+  isEmpty,
+  setDateTime,
+} from "@/lib/utils";
 import { Button, Floating, SingleDatepicker } from "@/components/ui";
 import { useToggle } from "@/hooks";
 import TaskAddTemplate from "@/components/features/tasklist/task-add-modal";
@@ -20,8 +29,8 @@ import z4 from "zod/v4";
 import { dateTitleStyle, hiddenBrStyle, newListbuttonStyle } from "../index.styles";
 import { useTaskListContext } from "./tasklist-provider";
 import TaskCardField from "@/components/features/tasklist/task-card-field";
-import { useToast } from "@/providers/toast-provider";
 import { debounce } from "lodash";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface TaskListPageProps {
   groupData: GroupTaskList;
@@ -31,17 +40,22 @@ interface TaskListPageProps {
 type ModalType = "task" | "recurring";
 type ArrowType = "prev" | "next";
 
-export default function TasklistClient({ groupData, taskListId }: TaskListPageProps) {
+export default function TasklistClient({
+  groupData: initialGroupData,
+  taskListId,
+}: TaskListPageProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const {
-    isOpen: isOpenCalendar,
-    setOpen: setOpenCalendar,
-    setClose: setCloseCalendar,
-  } = useToggle();
+  const queryClient = useQueryClient();
+
+  // 서버단의 fetch data 캐시
+  useEffect(() => {
+    queryClient.setQueryData(["groupTaskLists", initialGroupData.id], initialGroupData);
+  }, [initialGroupData, queryClient]);
+
+  const { data: groupData = initialGroupData } = useGroupTaskLists(initialGroupData.id);
 
   const { showAlert } = useAlert();
-  const { showToast } = useToast();
 
   const {
     isTeam,
@@ -60,6 +74,11 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
     isOpen: isOpenRecurring,
     setOpen: setOpenRecurring,
     setClose: setCloseRecurring,
+  } = useToggle();
+  const {
+    isOpen: isOpenCalendar,
+    setOpen: setOpenCalendar,
+    setClose: setCloseCalendar,
   } = useToggle();
 
   const queryDate = searchParams.get("date");
@@ -110,7 +129,7 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
     const result = await permissionCheck();
     if (result) {
       const resultValue = value.name;
-      if (isEmpty(resultValue))
+      if (!isEmpty(resultValue))
         createTaskList.mutate(
           {
             groupId: groupData.id,
@@ -118,13 +137,7 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
           },
           {
             onSuccess: () => {
-              showToast("할 일 목록이 등록되었습니다.", "success");
               setCloseTask();
-              router.refresh();
-            },
-            onError: error => {
-              console.error(error);
-              showToast("등록 중 오류가 발생했습니다.", "error");
             },
           },
         );
@@ -149,11 +162,7 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
         },
         {
           onSuccess: () => {
-            showToast("할 일이 등록되었습니다.", "success");
             setCloseRecurring();
-          },
-          onError: () => {
-            showToast("등록 중 오류가 발생했습니다.", "error");
           },
         },
       );
@@ -185,7 +194,8 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
 
   const handleDateChange = (date: Date | null) => {
     if (date == null) return;
-    setStartDate(date);
+
+    setStartDate(setDateTime(date));
 
     const params = new URLSearchParams(searchParams.toString());
     params.set("date", formatDateToISOString(date));
@@ -320,24 +330,26 @@ export default function TasklistClient({ groupData, taskListId }: TaskListPagePr
       )}
 
       {isOpenCalendar && (
-        <div
-          className="fixed z-50"
-          style={{
-            top: `${calendarPosition.top}px`,
-            left: `${calendarPosition.left}px`,
-          }}
-        >
-          <div className="z-[500] rounded-lg border border-pink-400 bg-gray-800 p-[10px] shadow-lg">
-            <SingleDatepicker
-              onSingleChange={date => handleDateChange(date)}
-              startDate={startDate}
-            />
-            <Button className="h-[30px] w-full" onMouseDown={handleTodayPickerClick}>
-              오늘 날짜 선택
-            </Button>
+        <>
+          <div className="fixed inset-0 z-[10]" onClick={setCloseCalendar} />
+          <div
+            className="fixed z-[500]"
+            style={{
+              top: `${calendarPosition.top}px`,
+              left: `${calendarPosition.left}px`,
+            }}
+          >
+            <div className="z-[500] rounded-lg border border-pink-400 bg-gray-800 p-[10px] shadow-lg">
+              <SingleDatepicker
+                onSingleChange={date => handleDateChange(date)}
+                startDate={startDate}
+              />
+              <Button className="h-[30px] w-full" onMouseDown={handleTodayPickerClick}>
+                오늘 날짜 선택
+              </Button>
+            </div>
           </div>
-          <div className="fixed inset-0 z-[100] opacity-0" onClick={setCloseCalendar} />
-        </div>
+        </>
       )}
     </>
   );

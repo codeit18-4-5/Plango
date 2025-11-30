@@ -15,17 +15,11 @@ interface SortableTaskProps {
     type: KebabType;
   }) => void;
   onClick: () => void;
-  dragActiveId: number | null;
 }
 
 type KebabType = "update" | "delete";
 
-export default function SortableTask({
-  task,
-  onKebabClick,
-  onClick,
-  dragActiveId,
-}: SortableTaskProps) {
+export default function SortableTask({ task, onKebabClick, onClick }: SortableTaskProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
   });
@@ -33,7 +27,7 @@ export default function SortableTask({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging || (dragActiveId && dragActiveId !== task.id) ? "0.3" : "1",
+    opacity: isDragging ? "0.3" : "1",
   };
 
   return (

@@ -136,15 +136,6 @@ export const taskDetailSchema = z
       error: "주간 반복 설정시 요일은 필수 입력입니다.",
       path: ["frequencyType"],
     },
-  )
-  .refine(
-    values => {
-      if (values.frequencyType === "MONTHLY") {
-        return values.monthDay != null && values.monthDay >= 1 && values.monthDay <= 31;
-      }
-      return true;
-    },
-    { error: "반복 날짜는 1~31일 사이로 선택하여야 합니다.", path: ["frequencyType"] },
   );
 
 const jwtRegex = /^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+$/;

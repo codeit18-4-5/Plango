@@ -20,7 +20,6 @@ import { useAlert } from "@/providers/alert-provider";
 import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
 import TaskDeleteSheet from "./task-recurring/task-recurring-delete-sheet";
 import { DeleteType } from "@/types/task";
-import { useToast } from "@/providers/toast-provider";
 import useModalStore from "@/store/modal.store";
 import SortableTask from "./sortable-task";
 import {
@@ -75,7 +74,6 @@ export default function TaskCardField({
     setClose: setCloseDeleteSheet,
   } = useToggle();
 
-  const { showToast } = useToast();
   const { showAlert } = useAlert();
 
   const { permissionCheck, dateString } = useTaskListContext();
@@ -109,6 +107,7 @@ export default function TaskCardField({
     const resultRecurringId = groupData?.taskLists
       .find(taskList => taskList.id === activeTab)
       ?.tasks.find(task => task.id === id)?.recurringId;
+
     sessionStorage.setItem("recurringId", resultRecurringId ? resultRecurringId.toString() : "");
 
     const params = new URLSearchParams(searchParams.toString());
@@ -154,11 +153,7 @@ export default function TaskCardField({
         },
         {
           onSuccess: () => {
-            showToast("할 일 제목이 수정되었습니다.", "success");
             setCloseUpdateTaskDetail();
-          },
-          onError: () => {
-            showToast("등록 중 오류가 발생했습니다.", "error");
           },
         },
       );
@@ -184,7 +179,6 @@ export default function TaskCardField({
           },
           {
             onSuccess: () => {
-              showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
 
               if (taskId && Number(taskId) === selectedTaskId) {
@@ -196,9 +190,6 @@ export default function TaskCardField({
                 router.push(`/team/${groupId}/tasklist/${activeTab}?${params.toString()}`);
               }
               router.refresh();
-            },
-            onError: () => {
-              showToast("삭제 중 오류가 발생했습니다.", "error");
             },
           },
         );
@@ -218,17 +209,17 @@ export default function TaskCardField({
           },
           {
             onSuccess: () => {
-              showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
 
               if (taskId && Number(taskId) === selectedTaskId) {
                 closeDetailModal();
-                router.push(`/team/${groupId}/tasklist`);
+
+                const params = new URLSearchParams(searchParams.toString());
+                const dateParam = searchParams.get("date");
+                params.set("date", dateParam ? dateParam : "");
+                router.push(`/team/${groupId}/tasklist/${activeTab}?${params.toString()}`);
               }
               router.refresh();
-            },
-            onError: () => {
-              showToast("삭제 중 오류가 발생했습니다.", "error");
             },
           },
         );
@@ -265,21 +256,14 @@ export default function TaskCardField({
 
       const orderPayload = newOrder.map((t, i) => ({ id: t.id, index: i }));
 
-      updateOrder.mutate(
-        {
-          groupId: groupData.id,
-          taskListId: activeTab,
-          dateString: dateString,
-          taskId: Number(active.id),
-          newIndex,
-          orderPayload,
-        },
-        {
-          onError: () => {
-            showToast("할 일 재정렬에 실패하였습니다.", "error");
-          },
-        },
-      );
+      updateOrder.mutate({
+        groupId: groupData.id,
+        taskListId: activeTab,
+        dateString: dateString,
+        taskId: Number(active.id),
+        newIndex,
+        orderPayload,
+      });
     }
   };
 
@@ -333,21 +317,22 @@ export default function TaskCardField({
                     task={task}
                     onKebabClick={handleKebabClick}
                     onClick={() => handleTaskClick(task.id)}
-                    dragActiveId={dragActiveId || null}
                   />
                 </article>
               ))}
             </SortableContext>
             <DragOverlay>
-              {dragActiveId && (
-                <article className="mt-[16px] block w-full cursor-pointer">
-                  <Task
-                    task={tasks.find(task => task.id === dragActiveId)!}
-                    onKebabClick={handleKebabClick}
-                    onClick={() => {}}
-                  />
-                </article>
-              )}
+              {dragActiveId &&
+                (() => {
+                  const activeTask = tasks.find(task => task.id === dragActiveId);
+                  if (!activeTask) return null;
+
+                  return (
+                    <article className="mt-[16px] block w-full cursor-pointer">
+                      <Task task={activeTask} onKebabClick={handleKebabClick} onClick={() => {}} />
+                    </article>
+                  );
+                })()}
             </DragOverlay>
           </DndContext>
         </section>

@@ -224,13 +224,13 @@ function FormField({
           <Input.Error />
           <div className="grid grid-cols-[3fr_2fr] gap-[8px]">
             <Input.Field
-              value={dateValue || undefined}
+              value={dateValue || ""}
               placeholder={currentDay}
               onFocus={() => setIsDatepickerOpen(true)}
               readOnly
             />
             <Input.Field
-              value={timeValue || undefined}
+              value={timeValue || ""}
               placeholder={currentTime}
               onFocus={() => setIsTimepickerOpen(true)}
               readOnly

@@ -16,7 +16,6 @@ import { DeleteType } from "@/types/task";
 import { Button, Floating } from "@/components/ui";
 import CheckIcon from "@/assets/icons/ic-check.svg";
 import CheckColorIcon from "@/assets/icons/ic-check-color.svg";
-import { useToast } from "@/providers/toast-provider";
 import useModalStore from "@/store/modal.store";
 
 export default function TaskDetailWrapper({
@@ -44,7 +43,6 @@ export default function TaskDetailWrapper({
     setClose: setCloseDeleteSheet,
   } = useToggle();
 
-  const { showToast } = useToast();
   const { showAlert } = useAlert();
   const { permissionCheck, dateString } = useTaskListContext();
 
@@ -102,11 +100,7 @@ export default function TaskDetailWrapper({
         },
         {
           onSuccess: () => {
-            showToast("할 일 내용이 수정되었습니다.", "success");
             setCloseUpdateTaskDetail();
-          },
-          onError: () => {
-            showToast("등록 중 오류가 발생했습니다.", "error");
           },
         },
       );
@@ -132,14 +126,9 @@ export default function TaskDetailWrapper({
           },
           {
             onSuccess: () => {
-              showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
-
               closeDetailModal();
               router.push(`/team/${groupId}/tasklist`);
-            },
-            onError: () => {
-              showToast("삭제 중 오류가 발생했습니다.", "error");
             },
           },
         );
@@ -159,14 +148,9 @@ export default function TaskDetailWrapper({
           },
           {
             onSuccess: () => {
-              showToast("할 일이 삭제 되었습니다.", "success");
               setCloseDeleteSheet();
-
               closeDetailModal();
               router.push(`/team/${groupId}/tasklist`);
-            },
-            onError: () => {
-              showToast("삭제 중 오류가 발생했습니다.", "error");
             },
           },
         );
@@ -176,20 +160,13 @@ export default function TaskDetailWrapper({
 
   const handleDoneButtonClick = (doneAt: string | null) => {
     const done = doneAt ? false : true;
-    updateRecurringDoneAt.mutate(
-      {
-        groupId: groupId,
-        taskListId: taskListId,
-        dateString: dateString,
-        taskId: taskId,
-        done: done,
-      },
-      {
-        onError: () => {
-          showToast("등록 중 오류가 발생했습니다.", "error");
-        },
-      },
-    );
+    updateRecurringDoneAt.mutate({
+      groupId: groupId,
+      taskListId: taskListId,
+      dateString: dateString,
+      taskId: taskId,
+      done: done,
+    });
   };
 
   return (

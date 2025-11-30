@@ -54,23 +54,13 @@ export default function TaskDetailMain({
       showToast("댓글 등록 중 오류가 발생하였습니다.", "error");
       return;
     }
-    createComment.mutate(
-      {
-        groupId: Number(groupId),
-        taskListId: Number(taskListId),
-        dateString: dateString,
-        taskId: taskDetail.id,
-        comment: comment.content,
-      },
-      {
-        onSuccess: () => {
-          showToast("댓글이 등록 되었습니다.", "success");
-        },
-        onError: () => {
-          showToast("댓글 등록에 실패하였습니다.", "error");
-        },
-      },
-    );
+    createComment.mutate({
+      groupId: Number(groupId),
+      taskListId: Number(taskListId),
+      dateString: dateString,
+      taskId: taskDetail.id,
+      comment: comment.content,
+    });
   };
 
   const handleModifiedReplySubmit =
@@ -92,11 +82,7 @@ export default function TaskDetailMain({
         },
         {
           onSuccess: () => {
-            showToast("댓글이 수정 되었습니다.", "success");
             onSuccess();
-          },
-          onError: () => {
-            showToast("댓글 수정에 실패하였습니다.", "error");
           },
         },
       );
@@ -114,23 +100,13 @@ export default function TaskDetailMain({
   };
 
   const handleDeleteComment = (commentId: number) => {
-    deleteComment.mutate(
-      {
-        groupId: Number(groupId),
-        taskListId: Number(taskListId),
-        dateString: dateString,
-        taskId: taskDetail.id,
-        commentId: commentId,
-      },
-      {
-        onSuccess: () => {
-          showToast("댓글이 삭제 되었습니다.", "success");
-        },
-        onError: () => {
-          showToast("댓글 삭제에 실패하였습니다.", "error");
-        },
-      },
-    );
+    deleteComment.mutate({
+      groupId: Number(groupId),
+      taskListId: Number(taskListId),
+      dateString: dateString,
+      taskId: taskDetail.id,
+      commentId: commentId,
+    });
   };
 
   function ResetAfterSubmit() {

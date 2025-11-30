@@ -8,7 +8,6 @@ import RepeatIcon from "@/assets/icons/ic-repeat.svg";
 import { Task as TaskType } from "@/types/task";
 import { formatDateToFullStr, getFrequencyLabel } from "@/lib/utils";
 import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
-import { useToast } from "@/providers/toast-provider";
 import { notFound, useParams } from "next/navigation";
 import { useRecurringMutation } from "@/hooks/taskList/use-tasklist";
 
@@ -32,8 +31,6 @@ export default function Task({ task, onKebabClick, onClick }: TaskProps) {
   const { id: groupId, taskListId } = useParams();
   if (groupId == null || taskListId == null) notFound();
 
-  const { showToast } = useToast();
-
   const { updateDoneAt: updateRecurringDoneAt } = useRecurringMutation();
   const { dateString } = useTaskListContext();
 
@@ -44,21 +41,13 @@ export default function Task({ task, onKebabClick, onClick }: TaskProps) {
   const handleCheckBoxChange = (done: boolean) => {
     if (!(groupId && taskListId && dateString)) return;
 
-    updateRecurringDoneAt.mutate(
-      {
-        groupId: Number(groupId),
-        taskListId: Number(taskListId),
-        dateString: dateString,
-        taskId: task.id,
-        done: done,
-      },
-      {
-        onSuccess: () => {},
-        onError: () => {
-          showToast("등록 중 오류가 발생했습니다.", "error");
-        },
-      },
-    );
+    updateRecurringDoneAt.mutate({
+      groupId: Number(groupId),
+      taskListId: Number(taskListId),
+      dateString: dateString,
+      taskId: task.id,
+      done: done,
+    });
   };
 
   return (

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { layoutStyle } from "../index.styles";
 import { usePathname } from "next/navigation";
 import useModalStore from "@/store/modal.store";
+import { createPortal } from "react-dom";
 
 interface CommonProps {
   children: React.ReactNode;
@@ -33,7 +34,8 @@ export default function LayoutContent({ children, detail }: CommonProps) {
       <div className="relative h-[calc(100vh-72px)] overflow-hidden">
         <div className="scroll-bar h-full w-full overflow-y-auto">{children}</div>
 
-        {isOpenDetailModal && <div className={layoutStyle}>{detail}</div>}
+        {isOpenDetailModal &&
+          createPortal(<div className={layoutStyle}>{detail}</div>, document.body)}
       </div>
     </>
   );
