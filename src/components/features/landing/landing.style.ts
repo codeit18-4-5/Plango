@@ -14,7 +14,7 @@ export const introWave = [
   "tablet:h-[140px] tablet:bg-[auto_140px] ",
   "desktop:h-[250px] desktop:bg-[auto_250px] ",
 ].join("");
-export const sectionWrapper = "py-10 tablet:py-24";
+export const sectionWrapper = "py-10 tablet:py-24 px-[1.25rem] tablet:px-6";
 export const sectionTitle = "text-center text-3xl tablet:text-5xl font-bold break-keep";
 export const sectionTitleGradient = cva("bg-gradient-to-r bg-clip-text text-transparent", {
   variants: {
