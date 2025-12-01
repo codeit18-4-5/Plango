@@ -5,10 +5,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TeamModalProps } from "../team.props";
 import { useToast } from "@/providers/toast-provider";
 import { devConsoleError } from "@/lib/error";
+import { useAlert } from "@/providers/alert-provider";
 
 export const TodoListCreateModal = ({ isOpen, groupId, onClose }: TeamModalProps) => {
   const queryClient = useQueryClient();
   const { showToast } = useToast();
+  const { showAlert } = useAlert();
 
   const [todoName, setTodoName] = useState("");
 
@@ -34,6 +36,15 @@ export const TodoListCreateModal = ({ isOpen, groupId, onClose }: TeamModalProps
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!todoName) {
+      showAlert("할 일 목록의 이름은 빈칸 일 수 없습니다.");
+      return;
+    }
+    if (todoName.length > 30) {
+      showAlert("할 일 목록의 제목은 최대 30자 입니다.");
+      return;
+    }
+
     mutate({ groupId, param: todoName });
   };
 
@@ -48,6 +59,8 @@ export const TodoListCreateModal = ({ isOpen, groupId, onClose }: TeamModalProps
               placeholder="목록 명을 입력해주세요."
               onChange={handleNameChange}
               value={todoName}
+              maxLength="30"
+              autoComplete="off"
             />
           </Input>
         </Modal.Body>
