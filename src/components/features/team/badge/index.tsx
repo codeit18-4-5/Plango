@@ -17,7 +17,7 @@ export default function Badge({ tasks }: { tasks: Task[] }) {
   return (
     <div className="flex h-[25px] w-[58px] items-center justify-between rounded-xl bg-gray-900 px-2">
       {tasks.length === 0 || percent === 100 ? (
-        <IcDone className="h-4 w-4" />
+        <IcDone className="h-4 w-4 text-pink-400" />
       ) : (
         <CircularProgressBar percent={percent} size={12} {...badgeChartProps} />
       )}
