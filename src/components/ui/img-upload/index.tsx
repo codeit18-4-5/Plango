@@ -95,7 +95,7 @@ export default function ImgUpload({ value, onChange, id, error }: ImgUploadProps
               fill
               className={IMG_UPLOAD_STYLES.image}
               priority
-              sizes="100vw"
+              sizes="100%"
             />
             <button
               type="button"

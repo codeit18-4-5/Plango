@@ -41,7 +41,7 @@ export const CARD_CONTENT_STYLES = {
 
 export const CARD_INFO_STYLES = {
   wrapper: cva(
-    "grid grid-cols-[auto_60px] gap-x-[12px] items-end justify-between tablet:grid-cols-[auto_130px]",
+    "grid grid-cols-[auto_60px] gap-x-[12px] items-end justify-between tablet:grid-cols-[auto_150px]",
     {
       variants: {
         variant: {
@@ -66,7 +66,7 @@ export const CARD_INFO_STYLES = {
         variant: "primary",
       },
     }),
-    writer: cva("grid grid-cols-[30px_auto] items-center gap-x-[12px] pr-[12px]", {
+    writer: cva("pr-[12px]", {
       variants: {
         variant: {
           primary: "order-2 tablet:order-1",
@@ -77,7 +77,6 @@ export const CARD_INFO_STYLES = {
         variant: "primary",
       },
     }),
-    avatar: cn("w-[32px] h-[32px]"),
     nickname: cn("text-[12px] text-gray-100 line-clamp-1 break-words block", "tablet:text-[14px]"),
     time: cva(
       "text-[12px] text-gray-400 mb-[16px] block tablet:before:relative tablet:text-[14px] tablet:mb-0 tablet:before:content-[''] tablet:before:inline-block tablet:before:w-[1px] tablet:before:h-[12px] tablet:before:bg-gray-700 tablet:before:mr-[12px] tablet:before:top-[1px]",

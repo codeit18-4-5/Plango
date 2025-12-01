@@ -1,11 +1,11 @@
 "use client";
 
-import cn from "@/lib/cn";
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
+import { useToast } from "@/providers/toast-provider";
 import { ArticleConfirmModal } from "@/components/features/article/layout";
-import { Input } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { isTokenExpire } from "@/lib/utils";
 import { ARTICLE_FORM_STYLES } from "@/components/features/article/index.styles";
 
@@ -15,12 +15,9 @@ export default function CopyToken({ token }: { token: string }) {
   const user = useAuthStore(state => state.user);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const { showToast } = useToast();
 
   const handleInputClick = useCallback(() => {
-    if (isExpired) {
-      // TODO: 만료 토스트 추가 예정
-      return;
-    }
     if (!user) {
       setShowLoginModal(true);
       return;
@@ -28,46 +25,41 @@ export default function CopyToken({ token }: { token: string }) {
     setShowJoinModal(true);
   }, [isExpired, user]);
 
-  // TODO: 복사 토스트 추가 예정
   const handleCopy = useCallback(() => {
     if (!isExpired) {
       navigator.clipboard.writeText(token ?? "");
+      showToast("토큰이 복사되었습니다.", "success");
     }
-  }, [token, isExpired]);
+  }, [token, isExpired, showToast]);
 
   const handleJoin = useCallback(() => {
-    router.replace(`/team/join?token=${encodeURIComponent(token)}`);
+    sessionStorage.setItem("joinToken", token);
+    router.replace("/team/join");
   }, [token, router]);
 
   const handleLogin = useCallback(() => {
-    router.replace(`/team/join?token=${encodeURIComponent(token)}`);
-  }, [router, token]);
+    sessionStorage.setItem("joinToken", token);
+    router.replace(`/login?redirect=${encodeURIComponent("/team/join")}`);
+  }, [token, router]);
 
   return (
     <>
-      <Input id="team-token">
-        <Input.Label
-          label="팀 참여 토큰"
-          caption={isExpired ? "만료된 토큰입니다." : "토큰을 복사해 팀에 참여해보세요."}
-          size="md"
-        />
-        <Input.Field
-          value={token}
-          readOnly
-          aria-label="팀 참여 토큰 복사하기"
-          role="button"
-          title="팀 참여 토큰 복사하기"
-          tabIndex={0}
-          onClick={() => {
-            handleInputClick();
-            handleCopy();
-          }}
-          className={cn(
-            ARTICLE_FORM_STYLES.form.field.copyToken,
-            isExpired ? "cursor-not-allowed text-gray-500 line-through" : "hover:text-pink-400",
-          )}
-        />
-      </Input>
+      <p className="mb-[10px]">
+        <b>팀 참여하기 </b>
+        <span className="text-caption text-gray-500">토큰을 복사해 팀에 참여해보세요.</span>
+      </p>
+      <Button
+        type="button"
+        className={ARTICLE_FORM_STYLES.form.field.copyToken}
+        onClick={() => {
+          handleInputClick();
+          handleCopy();
+        }}
+        disabled={isExpired}
+      >
+        {isExpired ? "토큰이 만료되었습니다" : "토큰 복사하기"}
+      </Button>
+
       {showLoginModal && (
         <ArticleConfirmModal
           title="로그인이 필요합니다."

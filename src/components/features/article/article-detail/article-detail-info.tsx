@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getTimeAgo, formatDateToFullStr } from "@/lib/utils";
-import { ArticleContent, ArticleDetail } from "@/types/article";
+import { getTimeAgo, formatDateToFullStr, parseArticleContent } from "@/lib/utils";
+import { ArticleDetail } from "@/types/article";
 import { Button } from "@/components/ui";
 import ArticleMetaCounts from "@/components/features/article/article-detail/article-meta-counts";
 import ArticleLike from "@/components/features/article/actions/article-like";
@@ -15,18 +15,7 @@ export default function ArticleDetailInfo({ article }: ArticleDetailInfoProps) {
   if (!article) return null;
   const DATE_TIME = article.createdAt;
 
-  const getParsedContent = (content: string | ArticleContent) => {
-    if (typeof content === "string") {
-      try {
-        return JSON.parse(content);
-      } catch {
-        return { content, token: "" };
-      }
-    }
-    return content;
-  };
-
-  const parsedContent = getParsedContent(article.content);
+  const parsedContent = parseArticleContent(article.content);
 
   return (
     <section>
