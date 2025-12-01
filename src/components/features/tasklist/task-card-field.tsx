@@ -33,6 +33,7 @@ import {
   useSensors,
 } from "@dnd-kit/core";
 import { arrayMove, SortableContext } from "@dnd-kit/sortable";
+import { TabsSkeleton, TaskListSkeleton } from "@/components/skeleton-ui/tasklist-skeleton";
 
 interface TaskListPageProps {
   groupData: GroupTaskList;
@@ -87,7 +88,7 @@ export default function TaskCardField({
     .sort((a, b) => a.displayIndex - b.displayIndex)
     .map(taskList => ({ id: taskList.id, label: taskList.name }));
 
-  const { data: taskListData } = useTaskList({
+  const { data: taskListData, isLoading: isLoadingTaskList } = useTaskList({
     groupId: Number(groupId),
     taskListId: activeTab,
     date: date,
@@ -276,13 +277,16 @@ export default function TaskCardField({
     closeDetailModal();
   }, [activeTab, router]);
 
-  if (!activeTab || isEmpty(taskListData)) return null;
+  if (!activeTab) return null;
 
   return (
     <>
       <section>
         <div className="scroll-bar overflow-x flex gap-[12px]">
-          {!isEmpty(tabs) &&
+          {isLoadingTaskList ? (
+            <TabsSkeleton />
+          ) : (
+            !isEmpty(tabs) &&
             tabs.map(tab => {
               return (
                 <button
@@ -299,11 +303,14 @@ export default function TaskCardField({
                   {tab.label}
                 </button>
               );
-            })}
+            })
+          )}
         </div>
       </section>
-      {taskListData ? (
-        <section className="pb-[24px]">
+      {isLoadingTaskList ? (
+        <TaskListSkeleton />
+      ) : taskListData ? (
+        <section className="scroll-bar overflow-y-auto pb-[24px]">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}

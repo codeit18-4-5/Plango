@@ -32,7 +32,7 @@ export default function LayoutContent({ children, detail }: CommonProps) {
   return (
     <>
       <div className="relative h-[calc(100vh-72px)] overflow-hidden">
-        <div className="scroll-bar h-full w-full overflow-y-auto">{children}</div>
+        <div className="h-full w-full">{children}</div>
 
         {isOpenDetailModal &&
           createPortal(<div className={layoutStyle}>{detail}</div>, document.body)}

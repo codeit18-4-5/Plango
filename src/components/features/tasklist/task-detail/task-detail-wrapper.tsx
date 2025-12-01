@@ -17,6 +17,7 @@ import { Button, Floating } from "@/components/ui";
 import CheckIcon from "@/assets/icons/ic-check.svg";
 import CheckColorIcon from "@/assets/icons/ic-check-color.svg";
 import useModalStore from "@/store/modal.store";
+import { TaskDetailSkeleton } from "@/components/skeleton-ui/tasklist-skeleton";
 
 export default function TaskDetailWrapper({
   taskId,
@@ -47,7 +48,7 @@ export default function TaskDetailWrapper({
   const { permissionCheck, dateString } = useTaskListContext();
 
   const { data: commentsData } = useTaskComments(taskId);
-  const { data: recurringData } = useRecurring({
+  const { data: recurringData, isLoading: isLoadingRecurring } = useRecurring({
     groupId,
     taskListId: Number(taskListIdParam),
     taskId,
@@ -171,7 +172,7 @@ export default function TaskDetailWrapper({
 
   return (
     <>
-      {recurringData ? (
+      {recurringData && (
         <>
           <Container className="h-full">
             <header>
@@ -180,11 +181,15 @@ export default function TaskDetailWrapper({
               </button>
             </header>
             <main className="flex h-full flex-col">
-              <TaskDetailMain
-                taskDetail={recurringData}
-                onKebabClick={handleKebabClick}
-                commentsData={commentsData ?? []}
-              />
+              {isLoadingRecurring ? (
+                <TaskDetailSkeleton />
+              ) : (
+                <TaskDetailMain
+                  taskDetail={recurringData}
+                  onKebabClick={handleKebabClick}
+                  commentsData={commentsData ?? []}
+                />
+              )}
             </main>
           </Container>
           <Floating>
@@ -221,8 +226,6 @@ export default function TaskDetailWrapper({
             />
           )}
         </>
-      ) : (
-        <div>암것도 없어</div>
       )}
     </>
   );

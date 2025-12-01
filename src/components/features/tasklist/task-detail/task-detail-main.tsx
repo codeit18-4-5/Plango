@@ -182,7 +182,9 @@ export default function TaskDetailMain({
             </span>
           </div>
         </div>
-        <div className="h-[230px]">{taskDetail.description && <p>{taskDetail.description}</p>}</div>
+        <div className="h-[230px] whitespace-pre-line break-words">
+          {taskDetail.description && <p>{taskDetail.description}</p>}
+        </div>
       </section>
       <section>
         <Form
