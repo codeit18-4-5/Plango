@@ -45,8 +45,11 @@ const nextConfig: NextConfig = {
               svgo: true,
               svgoConfig: {
                 plugins: [
-                  { name: "removeViewBox", active: false },
+                  "preset-default",
                   { name: "removeDimensions", active: true },
+                  { name: "convertPathData", active: true },
+                  { name: "cleanupIDs", active: true },
+                  { name: "removeUnusedNS", active: true },
                 ],
               },
             },
