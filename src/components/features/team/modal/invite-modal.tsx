@@ -2,8 +2,12 @@ import { Modal } from "@/components/ui";
 import getInviteToeken from "@/api/team/get-invite-token";
 import { useQuery } from "@tanstack/react-query";
 import { TeamModalProps } from "../team.props";
+import { useToast } from "@/providers/toast-provider";
+import { devConsoleError } from "@/lib/error";
 
 export const InviteModal = ({ isOpen, groupId, onClose }: TeamModalProps) => {
+  const { showToast } = useToast();
+
   const { data, refetch } = useQuery({
     queryKey: ["getInviteToken", groupId],
     queryFn: () => getInviteToeken(groupId),
@@ -13,9 +17,11 @@ export const InviteModal = ({ isOpen, groupId, onClose }: TeamModalProps) => {
     try {
       console.log(text);
       await navigator.clipboard.writeText(text);
-      alert("클립보드에 복사되었습니다.");
+      showToast("클립보드에 복사되었습니다.", "success");
+      onClose();
     } catch (err) {
-      console.error("클립보드 복사 실패:", err);
+      showToast("클립보드 복사 실패:", "error");
+      devConsoleError(err);
     }
   };
 
