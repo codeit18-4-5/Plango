@@ -106,16 +106,34 @@ export default function Reply({
                 <span className="visually-hidden">작성자</span>
                 <span>{comment.user.nickname}</span>
               </div>
-              <time
-                dateTime={comment.createdAt}
-                title={formatDateToFullStr({ date: comment.createdAt })}
-                aria-label={formatDateToFullStr({ date: comment.createdAt })}
-                className={replyTimeStamp({ variant })}
-              >
-                {getTimeAgo(comment.createdAt)}
-              </time>
-              {comment.createdAt !== comment.updatedAt && (
-                <span className="text-xs text-gray-500">(수정됨)</span>
+              {variant === "primary" ? (
+                <>
+                  <time
+                    dateTime={comment.createdAt}
+                    title={formatDateToFullStr({ date: comment.createdAt })}
+                    aria-label={formatDateToFullStr({ date: comment.createdAt })}
+                    className={replyTimeStamp({ variant })}
+                  >
+                    {getTimeAgo(comment.createdAt)}
+                  </time>
+                  {comment.createdAt !== comment.updatedAt && (
+                    <span className="text-xs text-gray-500">(수정됨)</span>
+                  )}
+                </>
+              ) : (
+                <div className="flex">
+                  {comment.createdAt !== comment.updatedAt && (
+                    <span className="mr-2 text-xs text-gray-500">(수정됨)</span>
+                  )}
+                  <time
+                    dateTime={comment.createdAt}
+                    title={formatDateToFullStr({ date: comment.createdAt })}
+                    aria-label={formatDateToFullStr({ date: comment.createdAt })}
+                    className={replyTimeStamp({ variant })}
+                  >
+                    {getTimeAgo(comment.createdAt)}
+                  </time>
+                </div>
               )}
             </div>
             {isAuthor && <ReplyActions actions={actions} />}
