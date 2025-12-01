@@ -51,7 +51,7 @@ export type ArticleEmptyProps = {
 
 export interface ArticleContent {
   content: string;
-  token?: string;
+  token: string;
 }
 
 export interface CreateArticleData {

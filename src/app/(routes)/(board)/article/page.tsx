@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
+import { useToast } from "@/providers/toast-provider";
 import { Container } from "@/components/layout";
 import { SearchBar, BestArticleSection, AllArticleSection } from "@/components/features/article";
 import { Floating, ScrollTopButton, CircleButton } from "@/components/ui";
@@ -20,6 +21,22 @@ export default function ArticlesPage() {
   const router = useRouter();
   const isLogin = !!currentUser;
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const { showToast } = useToast();
+
+  useEffect(() => {
+    setTimeout(() => {
+      const deleteToastMsg = sessionStorage.getItem("articleDeleteToast");
+      if (deleteToastMsg) {
+        sessionStorage.removeItem("articleDeleteToast");
+        showToast(deleteToastMsg, "success");
+      }
+      const createToastMsg = sessionStorage.getItem("articleCreateToast");
+      if (createToastMsg) {
+        sessionStorage.removeItem("articleCreateToast");
+        showToast(createToastMsg, "success");
+      }
+    }, 120);
+  }, [showToast]);
 
   const handleWriteClick = () => {
     if (!isLogin) {

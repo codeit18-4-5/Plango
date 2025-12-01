@@ -1,10 +1,11 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
-import getArticleDetail from "@/api/article/get-article-detail";
+import getArticleDetailSSR from "@/api/article/get-article-detail-ssr";
 import { notFound } from "next/navigation";
 import { AxiosError } from "axios";
 import { Container } from "@/components/layout";
 import { Floating, ScrollTopButton } from "@/components/ui";
 import { ArticleDetailInfo, ArticleCommentSection } from "@/components/features/article";
+import ArticleEditToast from "@/components/features/article/article-detail/article-edit-toast";
 import {
   ARTICLE_COMMON_STYLES,
   ARTICLE_DETAIL_STYLES,
@@ -19,7 +20,7 @@ export default async function ArticleDetailPage({
   const articleIdNum = Number(articleId);
   const queryClient = new QueryClient();
 
-  const article = await getArticleDetail({ articleId: articleIdNum }).catch(e => {
+  const article = await getArticleDetailSSR({ articleId: articleIdNum }).catch(e => {
     if (e instanceof AxiosError && e.response?.status === 404) notFound();
     throw e;
   });
@@ -31,6 +32,7 @@ export default async function ArticleDetailPage({
       <Container as="main" className={ARTICLE_COMMON_STYLES.main.wrapper}>
         <h2 className="visually-hidden">자유게시판</h2>
         <div className={ARTICLE_DETAIL_STYLES.wrapper}>
+          <ArticleEditToast />
           <ArticleDetailInfo article={article} />
           <ArticleCommentSection articleId={articleIdNum} />
         </div>
