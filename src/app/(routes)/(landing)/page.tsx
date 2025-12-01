@@ -2,16 +2,30 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { PopularPosts, DeveloperStory, ProductDemo, Footer } from "@/components/features/landing";
+import {
+  IntroBanner,
+  ProblemSection,
+  SolutionSection,
+  DailySummarySection,
+  WhyPlangoSection,
+  PopularPosts,
+  DeveloperStory,
+  ProductDemo,
+  Footer,
+} from "@/components/features/landing";
 
 const sectionBackgrounds = [
+  "var(--gray-900)",
+  "#091014",
+  "linear-gradient(to bottom, #091014, var(--gray-900))",
+  "var(--gray-900)",
   "var(--gray-900)",
   "var(--gray-900)",
   "var(--gray-900)",
   "linear-gradient(45deg, var(--gray-900), var(--gray-800))",
 ];
 
-export default function Bottom() {
+export default function Home() {
   const [scrollProgress, setScrollProgress] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -67,6 +81,11 @@ export default function Bottom() {
       />
 
       <div ref={containerRef} className="relative" style={{ scrollBehavior: "smooth" }}>
+        <IntroBanner />
+        <ProblemSection />
+        <WhyPlangoSection />
+        <SolutionSection />
+        <DailySummarySection />
         <DeveloperStory />
         <PopularPosts />
         <ProductDemo />
