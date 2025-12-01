@@ -328,12 +328,3 @@ svg path {
 .like-effect {
   animation: like_effect 0.4s ease;
 }
-
-.cta-btn {
-  position: relative;
-  overflow: hidden;
-  width: 80%;
-  max-width: 380px;
-  margin: 40px auto;
-  background: linear-gradient(to right, var(--pink-700), var(--pink-300));
-}

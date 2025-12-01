@@ -23,18 +23,12 @@ const mockTasks = [
   },
   {
     id: 2,
-    title: "멘토링 하는 날",
-    completed: true,
-    frequencyType: "매주 반복",
-  },
-  {
-    id: 3,
     title: "데일리 스크럼/회의록 작성하기",
     completed: true,
     frequencyType: "매일 반복",
   },
   {
-    id: 4,
+    id: 3,
     title: "빌표자료 준비하기",
     completed: false,
     frequencyType: "한 번",
@@ -82,7 +76,7 @@ export default function ProductDemo() {
           </motion.div>
         </motion.div>
 
-        <motion.div style={{ scale, rotateX }} className="perspective-1000 mx-auto">
+        <motion.div style={{ scale, rotateX }} className="perspective-1000 mx-auto max-w-[1000px]">
           <div
             className={cn(
               "relative grid gap-y-[20px] rounded-[12px] border border-gray-700 bg-gray-800 p-[24px_16px]",
