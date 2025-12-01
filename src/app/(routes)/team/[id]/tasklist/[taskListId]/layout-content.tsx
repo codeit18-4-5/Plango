@@ -5,6 +5,7 @@ import { layoutStyle } from "../index.styles";
 import { usePathname } from "next/navigation";
 import useModalStore from "@/store/modal.store";
 import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "motion/react";
 
 interface CommonProps {
   children: React.ReactNode;
@@ -13,19 +14,23 @@ interface CommonProps {
 
 export default function LayoutContent({ children, detail }: CommonProps) {
   const pathname = usePathname();
-  const { isOpen } = useModalStore();
-
+  const { isOpen, closeModal } = useModalStore();
   const [isOpenDetailModal, setIsOpenDetailModal] = useState(false);
 
-  useEffect(() => {
-    const checkModal = () => {
-      if (isOpen) {
-        setIsOpenDetailModal(true);
-      } else {
-        setIsOpenDetailModal(false);
-      }
-    };
+  const checkModal = () => {
+    if (isOpen) {
+      setIsOpenDetailModal(true);
+    } else {
+      setIsOpenDetailModal(false);
+    }
+  };
 
+  const regexOnlyList = /^\/team\/\d+\/tasklist\/\d+$/;
+
+  useEffect(() => {
+    if (regexOnlyList.test(pathname)) {
+      closeModal();
+    }
     checkModal();
   }, [pathname]);
 
@@ -35,7 +40,27 @@ export default function LayoutContent({ children, detail }: CommonProps) {
         <div className="h-full w-full">{children}</div>
 
         {isOpenDetailModal &&
-          createPortal(<div className={layoutStyle}>{detail}</div>, document.body)}
+          createPortal(
+            <AnimatePresence mode="wait">
+              {isOpen && (
+                <motion.div
+                  key="modal"
+                  className={layoutStyle}
+                  initial={{ x: "100%" }}
+                  animate={{ x: 0 }}
+                  exit={{ x: "100%" }}
+                  transition={{
+                    type: "spring",
+                    damping: 25,
+                    stiffness: 200,
+                  }}
+                >
+                  {detail}
+                </motion.div>
+              )}
+            </AnimatePresence>,
+            document.body,
+          )}
       </div>
     </>
   );
