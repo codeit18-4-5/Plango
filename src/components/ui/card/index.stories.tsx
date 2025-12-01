@@ -65,7 +65,6 @@ export const Default: Story = {
         createdAt="2025-11-11T10:30:00Z"
         likeCount={11111}
         commentCount={1234}
-        image="/assets/images/img-test.jpeg"
       />
     </Card>
   ),
@@ -85,7 +84,6 @@ export const WithLink: Story = {
         createdAt="2025-11-11T10:30:00Z"
         likeCount={42}
         commentCount={1234}
-        image="/assets/images/img-test.jpeg"
       />
     </Card>
   ),
@@ -105,7 +103,6 @@ export const WithActions: Story = {
         createdAt="2025-11-11T10:30:00Z"
         likeCount={42}
         commentCount={1234}
-        image="/assets/images/img-test.jpeg"
       />
     </Card>
   ),
@@ -126,7 +123,6 @@ export const WithLinkAndActions: Story = {
         createdAt="2025-11-11T10:30:00Z"
         likeCount={42}
         commentCount={1234}
-        image="/assets/images/img-test.jpeg"
       />
     </Card>
   ),
@@ -150,7 +146,6 @@ export const variant: Story = {
         createdAt="2025-11-11T10:30:00Z"
         likeCount={42}
         commentCount={1234}
-        image="/assets/images/img-test.jpeg"
       />
     </Card>
   ),
@@ -172,7 +167,6 @@ export const WithoutImage: Story = {
           createdAt="2025-11-11T10:30:00Z"
           likeCount={42}
           commentCount={1234}
-          image="/assets/images/img-test.jpeg"
         />
       </Card>
       <Card {...args}>
@@ -183,7 +177,6 @@ export const WithoutImage: Story = {
           createdAt="2025-11-11T10:30:00Z"
           likeCount={42}
           commentCount={1234}
-          image="/assets/images/img-test.jpeg"
         />
       </Card>
     </div>
@@ -206,7 +199,6 @@ export const TestGrid: Story = {
             createdAt="2025-11-11T10:30:00Z"
             likeCount={11111}
             commentCount={1234}
-            image="/assets/images/img-test.jpeg"
           />
         </Card>
         <Card {...{ id: 7, actions: mockActions }}>
@@ -216,7 +208,6 @@ export const TestGrid: Story = {
             createdAt="2025-11-01T10:30:00Z"
             likeCount={11111}
             commentCount={1234}
-            image="/assets/images/img-test.jpeg"
           />
           <Card.Badge />
         </Card>
@@ -227,7 +218,6 @@ export const TestGrid: Story = {
             createdAt="2025-11-11T10:30:00Z"
             likeCount={11111}
             commentCount={1234}
-            image="/assets/images/img-test.jpeg"
           />
           <Card.Content title="dfjsdlfjsdkfjdsklfjdklfjskdlfjskdlfjskldfjskfjsdlkfjsldfkjslfjslkfjslkfjfjslkfjslkdfjlskdjflksjflskj" />
         </Card>
@@ -237,7 +227,6 @@ export const TestGrid: Story = {
             createdAt="2025-11-11T10:30:00Z"
             likeCount={11111}
             commentCount={1234}
-            image="/assets/images/img-test.jpeg"
           />
           <Card.Content title="dfjsdlfjsdkfjdsklfjdklfjskdlfjskdlfjskldfjskfjsdlkfjsldfkjslfjslkfjslkfjfjslkfjslkdfjlskdjflksjflskj" />
 

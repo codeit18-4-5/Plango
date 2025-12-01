@@ -9,6 +9,7 @@ import patchArticle from "@/api/article/patch-article";
 import getArticleDetail from "@/api/article/get-article-detail";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { articleFormSchema, ArticleFormSchema } from "@/lib/schema";
+import { parseArticleContent } from "@/lib/utils";
 import { CreateArticleData } from "@/types/article";
 import { Container } from "@/components/layout";
 import { ArticleFormFields } from "@/components/features/article";
@@ -18,10 +19,12 @@ import {
   ARTICLE_COMMON_STYLES,
   ARTICLE_FORM_STYLES,
 } from "@/components/features/article/index.styles";
+import { useToast } from "@/providers/toast-provider";
 
 export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isImageDeleted, setIsImageDeleted] = useState(false);
   const { data: article } = useQuery({
@@ -30,30 +33,24 @@ export default function ArticleEditForm({ articleId }: ArticleEditFormProps) {
     enabled: !!articleId,
   });
 
-  // TODO: isSuccess, isError, error 처리는 추후 토스트로 처리 예정
   const { mutate, isPending: isMutating } = useMutation({
     mutationFn: ({ articleId, patchBody }: { articleId: number; patchBody: CreateArticleData }) =>
       patchArticle(articleId, patchBody),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["getArticleDetail", articleId] });
       queryClient.invalidateQueries({ queryKey: ["getArticles"] });
+      sessionStorage.setItem("articleEditToast", "게시글이 수정되었습니다.");
       router.replace(`/article/${articleId}`);
+    },
+    onError: () => {
+      showToast("게시글 수정에 실패했습니다.", "error");
     },
   });
 
   const defaultValues: ArticleFormSchema | undefined = article
     ? {
         title: article.title,
-        content:
-          typeof article.content === "string"
-            ? (() => {
-                try {
-                  return JSON.parse(article.content);
-                } catch {
-                  return { content: article.content, token: "" };
-                }
-              })()
-            : article.content,
+        content: parseArticleContent(article.content),
         image: article.image ?? "",
       }
     : undefined;

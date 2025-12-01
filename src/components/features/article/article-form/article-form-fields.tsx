@@ -33,7 +33,7 @@ export default function ArticleFormFields({
         <div className={ARTICLE_FORM_STYLES.section.heading.actions}>
           <Button
             type="submit"
-            disabled={!isValid}
+            disabled={!isValid || isMutating}
             full={true}
             className={ARTICLE_FORM_STYLES.section.heading.submit}
           >

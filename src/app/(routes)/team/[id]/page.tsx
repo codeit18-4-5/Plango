@@ -10,6 +10,7 @@ import { Member } from "@/types/tasklist";
 import { TeamTitle, TodoList, TeamMember, TeamReport } from "@/components/features/team";
 import { useAuthStore } from "@/store/auth.store";
 import { useToast } from "@/providers/toast-provider";
+import TeamSkeleton from "@/components/skeleton-ui/team-skeleton";
 
 export default function TeamPages() {
   const param = useParams();
@@ -54,7 +55,7 @@ export default function TeamPages() {
   }, [user]);
 
   if (!initialized) {
-    return null;
+    return <TeamSkeleton />;
   }
 
   if (!user) {
@@ -62,7 +63,7 @@ export default function TeamPages() {
   }
   const { id: userId } = user;
 
-  if (isPending) return <div>로딩중</div>;
+  if (isPending) return <TeamSkeleton />;
   if (!groupData) return <h1>팀이 없습니다.</h1>;
 
   return (

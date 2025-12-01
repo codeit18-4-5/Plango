@@ -12,11 +12,15 @@ import postImagesUpload from "@/api/image/post-images-upload";
 import patchGroups from "@/api/team/patch-groups";
 import IcProfile from "@/assets/icons/ic-image-circle.svg";
 import IcEdit from "@/assets/icons/ic-pencil-border.svg";
+import { devConsoleError } from "@/lib/error";
+import { useToast } from "@/providers/toast-provider";
+import TeamEditSkeleton from "@/components/skeleton-ui/team-edit-skeleton";
 
 export default function TeamEditPagae() {
   const param = useParams();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
   const groupId = Number(param.id);
 
   const { isPending, data } = useQuery<GetGroupsResponse, Error>({
@@ -44,7 +48,10 @@ export default function TeamEditPagae() {
 
       updateGroupMutate.mutate({ groupId: groupId, payload: newData });
     },
-    onError: error => console.log(error.message),
+    onError: error => {
+      devConsoleError(error);
+      showToast("이미지 업로드에 문제가 생겼습니다.", "error");
+    },
   });
 
   const updateGroupMutate = useMutation({
@@ -55,13 +62,17 @@ export default function TeamEditPagae() {
       queryClient.invalidateQueries({
         queryKey: ["getGroups", groupId],
       });
+      sessionStorage.setItem("teamEditMessage", "팀이 수정되었습니다.");
       router.replace(`/team/${groupId}`);
     },
-    onError: error => console.log(error.message),
+    onError: error => {
+      devConsoleError(error);
+      showToast("팀 수정에 문제가 생겼습니다.", "error");
+    },
   });
 
-  if (!data) return null;
-  if (isPending) return <div>로딩중입니다</div>;
+  if (!data) return <TeamEditSkeleton />;
+  if (isPending) return <TeamEditSkeleton />;
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
