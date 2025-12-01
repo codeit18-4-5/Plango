@@ -10,6 +10,7 @@ export interface TaskCommonProps {
 
 export interface TaskListProps extends TaskCommonProps {
   date: string;
+  dateString?: string;
 }
 
 export interface TaskDetailProps extends TaskCommonProps {
@@ -41,20 +42,42 @@ export type Task = TaskCommonValue & {
 
 // task 상세정보
 export type TaskDetail = Task & {
-  recurring: Recurring;
+  recurring: RecurringType;
 };
 
-export type Recurring = {
+type RecurringCommon = {
   id: number;
   name: string;
-  description: string | null;
   createdAt: string;
   updatedAt: string;
   startDate: string;
   frequencyType: string;
-  weekDays: string[];
-  monthDay: number;
   taskListId: number;
   groupId: number;
   writerId: number;
 };
+
+export type RecurringType = RecurringCommon & {
+  description: string | null;
+  weekDays: number[];
+  monthDay: number;
+};
+
+export type RecurringPostType = RecurringCommon & {
+  description: string;
+  weekDays?: number[];
+  monthDay?: number;
+};
+
+export type DeleteType = "All" | "One";
+
+export type OrderPayloadType = {
+  id: number;
+  index: number;
+};
+
+export interface UpdateOrderVariables extends TaskDetailProps {
+  dateString: string;
+  newIndex: number;
+  orderPayload: OrderPayloadType[];
+}

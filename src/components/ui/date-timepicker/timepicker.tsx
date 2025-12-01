@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import Button from "../button/button";
 import cn from "@/lib/cn";
-import { isEmpty } from "@/lib/utils";
 
 const TIME_PERIOD = {
   AM: "오전",
@@ -50,13 +49,12 @@ export default function CustomTimePicker({ selectedTime, onTimeChange }: CustomT
   }, [selectedTime]);
 
   const handleTimeClick = (index: number, newPeriod?: TimePeriod) => {
-    if (isEmpty(newPeriod)) newPeriod = TIME_PERIOD.AM;
+    const currentPeriod = newPeriod || period;
     setSelectedIndex(index);
     const time = times[index];
     let hour = time.hour % 12;
-    if (newPeriod === TIME_PERIOD.PM) hour += 12;
-    if (newPeriod === TIME_PERIOD.AM && hour === 12) hour = 0;
-
+    if (currentPeriod === TIME_PERIOD.PM) hour += 12;
+    if (currentPeriod === TIME_PERIOD.AM && hour === 12) hour = 0;
     const newTime = new Date();
     newTime.setHours(hour, time.minute, 0, 0);
     onTimeChange(newTime);
@@ -79,6 +77,7 @@ export default function CustomTimePicker({ selectedTime, onTimeChange }: CustomT
             )}
             intent="primary"
             onClick={() => handlePeriodChange(p)}
+            type="button"
           >
             {p}
           </Button>
@@ -97,6 +96,7 @@ export default function CustomTimePicker({ selectedTime, onTimeChange }: CustomT
                   ? "font-semibold text-pink-500"
                   : "text-gray-300 hover:bg-gray-700",
               )}
+              type="button"
             >
               {time.label}
             </button>

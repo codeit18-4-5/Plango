@@ -6,6 +6,11 @@
   .floating-wrapper > * {
     @apply shadow-floating;
   }
+  @media (min-width: 744px) {
+    .zigzag:nth-child(even) > div:first-child {
+      @apply order-1 justify-end;
+    }
+  }
 }
 
 /* react-loading-skeleton 커스텀 스타일 */
@@ -46,16 +51,24 @@
 
   --rose-400: #f43f5e;
 
+  --orange-200: #ffbd94;
   --orange-400: #f97316;
+  --orange-800: #3d2324;
 
   --yellow-400: #eab308;
 
+  --green-200: #8feca4;
   --green-400: #10b981;
+  --green-800: #1d342b;
 
+  --blue-200: #5a96fd;
   --blue-300: #06b6d4;
   --blue-400: #3b82f6;
+  --blue-800: #18244d;
 
+  --purple-200: #b682fa;
   --purple-400: #a855f7;
+  --purple-800: #312453;
 
   --black: var(--gray-900);
   --white: var(--gray-100);
@@ -103,6 +116,9 @@
 
   --fs-heading-l: 2.5rem; /* 40px */
   --lh-heading-l: 1.2; /* 48/40 = 120% */
+
+  --fs-heading-xl: 3rem; /* 48px */
+  --lh-heading-xl: 1.167; /* 56/48 = 116.7% */
 }
 /* 라이트 모드 */
 .light {
@@ -169,6 +185,9 @@
     --fs-heading-m: 1.125rem; /* 18px */
     --lh-heading-m: 1.167; /* 21/18 = 116.7% */
 
+    --fs-heading-xl: 1.75rem; /* 28px */
+    --lh-heading-xl: 1.214; /* 34/28 = 121.4% */
+
     /* Modal */
     --fs-heading-modal: 0.875rem; /* 14px */
     --lh-heading-modal: 1.188; /* 19/14 = 118.8% */
@@ -194,6 +213,20 @@ body {
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
   -webkit-mask-size: contain;
+}
+::-webkit-scrollbar {
+  width: 12px;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--yellow-400), var(--pink-400));
+  border-radius: 6px;
+  border: 3px solid var(--background);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(var(--pink-400), var(--yellow-400));
+}
+::-webkit-scrollbar-track {
+  background-color: var(--background);
 }
 .scroll-bar {
   overflow: auto;
@@ -261,8 +294,9 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 input[type="radio"] {
-  display: none;
+  display: inline-block;
   cursor: pointer;
+  accent-color: var(--pink-400);
 }
 
 svg {
@@ -271,6 +305,7 @@ svg {
 }
 
 svg,
+svg g,
 svg circle,
 svg path {
   color: inherit;
@@ -291,16 +326,12 @@ svg path {
 }
 
 .full-scroll-h {
-  min-height: calc(100dvh - 60px);
+  min-height: calc(100dvh - 67px);
 }
-@media (min-width: 744px) {
-  .full-scroll-h {
-    min-height: calc(100dvh - 64px);
-  }
-}
+
 @media (min-width: 1200px) {
   .full-scroll-h {
-    min-height: calc(100dvh - 72px);
+    min-height: calc(100dvh - 84px);
   }
 }
 
@@ -320,4 +351,68 @@ svg path {
 
 .like-effect {
   animation: like_effect 0.4s ease;
+}
+
+::selection {
+  background-color: var(--pink-400);
+  color: white;
+}
+
+.wave {
+  background-image: url("/assets/landing/wave1.svg");
+  animation: waveMove 20s linear infinite alternate;
+}
+.wave2 {
+  background-image: url("/assets/landing/wave2.svg");
+  animation: waveMove2 20s linear infinite alternate;
+}
+@keyframes waveMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -1200px 0;
+  }
+}
+@keyframes waveMove2 {
+  0% {
+    background-position: -1200px 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.cta-btn {
+  position: relative;
+  overflow: hidden;
+  width: 80%;
+  max-width: 380px;
+  margin: 40px auto;
+  background: linear-gradient(to right, var(--pink-700), var(--pink-300));
+}
+.cta-btn::before {
+  position: absolute;
+  content: "";
+  inset: 0;
+  background: linear-gradient(to right, transparent, rgba(251, 213, 218, 0.2), transparent);
+  transform: translateX(-100%);
+  animation: shine 4s ease-in-out infinite;
+}
+@media (min-width: 744px) {
+  .cta-btn {
+    margin: 80px auto;
+    height: 60px;
+  }
+}
+@keyframes shine {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }

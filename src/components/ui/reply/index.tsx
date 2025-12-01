@@ -66,6 +66,7 @@ export default function Reply({
               id={`comment-${comment.id}`}
               value={editedContent.replace(/\\n/g, "\n")}
               placeholder="수정할 댓글을 입력해주세요"
+              maxLength={255}
               onChange={e => {
                 setEditedContent(e.target.value);
                 onChange(e);
@@ -98,10 +99,10 @@ export default function Reply({
           </>
         ) : (
           <>
-            <p className={replyTextarea({ variant })}>{comment.content}</p>
+            <p className={replyTextarea({ variant, isAuthor })}>{comment.content}</p>
             <div className={replyInfo({ variant })}>
-              <div className="flex items-center gap-x-3">
-                <Avatar image={comment.user.image} className="h-8 w-8" />
+              <div className="grid grid-cols-[32px_auto] items-center gap-x-3">
+                <Avatar image={comment.user.image} className="h-[32px] w-[32px]" />
                 <span className="visually-hidden">작성자</span>
                 <span>{comment.user.nickname}</span>
               </div>

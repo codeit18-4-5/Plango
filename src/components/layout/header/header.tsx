@@ -23,7 +23,7 @@ export default function Header({ isLoginPage, groups, user }: HeaderProps) {
   };
   if (isLoginPage) {
     return (
-      <div className="relative">
+      <div className="sticky left-0 top-0 z-50 w-full border-b border-gray-600 bg-gray-800">
         <div className="mx-auto w-full max-w-[1248px] items-center justify-between px-[16px] py-[18px] tablet:px-[24px] tablet:py-[20px]">
           <div className="flex items-center justify-between">
             <Link href="/">
@@ -36,7 +36,7 @@ export default function Header({ isLoginPage, groups, user }: HeaderProps) {
   }
 
   return (
-    <div className="relative">
+    <div className="sticky left-0 top-0 z-50 w-full border-b border-gray-600 bg-gray-800">
       {open && <HeaderSidebar groups={groups || null} onClick={handleMenuClick(false)} />}
       <div className="mx-auto flex w-full max-w-[1248px] items-center justify-between px-[16px] py-[18px] tablet:px-[24px] tablet:py-[20px]">
         <div className="flex items-center justify-between">

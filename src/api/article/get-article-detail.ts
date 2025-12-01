@@ -1,9 +1,9 @@
+import axiosInstance from "@/lib/axios";
 import { ArticleDetail } from "@/types/article";
-import { serverFetch } from "@/lib/server/server-fetch";
 
 const getArticleDetail = async ({ articleId }: { articleId: number }): Promise<ArticleDetail> => {
-  const res = await serverFetch<ArticleDetail>(`/articles/${articleId}`);
-  return res;
+  const res = await axiosInstance.get(`/articles/${articleId}`);
+  return res.data;
 };
 
 export default getArticleDetail;

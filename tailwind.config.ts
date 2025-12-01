@@ -44,20 +44,28 @@ const config: Config = {
           400: "var(--rose-400)",
         },
         orange: {
+          200: "var(--orange-200)",
           400: "var(--orange-400)",
+          800: "var(--orange-800)",
         },
         yellow: {
           400: "var(--yellow-400)",
         },
         green: {
+          200: "var(--green-200)",
           400: "var(--green-400)",
+          800: "var(--green-800)",
         },
         blue: {
+          200: "var(--blue-200)",
           300: "var(--blue-300)",
           400: "var(--blue-400)",
+          800: "var(--blue-800)",
         },
         purple: {
+          200: "var(--purple-200)",
           400: "var(--purple-400)",
+          800: "var(--purple-800)",
         },
         white: "var(--white)",
         black: "var(--black)",
@@ -80,6 +88,7 @@ const config: Config = {
         "heading-s": ["var(--fs-heading-s)", { lineHeight: "var(--lh-heading-s)" }],
         "heading-m": ["var(--fs-heading-m)", { lineHeight: "var(--lh-heading-m)" }],
         "heading-l": ["var(--fs-heading-l)", { lineHeight: "var(--lh-heading-l)" }],
+        "heading-xl": ["var(--fs-heading-xl)", { lineHeight: "var(--lh-heading-xl)" }],
       },
       fontFamily: {
         sans: ["Pretendard", "ui-sans-serif", "system-ui", "sans-serif"],

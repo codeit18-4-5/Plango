@@ -62,6 +62,7 @@ export default function ReplyInput({
           autoResizeChange(e, onChange);
         }}
         readOnly={!isLoggedIn}
+        maxLength={255}
       />
       {variant === "primary" && (
         <Button

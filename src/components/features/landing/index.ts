@@ -1,0 +1,9 @@
+export { default as PopularPosts } from "@/components/features/landing/popular-posts";
+export { default as ProductDemo } from "@/components/features/landing/product-demo";
+export { default as DeveloperStory } from "@/components/features/landing/developer-story";
+export { default as Footer } from "@/components/features/landing/footer";
+export { default as IntroBanner } from "@/components/features/landing/intro-section";
+export { default as ProblemSection } from "@/components/features/landing/problem-section";
+export { default as WhyPlangoSection } from "@/components/features/landing/why-plango-section";
+export { default as SolutionSection } from "@/components/features/landing/solution-section";
+export { default as DailySummarySection } from "@/components/features/landing/daily-summary-section";

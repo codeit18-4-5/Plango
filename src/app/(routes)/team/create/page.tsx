@@ -9,9 +9,12 @@ import postImagesUpload from "@/api/image/post-images-upload";
 import postGroups from "@/api/team/post-gruops";
 import IcProfile from "@/assets/icons/ic-image-circle.svg";
 import IcEdit from "@/assets/icons/ic-pencil-border.svg";
+import { devConsoleError } from "@/lib/error";
+import { useToast } from "@/providers/toast-provider";
 
 export default function TeamCreatePage() {
   const router = useRouter();
+  const { showToast } = useToast();
 
   const [formData, setFormData] = useState<GroupCreateRequest>({
     name: "",
@@ -46,15 +49,22 @@ export default function TeamCreatePage() {
         image: imageUrl,
       });
     },
-    onError: error => console.log(error.message),
+    onError: error => {
+      devConsoleError(error);
+      showToast("팀 생성에 문제가 생겼습니다.", "error");
+    },
   });
 
   const createGroupMutate = useMutation({
     mutationFn: postGroups,
     onSuccess: res => {
+      sessionStorage.setItem("teatCreateMessage", "팀이 생성되었습니다.");
       router.replace(`/team/${res.id}`);
     },
-    onError: error => console.log(error.message),
+    onError: error => {
+      devConsoleError(error);
+      showToast("팀 생성에 문제가 생겼습니다.", "error");
+    },
   });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {

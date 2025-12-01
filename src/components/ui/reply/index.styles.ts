@@ -34,6 +34,10 @@ export const replyTextarea = cva(
         primary: "text-body-m placeholder:text-gray-400",
         secondary: "text-body-s placeholder:text-gray-500",
       },
+      isAuthor: {
+        true: "max-w-[calc(100%_-_20px)]",
+        false: "",
+      },
     },
     defaultVariants: {
       variant: "primary",

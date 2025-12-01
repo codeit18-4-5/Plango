@@ -21,12 +21,37 @@ const nextConfig: NextConfig = {
       },
       {
         test: /\.svg$/i,
-        resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] },
+        include: path.resolve(__dirname, "src/assets/icons"),
+        resourceQuery: { not: /url/ },
         use: [
           {
             loader: "@svgr/webpack",
             options: {
               configFile: "./svgr.config.js",
+            },
+          },
+        ],
+      },
+      {
+        test: /\.svg$/i,
+        include: path.resolve(__dirname, "src/assets/landing"),
+        resourceQuery: { not: /url/ },
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              icon: false,
+              dimensions: false,
+              svgo: true,
+              svgoConfig: {
+                plugins: [
+                  "preset-default",
+                  { name: "removeDimensions", active: true },
+                  { name: "convertPathData", active: true },
+                  { name: "cleanupIDs", active: true },
+                  { name: "removeUnusedNS", active: true },
+                ],
+              },
             },
           },
         ],

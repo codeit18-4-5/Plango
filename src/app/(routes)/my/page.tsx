@@ -27,15 +27,17 @@ export default function My() {
   const handleSubmit = async (data: ChangeProfileSchema) => {
     const prevUser = useAuthStore.getState().user;
     const payload: ChangeProfileSchema = {};
+
     if (data.nickname !== prevUser?.nickname) {
       payload.nickname = data.nickname;
     }
-    if (data.image !== prevUser?.image) {
+    if (data.image !== undefined && data.image !== prevUser?.image) {
       payload.image = data.image;
     }
     if (Object.keys(payload).length === 0) {
       return showToast("변경된 내용이 없습니다.", "error");
     }
+    console.log(payload);
 
     mutate(payload);
   };

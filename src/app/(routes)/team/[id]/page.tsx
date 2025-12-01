@@ -9,9 +9,12 @@ import { GetGroupsResponse, TodoListProps } from "@/types/group";
 import { Member } from "@/types/tasklist";
 import { TeamTitle, TodoList, TeamMember, TeamReport } from "@/components/features/team";
 import { useAuthStore } from "@/store/auth.store";
+import { useToast } from "@/providers/toast-provider";
+import TeamSkeleton from "@/components/skeleton-ui/team-skeleton";
 
 export default function TeamPages() {
   const param = useParams();
+  const { showToast } = useToast();
   const groupId = Number(param.id);
   const user = useAuthStore(state => state.user);
   const initialized = useAuthStore(state => state.initialized);
@@ -26,6 +29,16 @@ export default function TeamPages() {
   });
 
   useEffect(() => {
+    setTimeout(() => {
+      const teamJoinMessage = sessionStorage.getItem("teamJoinMessage");
+      if (teamJoinMessage) {
+        sessionStorage.removeItem("teamJoinMessage");
+        showToast(teamJoinMessage, "success");
+      }
+    }, 150);
+  }, [showToast]);
+
+  useEffect(() => {
     if (groupData) {
       setMembers(groupData.members);
       setTodoLists({ groupId: groupData.id, taskList: groupData.taskLists });
@@ -35,12 +48,14 @@ export default function TeamPages() {
   useEffect(() => {
     if (user?.memberships) {
       const isBeing = user.memberships.filter(mb => mb.groupId === Number(groupId));
-      setUserRole(isBeing[0].role);
+      if (isBeing[0]?.role) {
+        setUserRole(isBeing[0].role);
+      }
     }
   }, [user]);
 
   if (!initialized) {
-    return null;
+    return <TeamSkeleton />;
   }
 
   if (!user) {
@@ -48,15 +63,15 @@ export default function TeamPages() {
   }
   const { id: userId } = user;
 
-  if (isPending) return <div>로딩중</div>;
+  if (isPending) return <TeamSkeleton />;
   if (!groupData) return <h1>팀이 없습니다.</h1>;
 
   return (
     <Container>
-      <TeamTitle name={groupData.name} id={groupData.id} />
-      <TodoList groupId={todoLists?.groupId as number} taskList={todoLists?.taskList as []} />
-      {userRole === "ADMIN" && <TeamReport taskLists={todoLists?.taskList as []} />}
-      <TeamMember members={members} userId={userId} userRole={userRole} />
+      <TeamTitle name={groupData.name} id={groupData.id} userRole={userRole} />
+      <TodoList groupId={todoLists?.groupId as number} taskList={todoLists?.taskList || []} />
+      {userRole === "ADMIN" && <TeamReport taskLists={todoLists?.taskList || []} />}
+      <TeamMember members={members} userId={userId} userRole={userRole} groupId={groupData.id} />
     </Container>
   );
 }
