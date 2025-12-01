@@ -41,8 +41,8 @@ export default function Footer() {
             whileInView={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4 }}
           >
-            <Button shape="round" full className="cta-btn">
-              지금 시작하기
+            <Button as={"a"} href={"/article"} shape="round" full className="cta-btn">
+              지금 둘러보기
             </Button>
           </motion.div>
         </Container>

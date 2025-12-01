@@ -5,6 +5,7 @@ import cn from "@/lib/cn";
 import { Button } from "@/components/ui";
 import { introContainer, introWave, introWaveWrapper } from "./landing.style";
 import { motion } from "motion/react";
+import Link from "next/link";
 
 export default function IntroBanner() {
   return (
@@ -32,8 +33,8 @@ export default function IntroBanner() {
           루틴부터 여행 계획까지, 모두 함께 완성해가는 공간
         </p>
       </div>
-      <Button shape="round" full className="cta-btn">
-        지금 시작하기
+      <Button as={Link} href={"/article"} shape="round" full className="cta-btn">
+        지금 둘러보기
       </Button>
       <div className={introWaveWrapper}>
         <Visual className="mx-auto h-auto w-[150%] max-w-[1200px] -translate-x-[15%] tablet:w-full tablet:translate-x-0" />
