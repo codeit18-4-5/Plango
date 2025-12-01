@@ -15,6 +15,7 @@ const twMergeCustom = extendTailwindMerge({
             "heading-s",
             "heading-m",
             "heading-l",
+            "heading-xl",
           ],
         },
       ],

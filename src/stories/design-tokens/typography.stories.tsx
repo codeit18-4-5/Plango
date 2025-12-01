@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
 const texts = [
+  { name: "text-heading-xl", label: "title", size: 48, tb: 28, mb: 28 },
   { name: "text-heading-l", label: "h1", size: 40, tb: 24, mb: 24 },
   { name: "text-heading-m", label: "h2", size: 24, tb: 24, mb: 18 },
   { name: "text-heading-s", label: "h3", size: 20, tb: 20, mb: 16 },

@@ -116,6 +116,9 @@
 
   --fs-heading-l: 2.5rem; /* 40px */
   --lh-heading-l: 1.2; /* 48/40 = 120% */
+
+  --fs-heading-xl: 3rem; /* 48px */
+  --lh-heading-xl: 1.167; /* 56/48 = 116.7% */
 }
 /* 라이트 모드 */
 .light {
@@ -181,6 +184,9 @@
 
     --fs-heading-m: 1.125rem; /* 18px */
     --lh-heading-m: 1.167; /* 21/18 = 116.7% */
+
+    --fs-heading-xl: 1.75rem; /* 28px */
+    --lh-heading-xl: 1.214; /* 34/28 = 121.4% */
 
     /* Modal */
     --fs-heading-modal: 0.875rem; /* 14px */

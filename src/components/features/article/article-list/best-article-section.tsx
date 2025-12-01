@@ -11,7 +11,7 @@ import { Article } from "@/types/article";
 import { ListSectionHeader, ListSectionContent } from "../layout";
 import { ARTICLE_COMMON_STYLES, ARTICLE_LIST_STYLES } from "../index.styles";
 
-export default function BestArticleSection() {
+export default function BestArticleSection({ showTitle = true }: { showTitle?: boolean }) {
   const { isMobile, isTablet } = useResponsive();
   const [mounted, setMounted] = useState(false);
 
@@ -34,7 +34,7 @@ export default function BestArticleSection() {
 
   return (
     <section className={ARTICLE_LIST_STYLES.section.wrapper}>
-      <ListSectionHeader title="베스트 게시글" />
+      {showTitle && <ListSectionHeader title="베스트 게시글" />}
       <ListSectionContent gridType={!isPending && articles.length === 0 ? "none" : "best"}>
         {isPending &&
           Array.from({ length: showCount }).map((_, i) => (
