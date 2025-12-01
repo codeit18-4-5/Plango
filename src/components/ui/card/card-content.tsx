@@ -34,6 +34,7 @@ export default function CardContent({
               src={image}
               fill
               alt=""
+              sizes="100%"
               className="h-full w-full object-cover"
               draggable={false}
               placeholder="blur"

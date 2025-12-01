@@ -1,13 +1,11 @@
 import cn from "@/lib/cn";
 import { getTimeAgo, formatDateToFullStr, clampText } from "@/lib/utils";
 import { DISPLAY_LIMITS } from "@/constants/display";
-import { Avatar } from "@/components/ui";
 import { CARD_INFO_STYLES } from "./index.styles";
 import IcComment from "@/assets/icons/ic-comment.svg";
 import IcLike from "@/assets/icons/ic-heart.svg";
 
 type CardInfoProps = {
-  image?: string | null;
   writer: string;
   createdAt: string;
   likeCount: number;
@@ -17,7 +15,6 @@ type CardInfoProps = {
 };
 
 export default function CardInfo({
-  image,
   writer,
   createdAt,
   likeCount,
@@ -29,7 +26,6 @@ export default function CardInfo({
     <div className={cn(CARD_INFO_STYLES.wrapper({ variant }), className)}>
       <div className={CARD_INFO_STYLES.meta.wrapper({ variant })}>
         <div className={CARD_INFO_STYLES.meta.writer({ variant })}>
-          <Avatar image={image} className={CARD_INFO_STYLES.meta.avatar} />
           <span className="visually-hidden">작성자</span>
           <span className={CARD_INFO_STYLES.meta.nickname}>{writer}</span>
         </div>

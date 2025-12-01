@@ -77,10 +77,7 @@ export const ARTICLE_FORM_STYLES = {
     wrapper: LAYOUT_GAP,
     field: {
       textarea: "h-[240px]",
-      copyToken: cn(
-        "text-ellipsis underline duration-200",
-        "hover:border-gray-600 focus:border-gray-600 active:border-gray-600",
-      ),
+      copyToken: "duration-200",
     },
   },
 };

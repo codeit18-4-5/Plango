@@ -26,6 +26,7 @@ export default function Avatar({ image, alt = "", shape = "basic", className }: 
           src={image}
           alt={alt}
           fill
+          sizes="100%"
           className="object-cover"
           draggable={false}
           onError={() => setImageError(true)}
