@@ -7,6 +7,8 @@ import { useAlert } from "@/providers/alert-provider";
 import deleteMember from "@/api/team/delete-member";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/providers/toast-provider";
+import { devConsoleError } from "@/lib/error";
 
 const gridStyle =
   "grid grid-cols-3 grid-rows-2 grid-cols-[24px_1fr_16px] tablet:grid-cols-[32px_1fr_16px] gap-x-2 tablet:gap-x-3";
@@ -19,6 +21,7 @@ type MemberCardProps = {
 
 export default function MemberCard({ member, userRole, userId }: MemberCardProps) {
   const { showAlert } = useAlert();
+  const { showToast } = useToast();
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -37,12 +40,15 @@ export default function MemberCard({ member, userRole, userId }: MemberCardProps
         queryClient.invalidateQueries({
           queryKey: ["getGroups", groupId],
         });
+        showToast("내보내기가 완료되었습니다.", "success");
       } else {
         router.replace("/");
+        //TODO 랜딩페이지에 추가
       }
     },
     onError: error => {
-      console.log(error.message);
+      devConsoleError(error);
+      showToast("문제가 발생했습니다.", "error");
     },
   });
 

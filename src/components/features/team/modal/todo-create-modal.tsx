@@ -3,22 +3,27 @@ import { Modal, Input } from "@/components/ui";
 import postTodo from "@/api/team/post-todo";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TeamModalProps } from "../team.props";
+import { useToast } from "@/providers/toast-provider";
+import { devConsoleError } from "@/lib/error";
 
 export const TodoListCreateModal = ({ isOpen, groupId, onClose }: TeamModalProps) => {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   const [todoName, setTodoName] = useState("");
 
-  const { mutate, isPending, isSuccess } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: postTodo,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["getGroups", groupId],
       });
+      showToast("할 일 목록이 만들어졌습니다.", "success");
       onClose();
     },
     onError: error => {
-      console.log(error, error.message);
+      showToast("할일 목록 생성에 문제가 생겼습니다.", "error");
+      devConsoleError(error);
     },
   });
 
@@ -32,8 +37,6 @@ export const TodoListCreateModal = ({ isOpen, groupId, onClose }: TeamModalProps
     mutate({ groupId, param: todoName });
   };
 
-  if (isSuccess) onClose();
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <form method="POST" onSubmit={handleSubmit}>
@@ -44,11 +47,11 @@ export const TodoListCreateModal = ({ isOpen, groupId, onClose }: TeamModalProps
               className="mb-6"
               placeholder="목록 명을 입력해주세요."
               onChange={handleNameChange}
-              disabled={isPending}
+              value={todoName}
             />
           </Input>
         </Modal.Body>
-        <Modal.FooterWithOnlyConfirm confirmButtonTitle="만들기" isSubmit />
+        <Modal.FooterWithOnlyConfirm confirmButtonTitle="만들기" isSubmit disabled={isPending} />
       </form>
     </Modal>
   );

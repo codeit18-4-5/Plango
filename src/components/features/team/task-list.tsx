@@ -12,12 +12,15 @@ import { todoListStyle, TODO_COLORS } from "./team.styles";
 import { TodoListCreateModal } from "./modal/todo-create-modal";
 import { TodoListEditModal } from "./modal/todo-edit-modal";
 import deleteTodo from "@/api/team/delete-todo";
+import { useToast } from "@/providers/toast-provider";
+import { devConsoleError } from "@/lib/error";
 
 export default function TodoList({ groupId, taskList = [] }: TodoListProps) {
   if (!taskList) return null;
 
   const queryClient = useQueryClient();
   const { showAlert } = useAlert();
+  const { showToast } = useToast();
   const [editTaskId, setEditTaskId] = useState<number | null>(null);
 
   const {
@@ -48,6 +51,11 @@ export default function TodoList({ groupId, taskList = [] }: TodoListProps) {
       queryClient.invalidateQueries({
         queryKey: ["getGroups", groupId],
       });
+      showToast("할 일 목록이 삭제되었습니다", "success");
+    },
+    onError: error => {
+      showToast("할 일 목록 삭제에 문제가 발생했습니다.", "error");
+      devConsoleError(error);
     },
   });
 
