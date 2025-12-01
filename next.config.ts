@@ -21,12 +21,34 @@ const nextConfig: NextConfig = {
       },
       {
         test: /\.svg$/i,
-        resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] },
+        include: path.resolve(__dirname, "src/assets/icons"),
+        resourceQuery: { not: /url/ },
         use: [
           {
             loader: "@svgr/webpack",
             options: {
               configFile: "./svgr.config.js",
+            },
+          },
+        ],
+      },
+      {
+        test: /\.svg$/i,
+        include: path.resolve(__dirname, "src/assets/landing"),
+        resourceQuery: { not: /url/ },
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              icon: false,
+              dimensions: false,
+              svgo: true,
+              svgoConfig: {
+                plugins: [
+                  { name: "removeViewBox", active: false },
+                  { name: "removeDimensions", active: true },
+                ],
+              },
             },
           },
         ],
