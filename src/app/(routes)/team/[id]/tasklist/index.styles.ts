@@ -24,6 +24,6 @@ export const hiddenBrStyle = ["block", "mobile:hidden"].join(" ");
 export const addTaskListStyle = ["px-[20px]", "mobile:px-[36px]"].join(" ");
 
 export const layoutStyle = [
-  "fixed right-0 top-0 z-20 h-full w-full overflow-y-auto bg-gray-800 scroll-bar",
+  "fixed right-0 top-0 z-20 h-full w-full overflow-y-auto bg-gray-800 scroll-bar pt-[60px]",
   "mobile:w-[60%] max-w-[779px]",
 ].join(" ");
