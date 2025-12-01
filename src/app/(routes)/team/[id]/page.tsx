@@ -9,10 +9,12 @@ import { GetGroupsResponse, TodoListProps } from "@/types/group";
 import { Member } from "@/types/tasklist";
 import { TeamTitle, TodoList, TeamMember, TeamReport } from "@/components/features/team";
 import { useAuthStore } from "@/store/auth.store";
+import { useToast } from "@/providers/toast-provider";
 import TeamSkeleton from "@/components/skeleton-ui/team-skeleton";
 
 export default function TeamPages() {
   const param = useParams();
+  const { showToast } = useToast();
   const groupId = Number(param.id);
   const user = useAuthStore(state => state.user);
   const initialized = useAuthStore(state => state.initialized);
@@ -27,6 +29,16 @@ export default function TeamPages() {
   });
 
   useEffect(() => {
+    setTimeout(() => {
+      const teamJoinMessage = sessionStorage.getItem("teamJoinMessage");
+      if (teamJoinMessage) {
+        sessionStorage.removeItem("teamJoinMessage");
+        showToast(teamJoinMessage, "success");
+      }
+    }, 150);
+  }, [showToast]);
+
+  useEffect(() => {
     if (groupData) {
       setMembers(groupData.members);
       setTodoLists({ groupId: groupData.id, taskList: groupData.taskLists });
@@ -36,7 +48,9 @@ export default function TeamPages() {
   useEffect(() => {
     if (user?.memberships) {
       const isBeing = user.memberships.filter(mb => mb.groupId === Number(groupId));
-      setUserRole(isBeing[0].role);
+      if (isBeing[0]?.role) {
+        setUserRole(isBeing[0].role);
+      }
     }
   }, [user]);
 

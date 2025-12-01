@@ -44,3 +44,10 @@ export type TodoListProps = {
   groupId: number;
   taskList: TaskList[];
 };
+
+export type GroupJoinRequest = {
+  userEmail: string;
+  token: string;
+};
+
+export type GetUserGroup = Omit<GetGroupsResponse, "members" | "taskLists">;
