@@ -8,7 +8,6 @@ import RepeatIcon from "@/assets/icons/ic-repeat.svg";
 import { Task as TaskType } from "@/types/task";
 import { formatDateToFullStr, getFrequencyLabel } from "@/lib/utils";
 import { useTaskListContext } from "@/app/(routes)/team/[id]/tasklist/[taskListId]/tasklist-provider";
-import { useToast } from "@/providers/toast-provider";
 import { notFound, useParams } from "next/navigation";
 import { useRecurringMutation } from "@/hooks/taskList/use-tasklist";
 
@@ -23,15 +22,14 @@ interface TaskProps {
     recurringId: number;
     type: KebabType;
   }) => void;
+  onClick: () => void;
 }
 
 export type KebabType = "update" | "delete";
 
-export default function Task({ task, onKebabClick }: TaskProps) {
+export default function Task({ task, onKebabClick, onClick }: TaskProps) {
   const { id: groupId, taskListId } = useParams();
   if (groupId == null || taskListId == null) notFound();
-
-  const { showToast } = useToast();
 
   const { updateDoneAt: updateRecurringDoneAt } = useRecurringMutation();
   const { dateString } = useTaskListContext();
@@ -43,25 +41,20 @@ export default function Task({ task, onKebabClick }: TaskProps) {
   const handleCheckBoxChange = (done: boolean) => {
     if (!(groupId && taskListId && dateString)) return;
 
-    updateRecurringDoneAt.mutate(
-      {
-        groupId: Number(groupId),
-        taskListId: Number(taskListId),
-        dateString: dateString,
-        taskId: task.id,
-        done: done,
-      },
-      {
-        onSuccess: () => {},
-        onError: () => {
-          showToast("등록 중 오류가 발생했습니다.", "error");
-        },
-      },
-    );
+    updateRecurringDoneAt.mutate({
+      groupId: Number(groupId),
+      taskListId: Number(taskListId),
+      dateString: dateString,
+      taskId: task.id,
+      done: done,
+    });
   };
 
   return (
-    <div className="flex h-[74px] w-full items-center justify-between rounded-lg bg-gray-800 py-[12px] pl-[14px] pr-[12px]">
+    <div
+      className="flex h-[74px] w-full items-center justify-between rounded-lg bg-gray-800 py-[12px] pl-[14px] pr-[12px]"
+      onClick={onClick}
+    >
       <div>
         <div className="mb-[10px] flex gap-[12px]">
           <Checkbox

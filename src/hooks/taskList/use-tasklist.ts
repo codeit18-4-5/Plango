@@ -10,12 +10,20 @@ import {
   patchComment,
   patchRecurring,
   patchRecurringDoneAt,
+  patchTaskOrder,
   postComment,
   postRecurring,
   postTask,
 } from "@/api/tasklist";
+import { useToast } from "@/providers/toast-provider";
 import { Comment } from "@/types/comments";
-import { Task, TaskDetail, TaskDetailProps, TaskListProps } from "@/types/task";
+import {
+  Task,
+  TaskDetail,
+  TaskDetailProps,
+  TaskListProps,
+  UpdateOrderVariables,
+} from "@/types/task";
 import { GroupTaskList, Member, MemberPermissionProps, TaskList } from "@/types/tasklist";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -63,17 +71,74 @@ export const useTaskList = ({
 
 export const useTaskListMutation = () => {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   const create = useMutation({
     mutationFn: postTask,
-    onSuccess: (_data, variables) => {
-      queryClient.invalidateQueries({
+
+    onSuccess: async (_data, variables) => {
+      await queryClient.invalidateQueries({
         queryKey: ["groupTaskLists", variables.groupId],
       });
+
+      showToast("할 일 목록이 등록되었습니다.", "success");
     },
-    onError: error => console.error("할 일 목록 등록 실패.", error),
+
+    onError: error => {
+      showToast("할 일 목록 등록에 실패하였습니다.", "error");
+      console.error("할 일 목록 등록 실패.", error);
+    },
   });
-  return { create };
+
+  const updateOrder = useMutation({
+    mutationFn: ({ groupId, taskListId, taskId, newIndex }: UpdateOrderVariables) =>
+      patchTaskOrder({ groupId, taskListId, taskId, newIndex }),
+    onMutate: async (variables: UpdateOrderVariables) => {
+      const queryKey = ["taskList", variables.groupId, variables.taskListId, variables.dateString];
+
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData<TaskList>(queryKey);
+
+      queryClient.setQueryData<TaskList>(queryKey, old => {
+        if (!old) return old;
+
+        const reorderedTasks = variables.orderPayload.map(
+          ({ id }: { id: number }) => old.tasks.find(t => t.id === id)!,
+        );
+
+        return {
+          ...old,
+          tasks: reorderedTasks,
+        };
+      });
+      return { previousData, queryKey, variables };
+    },
+
+    onError: (error, variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData<TaskList>(context.queryKey, context.previousData);
+      }
+      showToast("할 일 재정렬에 실패하였습니다.", "error");
+      console.error("할 일 재정렬 실패.", error);
+    },
+
+    onSettled: (data, error, variables, context) => {
+      if (context) {
+        queryClient.invalidateQueries({
+          queryKey: context.queryKey,
+        });
+        queryClient.invalidateQueries({
+          queryKey: [
+            "taskDetail",
+            context.variables.groupId,
+            context.variables.taskListId,
+            context.variables.taskId,
+          ],
+        });
+      }
+    },
+  });
+  return { create, updateOrder };
 };
 
 // recurring (taskDetail)--------------------------------------------------------
@@ -88,6 +153,7 @@ export const useRecurring = ({ groupId, taskListId, taskId }: TaskDetailProps) =
 
 export const useRecurringMutation = () => {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   const create = useMutation({
     mutationFn: postRecurring,
@@ -95,8 +161,12 @@ export const useRecurringMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["taskList", variables.groupId, variables.taskListId, variables.dateString],
       });
+      showToast("할 일이 등록되었습니다.", "success");
     },
-    onError: error => console.error("할 일 상세 등록 실패.", error),
+    onError: error => {
+      showToast("할 일 상세 등록에 실패하였습니다.", "error");
+      console.error("할 일 상세 등록 실패.", error);
+    },
   });
 
   const update = useMutation({
@@ -125,12 +195,19 @@ export const useRecurringMutation = () => {
       });
       return { previousData, queryKey, variables };
     },
+
+    onSuccess: () => {
+      showToast("할 일이 수정되었습니다.", "success");
+    },
+
     onError: (error, variables, context) => {
       if (context?.previousData) {
         queryClient.setQueryData<TaskList>(context.queryKey, context.previousData);
       }
+      showToast("할 일 수정에 실패하였습니다.", "error");
       console.error("할 일 수정 실패.", error);
     },
+
     onSettled: (data, error, variables, context) => {
       if (context) {
         queryClient.invalidateQueries({
@@ -187,12 +264,19 @@ export const useRecurringMutation = () => {
       });
       return { previousData, queryKey };
     },
+
+    onSuccess: () => {
+      showToast("할 일이 삭제되었습니다.", "success");
+    },
+
     onError: (error, variables, context) => {
       if (context?.previousData) {
         queryClient.setQueryData(context.queryKey, context.previousData);
       }
+      showToast("할 일 삭제에 실패하였습니다.", "error");
       console.error("할 일 삭제 실패.", error);
     },
+
     onSettled: (data, error, variables, context) => {
       if (!context) return;
 
@@ -271,7 +355,8 @@ export const useRecurringMutation = () => {
         );
       }
 
-      console.error("할 일 수정 실패.", error);
+      showToast("등록 중 오류가 발생했습니다.", "error");
+      console.error("할 일 상태 등록 실패.", error);
     },
 
     onSettled: (data, error, variables) => {
@@ -298,9 +383,11 @@ export const useTaskComments = (taskId: number) => {
 
 export const useTaskCommentsMutation = () => {
   const queryClient = useQueryClient();
+  const { showToast } = useToast();
 
   const create = useMutation({
     mutationFn: postComment,
+
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ["taskComments", variables.taskId],
@@ -308,8 +395,14 @@ export const useTaskCommentsMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["taskList", variables.groupId, variables.taskListId, variables.dateString],
       });
+
+      showToast("댓글이 등록되었습니다.", "success");
     },
-    onError: error => console.error("댓글 등록 실패.", error),
+
+    onError: error => {
+      showToast("댓글 등록에 실패하였습니다.", "error");
+      console.error("댓글 등록 실패.", error);
+    },
   });
 
   const update = useMutation({
@@ -330,10 +423,16 @@ export const useTaskCommentsMutation = () => {
       });
       return { previousComments };
     },
+
+    onSuccess: () => {
+      showToast("댓글이 수정되었습니다.", "success");
+    },
+
     onError: (error, variables, context) => {
       if (context?.previousComments) {
         queryClient.setQueryData(["taskComments", variables.taskId], context.previousComments);
       }
+      showToast("댓글 수정에 실패하였습니다.", "error");
       console.error("댓글 수정 실패", error);
     },
 
@@ -363,10 +462,16 @@ export const useTaskCommentsMutation = () => {
       });
       return { previousComments };
     },
+
+    onSuccess: () => {
+      showToast("댓글이 삭제되었습니다.", "success");
+    },
+
     onError: (error, variables, context) => {
       if (context?.previousComments) {
         queryClient.setQueryData(["taskComments", variables.taskId], context.previousComments);
       }
+      showToast("댓글 삭제에 실패하였습니다.", "error");
       console.error("댓글 삭제 실패", error);
     },
 
