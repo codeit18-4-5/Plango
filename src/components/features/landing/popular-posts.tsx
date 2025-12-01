@@ -26,7 +26,7 @@ export default function PopularPosts() {
   const [showFloatingHearts, setShowFloatingHearts] = useState(false);
   const [floatingHeartsData] = useState(() => generateFloatingHearts(35));
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { amount: 0.35, once: false });
+  const isInView = useInView(sectionRef, { amount: 0.25, once: false });
 
   useEffect(() => {
     if (isInView && !showFloatingHearts) {
@@ -64,7 +64,7 @@ export default function PopularPosts() {
             <SectionHeader
               title="지금 가장 주목받는"
               gradientTitle="베스트 게시글"
-              gradientColor="linear-gradient(90deg, var(--pink-400), var(--purple-400))"
+              gradientColor="linear-gradient(90deg, var(--purple-400), var(--pink-600))"
               description="Plango 멤버들이 가장 관심 있어하는 토픽이에요"
             />
           </motion.div>

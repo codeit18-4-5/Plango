@@ -2,9 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { PopularPosts, DeveloperStory, ProductDemo } from "@/components/features/landing";
+import { PopularPosts, DeveloperStory, ProductDemo, Footer } from "@/components/features/landing";
 
-const sectionBackgrounds = ["var(--gray-900)", "var(--gray-900)", "var(--gray-900)"];
+const sectionBackgrounds = [
+  "var(--gray-900)",
+  "var(--gray-900)",
+  "var(--gray-900)",
+  "linear-gradient(45deg, var(--gray-900), var(--gray-800))",
+];
 
 export default function Bottom() {
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -64,8 +69,8 @@ export default function Bottom() {
       <div ref={containerRef} className="relative" style={{ scrollBehavior: "smooth" }}>
         <DeveloperStory />
         <PopularPosts />
-
         <ProductDemo />
+        <Footer />
       </div>
     </>
   );

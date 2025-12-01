@@ -26,7 +26,7 @@ const developerReviews = [
   {
     name: "세진",
     role: "Front-end Developer",
-    avatar: "/assets/landing/img-avatar-4.jpeg",
+    avatar: "/assets/landing/img-avatar-3.jpg",
     review: "내용",
   },
   {

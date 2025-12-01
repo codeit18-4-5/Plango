@@ -82,7 +82,7 @@ export default function ProductDemo() {
           </motion.div>
         </motion.div>
 
-        <motion.div style={{ scale, rotateX }} className="perspective-1000 mx-auto max-w-[1000px]">
+        <motion.div style={{ scale, rotateX }} className="perspective-1000 mx-auto">
           <div
             className={cn(
               "relative grid gap-y-[20px] rounded-[12px] border border-gray-700 bg-gray-800 p-[24px_16px]",
