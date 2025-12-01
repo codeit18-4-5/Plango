@@ -70,7 +70,7 @@ function FormField() {
 
       <div className="pb-[20px]">
         <Input errorMsg={errors.name && errors.name.message}>
-          <Input.Label label="목록 이름" />
+          <Input.Label label="목록 이름" caption="(최대30자)" />
           <Controller
             name="name"
             control={control}
@@ -80,7 +80,7 @@ function FormField() {
                   {...field}
                   maxLength="30"
                   as="input"
-                  placeholder="목록 이름을 입력해주세요.(최대30자)"
+                  placeholder="목록 이름을 입력해주세요"
                   value={field.value || ""}
                 />
                 <Input.Error />
