@@ -31,7 +31,7 @@ const values = [
 
 export default function ProblemSection() {
   return (
-    <section className={cn(sectionWrapper)}>
+    <section className={cn(sectionWrapper, "bg-[#091014]")}>
       <h3 className={cn(sectionTitle)}>
         🤔
         <span className={cn("pl-2", sectionTitleGradient({ color: "orangeRose" }))}>
