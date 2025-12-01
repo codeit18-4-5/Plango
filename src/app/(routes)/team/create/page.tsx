@@ -106,12 +106,13 @@ export default function TeamCreatePage() {
         </section>
 
         <Input id="teamName">
-          <Input.Label label="팀 이름" />
+          <Input.Label label="팀 이름" caption="(최대30자)" />
           <Input.Field
             type="text"
             className="mb-[40px] h-[48px]"
             placeholder="팀 이름을 입력해주세요."
             onChange={handleNameChange}
+            maxLength={30}
           />
         </Input>
         <Button
