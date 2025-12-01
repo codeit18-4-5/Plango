@@ -26,7 +26,7 @@ export default function PopularPosts() {
   const [showFloatingHearts, setShowFloatingHearts] = useState(false);
   const [floatingHeartsData] = useState(() => generateFloatingHearts(35));
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { amount: 0.1, once: false });
+  const isInView = useInView(sectionRef, { amount: 0.35, once: false });
 
   useEffect(() => {
     if (isInView && !showFloatingHearts) {
@@ -48,10 +48,7 @@ export default function PopularPosts() {
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
   return (
-    <section
-      ref={sectionRef}
-      className={cn("relative min-h-screen p-[70px_0]", "tablet:p-[110px_0]")}
-    >
+    <section ref={sectionRef} className={cn("relative p-[70px_0]", "tablet:p-[110px_0]")}>
       <Container>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

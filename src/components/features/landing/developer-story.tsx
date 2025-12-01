@@ -14,7 +14,7 @@ const developerReviews = [
   {
     name: "소현",
     role: "Front-end Lead",
-    avatar: "/assets/landing/img-avatar-4.jpeg",
+    avatar: "/assets/landing/img-avatar-1.jpg",
     review: "내용",
   },
   {
@@ -34,7 +34,7 @@ const developerReviews = [
     role: "Front-end Developer",
     avatar: "/assets/landing/img-avatar-4.jpeg",
     review:
-      "Plango 자유게시판은 사용자들이 모여 자연스럽게 교류할 수 있는 공간으로 확장되기를 고민했습니다. 복잡한 절차 없이 링크 하나로 팀에 참여할 수 있는 초대 버튼 기능을 게시판에 추가 도입하고, 좋아요 버튼에 서버 지연의 영향을 받지 않도록 낙관적 업데이트를 적용해 개선함으로써 게시판의 참여 속도와 체감을 높였습니다.",
+      "Plango 자유게시판은 사람들이 모여 이야기를 나누고 작은 교류가 하나의 문화로 이어지는 공간이 되기를 바랐습니다. 버튼 하나로 팀에 참여할 수 있는 초대 기능을 게시판에 추가 도입하고, 게시글 좋아요 기능에 낙관적 UI 업데이트를 적용해 서버 지연이 발생하더라도 즉시 반응이 가능하도록 개선함으로써 게시판의 참여 속도와 사용자 경험을 최적화했습니다.",
   },
 ];
 
@@ -128,7 +128,7 @@ export default function DeveloperStory() {
   return (
     <section
       ref={sectionRef}
-      className={cn("relative min-h-screen p-[70px_0] text-center", "tablet:p-[110px_0]")}
+      className={cn("relative p-[70px_0] text-center", "tablet:p-[110px_0]")}
     >
       <Container className="relative z-10">
         <motion.div
@@ -173,7 +173,7 @@ export default function DeveloperStory() {
         {floatingIcons.map((item, i) => (
           <motion.div
             key={i}
-            className={`absolute ${item.color}`}
+            className={`absolute opacity-20 ${item.color}`}
             style={{
               left: `${10 + i * 25}%`,
               top: `${i % 2 === 0 ? 10 : 20}%`,
