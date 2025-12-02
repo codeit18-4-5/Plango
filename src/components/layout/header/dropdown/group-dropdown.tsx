@@ -64,7 +64,7 @@ export function GroupDropdown({ groups, className }: dropdownProps) {
             shape="square"
             className="mr-1 h-[20px] w-[20px] shrink-0"
           />
-          <span className="inline-block w-[80px] overflow-hidden text-ellipsis whitespace-nowrap text-left">
+          <span className="inline-block w-[80px] overflow-hidden text-ellipsis whitespace-nowrap break-all text-left">
             {selectedGroup.name}
           </span>
         </div>
@@ -82,7 +82,7 @@ export function GroupDropdown({ groups, className }: dropdownProps) {
               as="a"
             >
               <Avatar image={group.image} shape="square" className="h-[20px] w-[20px] shrink-0" />
-              <span className="inline-block overflow-hidden text-ellipsis whitespace-nowrap">
+              <span className="inline-block overflow-hidden text-ellipsis whitespace-nowrap break-all">
                 {group.name}
               </span>
             </Dropdown.Option>

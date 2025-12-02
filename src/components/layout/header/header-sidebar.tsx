@@ -29,8 +29,14 @@ export function HeaderSidebar({ groups, onClick }: sidebarProps) {
                 <div className="rounded-xl px-1 py-3 hover:bg-gray-700" key={group.id}>
                   <Link href={`/team/${group.id}`}>
                     <div className="flex items-center">
-                      <Avatar image={group.image} shape="square" className="mr-1 h-8 w-8" />
-                      <span className="inline-block">{group.name}</span>
+                      <Avatar
+                        image={group.image}
+                        shape="square"
+                        className="mr-1 h-[20px] w-[20px] shrink-0"
+                      />
+                      <span className="inline-block overflow-hidden text-ellipsis whitespace-nowrap break-all">
+                        {group.name}
+                      </span>
                     </div>
                   </Link>
                 </div>
