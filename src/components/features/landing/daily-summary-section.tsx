@@ -8,6 +8,7 @@ import {
   summaryText,
 } from "./landing.style";
 import TodoList from "@/assets/landing/visual-todo-list.svg";
+import { motion } from "motion/react";
 
 export default function DailySummarySection() {
   return (
@@ -42,7 +43,13 @@ export default function DailySummarySection() {
             <li className={cn(summaryText)}>⭐️ 작은 루틴이 모여 큰 변화가 됩니다.</li>
           </ul>
         </div>
-        <TodoList className="max-h-[680px] w-auto" />
+        <motion.div
+          animate={{ y: [0, 20, 0] }}
+          transition={{ repeat: Infinity, duration: 5 }}
+          className="max-h-[680px] w-auto"
+        >
+          <TodoList />
+        </motion.div>
       </div>
     </section>
   );

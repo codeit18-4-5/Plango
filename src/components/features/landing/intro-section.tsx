@@ -4,13 +4,29 @@ import Logo from "@/assets/landing/logo-flat.svg";
 import cn from "@/lib/cn";
 import { Button } from "@/components/ui";
 import { introContainer, introWave, introWaveWrapper } from "./landing.style";
+import { motion } from "motion/react";
 import Link from "next/link";
 
 export default function IntroBanner() {
   return (
     <section className="bg-background">
       <div className={cn(introContainer)}>
-        <h2 className="text-2xl text-pink-50 tablet:text-4xl">함께 계획하고 완성하는 ✨</h2>
+        <h2 className="text-2xl text-pink-50 tablet:text-4xl">
+          함께 계획하고 완성하는{" "}
+          <motion.span
+            animate={{
+              opacity: [1, 0.6, 1],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            className="text-pink-300"
+          >
+            ✨
+          </motion.span>
+        </h2>
         <Logo className={cn("h-8 tablet:h-16")} />
         <p className="break-keep pt-2 text-sm leading-relaxed text-pink-100 tablet:text-xl">
           혼자서는 힘들었던 목표, 이제 친구들과 함께 재밌게! <br />

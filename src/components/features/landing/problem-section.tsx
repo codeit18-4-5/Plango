@@ -7,6 +7,7 @@ import {
   sectionTitleGradient,
   sectionWrapper,
 } from "./landing.style";
+import { motion } from "motion/react";
 
 const values = [
   {
@@ -25,35 +26,68 @@ const values = [
     icon: "🤷",
     title: "일정 공유 누락",
     description: "친구들과 계획 체크리스트를 공유하고 싶어요",
-    solution: "“카톡에 흩어져버린 체크리스트, 결국 아무도 기억 못 하죠”",
+    solution: "“카톡에 흩어진 체크리스트, 결국 아무도 기억 못 하죠”",
   },
 ];
 
 export default function ProblemSection() {
   return (
     <section className={cn(sectionWrapper, "bg-[#091014]")}>
-      <h3 className={cn(sectionTitle)}>
-        🤔
-        <span className={cn("pl-2", sectionTitleGradient({ color: "orangeRose" }))}>
-          이런 고민 있으신가요?
-        </span>
-      </h3>
-      <ul className={cn(sectionInnerContainer({ layout: "problem" }))}>
-        {values.map(v => {
+      <motion.div
+        variants={{
+          show: {
+            transition: {
+              staggerChildren: 0.12,
+            },
+          },
+        }}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+      >
+        <motion.h3
+          className={cn(sectionTitle)}
+          initial={{ opacity: 0, y: 100 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
+          🤔
+          <span className={cn("pl-2", sectionTitleGradient({ color: "orangeRose" }))}>
+            이런 고민 있으신가요?
+          </span>
+        </motion.h3>
+      </motion.div>
+      <motion.ul
+        className={cn(sectionInnerContainer({ layout: "problem" }))}
+        variants={{
+          show: {
+            transition: { staggerChildren: 0.7 },
+          },
+        }}
+        initial="hidden"
+        whileInView="show"
+      >
+        {values.map((v, index) => {
           const { icon, title, description, solution } = v;
+          const isOdd = index % 2 === 0;
           return (
-            <li key={title} className={cn(sectionContentBox({ color: "gray", layout: "problem" }))}>
+            <motion.li
+              key={title}
+              className={cn(sectionContentBox({ color: "gray", layout: "problem" }))}
+              initial={{ opacity: 0, x: isOdd ? -80 : 80, y: 20 }}
+              whileInView={{ opacity: 1, x: 0, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
               <h4 className={cn(sectionContentTitle({ theme: "problem" }))}>
                 <span className="inline-block pb-2">{icon}</span> <br />
                 {title}
               </h4>
               <p className="break-keep text-sm text-gray-400">{description}</p>
               <p className="break-keep text-sm text-gray-400">{solution}</p>
-            </li>
+            </motion.li>
           );
         })}
-        <li></li>
-      </ul>
+      </motion.ul>
     </section>
   );
 }

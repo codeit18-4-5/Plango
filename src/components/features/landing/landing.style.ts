@@ -14,7 +14,7 @@ export const introWave = [
   "tablet:h-[140px] tablet:bg-[auto_140px] ",
   "desktop:h-[250px] desktop:bg-[auto_250px] ",
 ].join("");
-export const sectionWrapper = "py-10 tablet:py-24 px-[1.25rem] tablet:px-6";
+export const sectionWrapper = "py-16 tablet:py-24 px-[1.25rem] tablet:px-6 overflow-hidden";
 export const sectionTitle = "text-center text-3xl tablet:text-5xl font-bold break-keep";
 export const sectionTitleGradient = cva("bg-gradient-to-r bg-clip-text text-transparent", {
   variants: {
@@ -29,7 +29,7 @@ export const sectionTitleGradient = cva("bg-gradient-to-r bg-clip-text text-tran
 export const sectionInnerContainer = cva("mx-auto max-w-[760px] flex", {
   variants: {
     layout: {
-      problem: "flex-col items-center gap-10 pt-10 tablet:pt-24",
+      problem: "flex-col items-center gap-10 tablet:gap-20 pt-10 tablet:pt-24",
       whyPlango: "flex-col",
       solution: "flex-col gap-10 pt-10 tablet:gap-20 tablet:pt-24",
       dailySummary:
@@ -54,7 +54,7 @@ export const sectionContentBox = cva("flex flex-col rounded-3xl border p-5 table
       problem:
         "w-full tablet:max-w-[360px] gap-2 tablet:gap-4 text-center odd:mr-auto even:ml-auto",
       solution: "flex flex-1 gap-3 tablet:gap-6 ",
-      whyPlango: "p-3 rounded-2xl  tablet:rounded-3xl",
+      whyPlango: "rounded-2xl  tablet:rounded-3xl",
     },
   },
 });
