@@ -134,7 +134,7 @@ export default function ProductDemo() {
                       {tasks.length}개
                     </b>
                   </span>
-                  <IcDone className="h-[40px] w-[40px]" />
+                  <IcTodo className="h-[40px] w-[40px]" />
                 </div>
                 <div className="flex items-center justify-between rounded-[12px] bg-gray-700 p-[15px_20px]">
                   <span className="grid gap-[4px]">
@@ -143,7 +143,7 @@ export default function ProductDemo() {
                       {tasks.filter(t => t.completed).length}개
                     </b>
                   </span>
-                  <IcTodo className="h-[40px] w-[40px]" />
+                  <IcDone className="h-[40px] w-[40px]" />
                 </div>
               </div>
             </div>
