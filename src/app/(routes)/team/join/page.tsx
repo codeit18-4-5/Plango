@@ -9,9 +9,11 @@ import postTeamJoin from "@/api/team/post-join-team";
 import { useToast } from "@/providers/toast-provider";
 import axios from "axios";
 import { devConsoleError } from "@/lib/error";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function TeamJoinPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const user = useAuthStore(state => state.user);
   const { showToast } = useToast();
 
@@ -38,7 +40,9 @@ export default function TeamJoinPage() {
     mutationFn: postTeamJoin,
     onSuccess: res => {
       sessionStorage.setItem("teamJoinMessage", "팀에 합류했습니다.");
+      queryClient.invalidateQueries({ queryKey: ["getUser"] });
       setFormData(fd => ({ ...fd, token: "" }));
+
       router.replace(`/team/${res.groupId}`);
     },
     onError: error => {
