@@ -32,6 +32,7 @@ export default function InputPassword({
         {...props}
       />
       <Button
+        tabIndex={-1}
         type="button"
         size="icon"
         aria-label={isOpen ? "비밀번호 숨기기" : "비밀번호 보기"}
