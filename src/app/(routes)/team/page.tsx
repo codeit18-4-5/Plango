@@ -19,7 +19,7 @@ export default function TeamPage() {
     if (groups.data && groups.data.length > 0) {
       router.replace(`/team/${groups.data[0].id}`);
     }
-  }, [groups.data, router]);
+  }, [groups?.data]);
 
   if (groups.isPending || (groups.data && groups.data.length > 0)) {
     return null;
