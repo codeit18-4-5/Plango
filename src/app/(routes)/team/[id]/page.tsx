@@ -1,77 +1,25 @@
-"use client";
-import { redirect } from "next/navigation";
-import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
-import { Container } from "@/components/layout";
-import getGroups from "@/api/team/get-groups";
-import { GetGroupsResponse, TodoListProps } from "@/types/group";
-import { Member } from "@/types/tasklist";
-import { TeamTitle, TodoList, TeamMember, TeamReport } from "@/components/features/team";
-import { useAuthStore } from "@/store/auth.store";
-import { useToast } from "@/providers/toast-provider";
-import TeamSkeleton from "@/components/skeleton-ui/team-skeleton";
+import { notFound } from "next/navigation";
+import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import { getGroupTaskListsforServer } from "@/api/tasklist/index-server";
+import TeamClientPages from "./team-client";
 
-export default function TeamPages() {
-  const param = useParams();
-  const { showToast } = useToast();
-  const groupId = Number(param.id);
-  const user = useAuthStore(state => state.user);
-  const initialized = useAuthStore(state => state.initialized);
+export const dynamic = "force-dynamic";
 
-  const [userRole, setUserRole] = useState("MEMBER");
-  const [members, setMembers] = useState<Member[]>([]);
-  const [todoLists, setTodoLists] = useState<TodoListProps>();
+export default async function TeamPages({ params }: { params: { id: string } }) {
+  const { id } = await params;
 
-  const { isPending, data: groupData } = useQuery<GetGroupsResponse, Error>({
-    queryKey: ["getGroups", groupId],
-    queryFn: () => getGroups(groupId),
-  });
+  const groupId = Number(id);
+  const queryClient = new QueryClient();
+  const groupData = await getGroupTaskListsforServer(groupId);
 
-  useEffect(() => {
-    setTimeout(() => {
-      const teamJoinMessage = sessionStorage.getItem("teamJoinMessage");
-      if (teamJoinMessage) {
-        sessionStorage.removeItem("teamJoinMessage");
-        showToast(teamJoinMessage, "success");
-      }
-    }, 150);
-  }, [showToast]);
-
-  useEffect(() => {
-    if (groupData) {
-      setMembers(groupData.members);
-      setTodoLists({ groupId: groupData.id, taskList: groupData.taskLists });
-    }
-  }, [groupData]);
-
-  useEffect(() => {
-    if (user?.memberships) {
-      const isBeing = user.memberships.filter(mb => mb.groupId === Number(groupId));
-      if (isBeing[0]?.role) {
-        setUserRole(isBeing[0].role);
-      }
-    }
-  }, [user]);
-
-  if (!initialized) {
-    return <TeamSkeleton />;
+  if (!groupData) {
+    notFound();
   }
-
-  if (!user) {
-    redirect("/");
-  }
-  const { id: userId } = user;
-
-  if (isPending) return <TeamSkeleton />;
-  if (!groupData) return <h1>팀이 없습니다.</h1>;
+  //getusergroups도 ssr api 만들어서 여기서 조회해서 넘겨.
 
   return (
-    <Container>
-      <TeamTitle name={groupData.name} id={groupData.id} userRole={userRole} />
-      <TodoList groupId={todoLists?.groupId as number} taskList={todoLists?.taskList || []} />
-      {userRole === "ADMIN" && <TeamReport taskLists={todoLists?.taskList || []} />}
-      <TeamMember members={members} userId={userId} userRole={userRole} groupId={groupData.id} />
-    </Container>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <TeamClientPages groupId={groupId} groups={groupData} />
+    </HydrationBoundary>
   );
 }
