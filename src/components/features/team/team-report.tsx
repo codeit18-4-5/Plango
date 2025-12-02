@@ -15,7 +15,7 @@ export default function TeamReport({ taskLists = [] }: { taskLists: TaskList[] }
     0,
   );
 
-  const percent = totalTasks > 0 ? (doneTasks / totalTasks) * 100 : 0;
+  const percent = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
 
   return (
     <section className="mb-[48px] desktop:mb-[64px]">
@@ -24,7 +24,7 @@ export default function TeamReport({ taskLists = [] }: { taskLists: TaskList[] }
         <div className="flex items-center justify-between gap-[40px]">
           <div className="relative w-[130px] tablet:w-[180px]">
             <CircularProgressBar id={1} percent={percent} {...reportChartProps} />
-            <div className="absolute bottom-[30%] right-[32%] tablet:hidden">
+            <div className="absolute bottom-[41px] right-[47px] tablet:hidden">
               <p className="text-center text-xs">오늘</p>
               <p className={cn("text-xl font-bold", reportText)}>{percent}%</p>
             </div>
@@ -39,9 +39,9 @@ export default function TeamReport({ taskLists = [] }: { taskLists: TaskList[] }
           <div className={reportRightBox.wrapper}>
             <div>
               <p className={reportRightBox.textxs}>오늘의 할 일</p>
-              <p className={reportRightBox.text2xl}>{totalTasks}개</p>
+              <p className={reportRightBox.text2xl}>{totalTasks - doneTasks}개</p>
             </div>
-            <Image src="/assets/images/img-todo.svg" alt="" width={40} height={40} />
+            <Image src="/assets/images/img-todo3.svg" alt="" width={40} height={40} />
           </div>
           <div className={reportRightBox.wrapper}>
             <div>

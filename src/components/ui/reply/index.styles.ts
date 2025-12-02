@@ -62,7 +62,7 @@ export const replyTimeStamp = cva("flex items-center", {
     variant: {
       primary: [
         "text-gray-400 ",
-        "before:content-[''] before:inline-block before:w-[1px] before:h-[12px] before:bg-gray-700 before:mr-4",
+        "before:content-[''] before:inline-block before:w-[1px] before:h-[12px] before:bg-gray-700 before:mr-4 ",
       ],
       secondary: "text-gray-300",
     },

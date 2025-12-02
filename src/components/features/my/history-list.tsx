@@ -46,7 +46,7 @@ export default function HistoryList({ tasksDone }: UserHistoryList) {
                 className="flex items-center gap-2 rounded-lg bg-gray-800 px-3 py-2.5"
               >
                 <IcChecked className="h-6 w-6 flex-shrink-0" />
-                <s className="text-gray-200">{item.description}</s>
+                <s className="text-gray-200">{item.name}</s>
               </li>
             ))}
           </ul>

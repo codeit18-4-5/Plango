@@ -145,11 +145,11 @@ export default function TaskDetailMain({
         </div>
         <div className="mb-[16px] flex items-center justify-between">
           <div className="flex items-center gap-[12px]">
-            <Avatar className="w-[32px]" image={taskDetail.writer.image} />
+            <Avatar className="h-[32px] w-[32px]" image={taskDetail.writer.image} />
             <span className="text-body-s text-gray-100">{taskDetail.writer.nickname}</span>
           </div>
           <span className="text-body-s text-gray-300">
-            {formatDateToFullStr({ date: taskDetail.date, type: "korean" })}
+            {formatDateToFullStr({ date: taskDetail.recurring.startDate, type: "korean" })}
           </span>
         </div>
         <div className="mb-[24px] flex gap-[10px]">
@@ -158,7 +158,7 @@ export default function TaskDetailMain({
               <CalendarIcon />
             </div>
             <span className="text-body-xs text-gray-500">
-              {formatDateToFullStr({ date: taskDetail.date, type: "korean" })}
+              {formatDateToFullStr({ date: taskDetail.recurring.startDate, type: "korean" })}
             </span>
           </div>
           <span className="text-body-xs text-gray-500">|</span>
@@ -167,7 +167,7 @@ export default function TaskDetailMain({
               <TimeIcon fill="var(--gray-500)" />
             </div>
             <span className="text-body-xs text-gray-500">
-              {formatTimeToStr({ date: taskDetail.date, type: "meridiem" })}
+              {formatTimeToStr({ date: taskDetail.recurring.startDate, type: "meridiem" })}
             </span>
           </div>
           <span className="text-body-xs text-gray-500">|</span>

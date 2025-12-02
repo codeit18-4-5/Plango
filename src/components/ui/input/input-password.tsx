@@ -28,6 +28,7 @@ export default function InputPassword({
           inputStyle({ intent: "password", disabled, error: Boolean(ctx?.errorMsg) }),
           className,
         )}
+        autoComplete="off"
         {...props}
       />
       <Button

@@ -10,6 +10,7 @@ import {
   sectionWrapper,
 } from "./landing.style";
 import IcDone from "@/assets/icons/ic-done.svg";
+import { motion } from "motion/react";
 
 type Color = "orange" | "blue" | "green" | "purple";
 type ContentValueType = {
@@ -76,24 +77,46 @@ type ChecklistProps = {
 function SectionH3() {
   return (
     <h3 className={cn(sectionTitle)}>
-      🪴 <br />
-      Plango에서 <br />
-      <span
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        🪴
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.7 }}
+        className="pt-2"
+      >
+        Plango에서
+      </motion.div>
+      <motion.div
         className={cn(
           "inline-block pt-2 tablet:pt-4",
           sectionTitleGradient({ color: "orangeGreen" }),
         )}
+        initial={{ opacity: 0, scale: 0.9 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.9, type: "spring", stiffness: 200 }}
       >
         친구들과 이런 걸 함께해요
-      </span>
+      </motion.div>
     </h3>
   );
 }
 function SectionH4() {
   return (
     <h4 className={cn(sectionDescription)}>
-      다양한 활동들을 함께해요 <br />
-      운동, 여행, 공부, 취미 뭐든지 함께하면 더 즐거워져요
+      <motion.span
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ delay: 1.2 }}
+      >
+        다양한 활동들을 함께해요 <br />
+        운동, 여행, 공부, 취미 뭐든지 함께하면 더 즐거워져요
+      </motion.span>
     </h4>
   );
 }
@@ -110,15 +133,23 @@ function CheckList({ color, checkList }: ChecklistProps) {
     <ul className="flex flex-col gap-2">
       {checkList.map((v, index) => {
         return (
-          <li
+          <motion.li
             key={index}
-            className="flex flex-nowrap items-center gap-2 text-sm text-gray-200 tablet:text-base"
+            className="flex cursor-pointer flex-nowrap items-center gap-2 text-sm text-gray-200 tablet:text-base"
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{
+              delay: 1 + index * 0.1,
+              type: "spring",
+              stiffness: 100,
+            }}
+            whileHover={{ scale: 1.1 }}
           >
             <span className={cn(`text-${color}-200 flex-shrink-0`)}>
               <IcDone />
             </span>
             {v}
-          </li>
+          </motion.li>
         );
       })}
     </ul>
@@ -127,10 +158,20 @@ function CheckList({ color, checkList }: ChecklistProps) {
 function SolutionList() {
   return (
     <ul className={cn(sectionInnerContainer({ layout: "solution" }))}>
-      {values.map(v => {
+      {values.map((v, index) => {
         const { icon, theme, description, solution2, solution, color, percent, checkList } = v;
         return (
-          <li key={theme} className="zigzag flex flex-col justify-between gap-6 tablet:flex-row">
+          <motion.li
+            key={theme}
+            className="zigzag flex flex-col justify-between gap-6 tablet:flex-row"
+            initial={{ opacity: 0, scale: 0 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{
+              delay: 0.5 + index * 0.1,
+              type: "spring",
+              stiffness: 20,
+            }}
+          >
             <div className={cn(sectionContentTitle({ theme: "solution" }))}>
               <span>{icon}</span>
               {description}
@@ -147,7 +188,7 @@ function SolutionList() {
                 <CheckList color={color} checkList={checkList} />
               </div>
             </div>
-          </li>
+          </motion.li>
         );
       })}
     </ul>

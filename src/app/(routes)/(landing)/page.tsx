@@ -17,7 +17,7 @@ import {
 const sectionBackgrounds = [
   "var(--gray-900)",
   "#091014",
-  "linear-gradient(to bottom, #091014, var(--gray-900))",
+  "linear-gradient(to bottom, #091014 90%, var(--gray-900))",
   "var(--gray-900)",
   "var(--gray-900)",
   "var(--gray-900)",

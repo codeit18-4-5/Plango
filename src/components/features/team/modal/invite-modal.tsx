@@ -20,7 +20,7 @@ export const InviteModal = ({ isOpen, groupId, onClose }: TeamModalProps) => {
       showToast("클립보드에 복사되었습니다.", "success");
       onClose();
     } catch (err) {
-      showToast("클립보드 복사 실패:", "error");
+      showToast("클립보드 복사 실패", "error");
       devConsoleError(err);
     }
   };

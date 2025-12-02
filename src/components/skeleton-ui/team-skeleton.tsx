@@ -28,10 +28,10 @@ export default function TeamSkeleton() {
           <Skeleton borderRadius={8} width={110} height={24} />
           <Skeleton borderRadius={8} width={130} height={24} />
         </div>
-        <div className="mt-[16px] flex justify-between">
-          <Skeleton borderRadius={12} height={80} width={"30vw"} />
-          <Skeleton borderRadius={12} height={80} width={"30vw"} />
-          <Skeleton borderRadius={12} height={80} width={"30vw"} />
+        <div className="mt-[16px] flex w-full justify-between">
+          <Skeleton borderRadius={12} height={80} width={"30vw"} style={{ maxWidth: "380px" }} />
+          <Skeleton borderRadius={12} height={80} width={"30vw"} style={{ maxWidth: "380px" }} />
+          <Skeleton borderRadius={12} height={80} width={"30vw"} style={{ maxWidth: "380px" }} />
         </div>
       </div>
     </Container>

@@ -7,6 +7,8 @@ import { GroupJoinRequest } from "@/types/group";
 import { useAuthStore } from "@/store/auth.store";
 import postTeamJoin from "@/api/team/post-join-team";
 import { useToast } from "@/providers/toast-provider";
+import axios from "axios";
+import { devConsoleError } from "@/lib/error";
 
 export default function TeamJoinPage() {
   const router = useRouter();
@@ -22,8 +24,9 @@ export default function TeamJoinPage() {
     const sessionToken = sessionStorage.getItem("joinToken") || null;
     if (sessionToken) {
       setFormData(fd => ({ ...fd, token: sessionToken }));
+      sessionStorage.removeItem("joinToken");
     }
-  });
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -35,11 +38,18 @@ export default function TeamJoinPage() {
     mutationFn: postTeamJoin,
     onSuccess: res => {
       sessionStorage.setItem("teamJoinMessage", "팀에 합류했습니다.");
-      router.push(`/team/${res.groupId}`);
+      setFormData(fd => ({ ...fd, token: "" }));
+      router.replace(`/team/${res.groupId}`);
     },
     onError: error => {
-      console.log(error);
-      showToast("오류가 발생했습니다", "error");
+      devConsoleError(error);
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 400) {
+          showToast(error.response?.data.message, "error");
+          return;
+        }
+      }
+      showToast("팀 가입에 문제가 발생했습니다.", "error");
     },
   });
 
@@ -64,6 +74,7 @@ export default function TeamJoinPage() {
             placeholder="팀 토큰을 입력해주세요."
             onChange={handleNameToken}
             value={formData.token}
+            autoComplete="off"
           />
         </Input>
         <Button as="button" type="submit" className="mb-[24px] h-[47px] w-full">

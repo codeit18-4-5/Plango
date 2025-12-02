@@ -1,3 +1,4 @@
+"use client";
 import { useCallback } from "react";
 import cn from "@/lib/cn";
 import IcKebab from "@/assets/icons/ic-kebab.svg";
@@ -34,7 +35,6 @@ export default function MemberCard({ member, userRole, userId }: MemberCardProps
   const useDeleteMember = useMutation({
     mutationFn: deleteMember,
     onSuccess: (res, param) => {
-      console.log(res);
       const { groupId } = param;
       if (isAdmin) {
         queryClient.invalidateQueries({
@@ -54,6 +54,11 @@ export default function MemberCard({ member, userRole, userId }: MemberCardProps
 
   const handlerMemberDelete = useCallback(
     async (groupId: number, userId: number, message: string) => {
+      if (isAdmin && mySelf) {
+        showAlert(`팀장은 스스로 내보내기를 할 수 없습니다.`);
+        return;
+      }
+
       const confirmed = await showAlert(message);
       if (confirmed) {
         useDeleteMember.mutate({ groupId, userId });
@@ -65,7 +70,10 @@ export default function MemberCard({ member, userRole, userId }: MemberCardProps
   return (
     <div className="rounded-2xl bg-gray-800 px-6 py-4 tablet:py-5">
       <div className={cn(gridStyle, "items-center")}>
-        <Avatar className="cols-start-1 w-6 tablet:row-span-2 tablet:row-start-1 tablet:w-8" />
+        <Avatar
+          image={member.userImage}
+          className="cols-start-1 h-6 w-6 tablet:row-span-2 tablet:row-start-1 tablet:h-8 tablet:w-8"
+        />
         <p className="text-sm text-white">{member.userName}</p>
         {dropdownCheck && (
           <Dropdown intent="icon" className="cols-start-3 row-span-2">

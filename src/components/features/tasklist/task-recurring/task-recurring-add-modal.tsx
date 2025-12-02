@@ -109,7 +109,7 @@ function FormField({
   const handleSelectValue = (option: DropdownOption) => {
     if (!option.value) return;
 
-    setValue("frequencyType", option.value, { shouldValidate: true });
+    setValue("frequencyType", option.value);
 
     if (option.value === FrequencyType.Weekly) {
       setIsWeekpickerOpen(true);
@@ -303,9 +303,21 @@ function FormField({
           </div>
         </Input>
         {isWeekpickerOpen && (
-          <Input>
-            <Input.Label label="반복 요일" />
-            <DailyFrequencyOptions onChange={handleDayClick} chooseIndexArray={dayIndexArray} />
+          <Input errorMsg={errors.weekDays && errors.weekDays?.message}>
+            <Controller
+              name="weekDays"
+              control={control}
+              render={() => (
+                <>
+                  <Input.Label label="반복 요일" />
+                  <DailyFrequencyOptions
+                    onChange={handleDayClick}
+                    chooseIndexArray={dayIndexArray}
+                  />
+                  <Input.Error />
+                </>
+              )}
+            />
           </Input>
         )}
         <Input errorMsg={errors.description && errors.description.message}>

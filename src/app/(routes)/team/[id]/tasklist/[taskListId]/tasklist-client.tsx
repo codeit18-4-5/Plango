@@ -249,7 +249,9 @@ export default function TasklistClient({
         <main className="flex h-[95%] flex-col">
           <section className="mb-[24px] flex items-center justify-between">
             <div className="flex gap-[12px]">
-              <span className={dateTitleStyle}>{titleCurrentDate}</span>
+              <span className={dateTitleStyle}>
+                {titleCurrentDate ? titleCurrentDate : "로딩중..."}
+              </span>
               <div className="flex gap-[4px]">
                 <button
                   className="w-[16px]"
