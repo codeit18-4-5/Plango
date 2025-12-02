@@ -59,7 +59,7 @@ export default function TeamCreatePage() {
     mutationFn: postGroups,
     onSuccess: res => {
       sessionStorage.setItem("teatCreateMessage", "팀이 생성되었습니다.");
-      router.replace(`/team/${res.id}`);
+      router.push(`/team/${res.id}`);
     },
     onError: error => {
       devConsoleError(error);
