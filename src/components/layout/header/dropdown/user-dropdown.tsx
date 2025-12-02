@@ -1,5 +1,4 @@
-import IcUser from "@/assets/icons/ic-user.svg";
-import { Dropdown } from "@/components/ui";
+import { Avatar, Dropdown } from "@/components/ui";
 import { userOptions } from "../header.props";
 import { User } from "@/types/user";
 import { useLogout } from "@/hooks";
@@ -10,7 +9,11 @@ export function UserDropdown({ user }: { user: User }) {
   return (
     <Dropdown>
       <Dropdown.TriggerIcon>
-        <IcUser className="w-[24px]" />
+        <Avatar
+          image={user.image}
+          shape="basic"
+          className="h-[26px] w-[26px] border border-gray-400"
+        />
         <span className="hidden tablet:inline tablet:pl-[8px]">{user.nickname}</span>
       </Dropdown.TriggerIcon>
       <Dropdown.Menu size="md">

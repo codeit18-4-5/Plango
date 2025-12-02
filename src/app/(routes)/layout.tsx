@@ -5,7 +5,7 @@ import { Header } from "@/components/layout";
 import { DropdownOption } from "@/types/option";
 
 export default function RoutesLayout({ children }: { children: React.ReactNode }) {
-  const [group, setGroup] = useState<DropdownOption[]>([]);
+  const [group, setGroup] = useState<DropdownOption[] | null>(null);
 
   const user = useAuthStore(state => state.user);
 
@@ -21,6 +21,8 @@ export default function RoutesLayout({ children }: { children: React.ReactNode }
           return groupInfo;
         }) || [];
       setGroup(userGroupInfo);
+    } else {
+      setGroup(null);
     }
   }, [user]);
 

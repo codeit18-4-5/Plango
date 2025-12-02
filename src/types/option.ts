@@ -3,5 +3,5 @@ export interface DropdownOption {
   value?: string;
   id?: number;
   name?: string;
-  image?: string;
+  image?: string | null;
 }

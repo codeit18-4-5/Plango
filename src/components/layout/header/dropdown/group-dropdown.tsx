@@ -55,10 +55,19 @@ export function GroupDropdown({ groups, className }: dropdownProps) {
       <Dropdown.TriggerSelect
         size="md"
         intent="select"
-        selectedLabel={selectedGroup.name}
         isIcon={true}
-        className="w-[140px] bg-gray-900 px-2"
+        className="w-[140px] gap-1 bg-gray-800 px-2"
       >
+        <div className="inline-block flex w-[100px] items-center">
+          <Avatar
+            image={selectedGroup.image}
+            shape="square"
+            className="mr-1 h-[20px] w-[20px] shrink-0"
+          />
+          <span className="inline-block w-[80px] overflow-hidden text-ellipsis whitespace-nowrap break-all text-left">
+            {selectedGroup.name}
+          </span>
+        </div>
         <IcArrow className="w-[24px]" />
       </Dropdown.TriggerSelect>
       <Dropdown.Menu className="w-[140px]" size="md">
@@ -72,8 +81,10 @@ export function GroupDropdown({ groups, className }: dropdownProps) {
               href={`/team/${group.id}`}
               as="a"
             >
-              <Avatar image={group.image} shape="square" className="mr-1 w-[24px]" />
-              <span className="inline-block">{group.name}</span>
+              <Avatar image={group.image} shape="square" className="h-[20px] w-[20px] shrink-0" />
+              <span className="inline-block overflow-hidden text-ellipsis whitespace-nowrap break-all">
+                {group.name}
+              </span>
             </Dropdown.Option>
           );
         })}
