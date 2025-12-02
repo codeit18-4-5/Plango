@@ -2,16 +2,19 @@ import { z } from "zod";
 
 export const nicknameSchema = z
   .string()
+  .trim()
   .min(1, { error: "닉네임은 필수 입력입니다." })
   .max(10, { error: "닉네임은 최대 10자까지 가능합니다." });
 
 export const emailSchema = z
   .string()
+  .trim()
   .min(1, { error: "이메일은 필수 입력입니다." })
   .pipe(z.email({ error: "이메일 형식으로 작성해 주세요." }));
 
 export const passwordSchema = z
   .string()
+  .trim()
   .min(1, { error: "비밀번호는 필수 입력입니다." })
   .pipe(
     z
@@ -25,6 +28,7 @@ export const passwordSchema = z
 
 export const passwordConfirmationSchema = z
   .string()
+  .trim()
   .min(1, { error: "비밀번호 확인을 입력해주세요." });
 
 // 회원가입

@@ -36,7 +36,11 @@ export function SignUpFormFields({ isPending }: { isPending: boolean }) {
         caption="(닉네임 중복 불가, 최대 10자)"
         errorMsg={errors?.nickname?.message}
       >
-        <Input.Field {...register("nickname")} placeholder="닉네임을 입력해주세요." />
+        <Input.Field
+          {...register("nickname")}
+          placeholder="닉네임을 입력해주세요."
+          maxLength={10}
+        />
       </AuthField>
 
       <AuthField
