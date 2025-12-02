@@ -83,7 +83,7 @@ function FormField({ type }: { type: FormFieldType }) {
     <Modal.Body>
       <div className="pb-[20px]">
         <Input errorMsg={errors.name && errors.name.message}>
-          <Input.Label label="할 일 제목" />
+          <Input.Label label="할 일 제목" caption="(최대30자)" />
           <Controller
             name="name"
             control={control}
@@ -93,7 +93,7 @@ function FormField({ type }: { type: FormFieldType }) {
                   {...field}
                   maxLength="30"
                   as="input"
-                  placeholder="할 일 제목을 입력해주세요.(최대30자)"
+                  placeholder="할 일 제목을 입력해주세요"
                   value={field.value || ""}
                 />
                 <Input.Error />
