@@ -10,17 +10,20 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/providers/toast-provider";
 import { devConsoleError } from "@/lib/error";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function TeamTitle({ name, id, userRole }: teamTitleProps) {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
   const { showAlert } = useAlert();
   const { showToast } = useToast();
 
   const { mutate } = useMutation({
     mutationFn: deleteTeam,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getUser"] });
       router.replace("/");
-      //TODO: 랜딩페이지에서도 토스트 받을 수 있도록 수정 필요
     },
     onError: error => {
       showToast("팀 삭제에 문제가 생겼습니다.", "error");
