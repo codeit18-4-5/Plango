@@ -29,7 +29,7 @@ const mockTasks = [
   },
   {
     id: 3,
-    title: "빌표자료 준비하기",
+    title: "발표자료 준비하기",
     completed: false,
     frequencyType: "한 번",
   },
