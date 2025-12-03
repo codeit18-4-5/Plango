@@ -11,10 +11,14 @@ import IcProfile from "@/assets/icons/ic-image-circle.svg";
 import IcEdit from "@/assets/icons/ic-pencil-border.svg";
 import { devConsoleError } from "@/lib/error";
 import { useToast } from "@/providers/toast-provider";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAlert } from "@/providers/alert-provider";
 
 export default function TeamCreatePage() {
   const router = useRouter();
   const { showToast } = useToast();
+  const { showAlert } = useAlert();
+  const queryClient = useQueryClient();
 
   const [formData, setFormData] = useState<GroupCreateRequest>({
     name: "",
@@ -59,7 +63,8 @@ export default function TeamCreatePage() {
     mutationFn: postGroups,
     onSuccess: res => {
       sessionStorage.setItem("teatCreateMessage", "팀이 생성되었습니다.");
-      router.push(`/team/${res.id}`);
+      queryClient.invalidateQueries({ queryKey: ["getUser"] });
+      router.replace(`/team/${res.id}`);
     },
     onError: error => {
       devConsoleError(error);
@@ -69,6 +74,10 @@ export default function TeamCreatePage() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (formData.name.length === 0) {
+      showAlert("팀 명은 공란일 수 없습니다.");
+      return;
+    }
     if (selectedImgFile) {
       uploadImageMutate.mutate({ url: selectedImgFile });
     } else {

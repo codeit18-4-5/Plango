@@ -79,7 +79,7 @@ export function ArticleConfirmModal({
 }: ArticleConfirmModalProps) {
   return (
     <Modal isOpen={true} onClose={handleClose}>
-      <div className="p-[16px_0_32px]">
+      <div className="p-[16px_0]">
         <Modal.HeaderWithOnlyTitle title={title} />
         <div className="pb-[24px]">
           <p className="text-center text-caption text-gray-300">{message}</p>

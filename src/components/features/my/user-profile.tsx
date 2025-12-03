@@ -138,7 +138,11 @@ export function ProfileUpdateFormField({
         label="닉네임"
         caption="(닉네임 중복 불가, 최대 10자)"
       >
-        <Input.Field {...register("nickname")} placeholder="닉네임을 입력해주세요." />
+        <Input.Field
+          {...register("nickname")}
+          placeholder="닉네임을 입력해주세요."
+          maxLength={10}
+        />
       </ProfileField>
 
       <ProfileField id="email" label="이메일">

@@ -26,7 +26,7 @@ export default function PopularPosts() {
   const [showFloatingHearts, setShowFloatingHearts] = useState(false);
   const [floatingHeartsData] = useState(() => generateFloatingHearts(35));
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(sectionRef, { amount: 0.25, once: false });
+  const isInView = useInView(sectionRef, { amount: 0.2, once: true });
 
   useEffect(() => {
     if (isInView && !showFloatingHearts) {

@@ -63,6 +63,7 @@ export default function TeamEditPagae() {
         queryKey: ["getGroups", groupId],
       });
       sessionStorage.setItem("teamEditMessage", "팀이 수정되었습니다.");
+      queryClient.invalidateQueries({ queryKey: ["getUser"] });
       router.replace(`/team/${groupId}`);
     },
     onError: error => {

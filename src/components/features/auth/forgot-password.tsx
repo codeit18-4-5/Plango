@@ -36,7 +36,7 @@ export default function ForgotPassword({ isOpen, onClose }: ForgotPasswordProps)
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="mt-4 flex flex-col gap-6">
+      <div className="mb-6 mt-4 flex flex-col gap-6">
         <div className="text-center">
           <p className="mb-2 text-base">비밀번호 재설정</p>
           <p className="text-sm text-gray-300">비밀번호 재설정 링크를 보내드립니다.</p>

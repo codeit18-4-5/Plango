@@ -1,5 +1,5 @@
 "use client";
-import { redirect, notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Container } from "@/components/layout";
 import { GetGroupsResponse, TodoListProps } from "@/types/group";
@@ -8,22 +8,28 @@ import { TeamTitle, TodoList, TeamMember, TeamReport } from "@/components/featur
 import { useAuthStore } from "@/store/auth.store";
 import { useToast } from "@/providers/toast-provider";
 import TeamSkeleton from "@/components/skeleton-ui/team-skeleton";
+import { useQuery } from "@tanstack/react-query";
+import getGroups from "@/api/team/get-groups";
 
 export default function TeamClientPages({
   groupId,
-  groups,
+  userRole,
 }: {
   groupId: number;
-  groups: GetGroupsResponse;
+  userRole: string;
 }) {
   const { showToast } = useToast();
 
   const user = useAuthStore(state => state.user);
   const initialized = useAuthStore(state => state.initialized);
 
-  const [userRole, setUserRole] = useState("MEMBER");
   const [members, setMembers] = useState<Member[]>([]);
   const [todoLists, setTodoLists] = useState<TodoListProps>();
+
+  const { data: groups } = useQuery<GetGroupsResponse, Error>({
+    queryKey: ["getGroups", groupId],
+    queryFn: () => getGroups(groupId),
+  });
 
   useEffect(() => {
     setTimeout(() => {
@@ -42,15 +48,6 @@ export default function TeamClientPages({
     }
   }, [groups]);
 
-  useEffect(() => {
-    if (user?.memberships) {
-      const isBeing = user.memberships.filter(mb => mb.groupId === Number(groupId));
-      if (isBeing[0]?.role) {
-        setUserRole(isBeing[0].role);
-      }
-    }
-  }, [user]);
-
   if (!initialized) {
     return <TeamSkeleton />;
   }
@@ -59,20 +56,14 @@ export default function TeamClientPages({
     redirect("/");
   }
 
-  const isMember = user.memberships?.some(mb => mb.groupId === groupId);
-
-  if (!isMember) {
-    notFound();
-  }
-
   const { id: userId } = user;
 
   return (
     <Container>
-      <TeamTitle name={groups.name} id={groups.id} userRole={userRole} />
+      <TeamTitle name={groups?.name || ""} id={groups?.id || 0} userRole={userRole} />
       <TodoList groupId={todoLists?.groupId as number} taskList={todoLists?.taskList || []} />
       <TeamReport taskLists={todoLists?.taskList || []} />
-      <TeamMember members={members} userId={userId} userRole={userRole} groupId={groups.id} />
+      <TeamMember members={members} userId={userId} userRole={userRole} groupId={groupId} />
     </Container>
   );
 }

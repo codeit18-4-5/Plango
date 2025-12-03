@@ -102,25 +102,27 @@ function FormField({ type }: { type: FormFieldType }) {
           />
         </Input>
         {type !== "nameOnly" && (
-          <Input errorMsg={errors.description && errors.description.message}>
-            <Input.Label label="할 일 메모" />
-            <Controller
-              name="description"
-              control={control}
-              render={({ field }) => (
-                <>
-                  <Input.Field
-                    {...field}
-                    maxLength="255"
-                    as="textarea"
-                    placeholder="메모를 입력해주세요.(최대255자)"
-                    value={field.value || ""}
-                  />
-                  <Input.Error />
-                </>
-              )}
-            />
-          </Input>
+          <div className="mt-[24px]">
+            <Input errorMsg={errors.description && errors.description.message}>
+              <Input.Label label="할 일 메모" />
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <>
+                    <Input.Field
+                      {...field}
+                      maxLength="255"
+                      as="textarea"
+                      placeholder="메모를 입력해주세요.(최대255자)"
+                      value={field.value || ""}
+                    />
+                    <Input.Error />
+                  </>
+                )}
+              />
+            </Input>
+          </div>
         )}
       </div>
     </Modal.Body>
