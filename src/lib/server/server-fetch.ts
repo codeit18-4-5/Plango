@@ -2,6 +2,7 @@
 import { isNoAuthURL } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { ServerFetchError } from "./error";
+import { notFound } from "next/navigation";
 import getNewAccessToken from "@/api/auth/get-new-access-token";
 
 /**
@@ -73,6 +74,10 @@ export const serverFetch = async <T = unknown>(
 
     // 토큰 재발급 성공 및 반환
     return retry.json();
+  }
+
+  if (!res.ok) {
+    notFound();
   }
 
   throw new ServerFetchError("요청 실패", res.status);

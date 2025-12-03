@@ -9,11 +9,15 @@ import postTeamJoin from "@/api/team/post-join-team";
 import { useToast } from "@/providers/toast-provider";
 import axios from "axios";
 import { devConsoleError } from "@/lib/error";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAlert } from "@/providers/alert-provider";
 
 export default function TeamJoinPage() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const user = useAuthStore(state => state.user);
   const { showToast } = useToast();
+  const { showAlert } = useAlert();
 
   const [formData, setFormData] = useState<GroupJoinRequest>({
     userEmail: "",
@@ -38,7 +42,9 @@ export default function TeamJoinPage() {
     mutationFn: postTeamJoin,
     onSuccess: res => {
       sessionStorage.setItem("teamJoinMessage", "팀에 합류했습니다.");
+      queryClient.invalidateQueries({ queryKey: ["getUser"] });
       setFormData(fd => ({ ...fd, token: "" }));
+
       router.replace(`/team/${res.groupId}`);
     },
     onError: error => {
@@ -60,6 +66,10 @@ export default function TeamJoinPage() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (formData.token.length === 0) {
+      showAlert("유효한 토큰을 입력해주세요");
+      return;
+    }
     joinMutation.mutate(formData);
   };
   return (
