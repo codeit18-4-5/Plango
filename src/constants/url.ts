@@ -13,7 +13,7 @@ export const NO_AUTH_URLS = [
 export const NO_AUTH_GET: (string | RegExp)[] = [/^\/articles$/, /^\/articles\/\d+\/comments$/];
 
 // 게스트만 접근 가능한 페이지
-export const GUEST_ONLY = ["/login", "/signup"];
+export const GUEST_ONLY = ["/login", "/signup", "/password"];
 
 // 인증이 필요한 보호 라우트
-export const PROTECTED_PATHS = ["/my", "/groups", "/tasks", "/team"];
+export const PROTECTED_PATHS = ["/my", "/tasks", "/team"];
