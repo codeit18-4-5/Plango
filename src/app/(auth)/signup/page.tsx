@@ -30,8 +30,8 @@ export default function Page() {
         onSubmit={handleSubmit}
         onServerError={signUpErrorHandler}
         resolver={zodResolver(signUpSchema)}
-        mode="onBlur"
-        reValidateMode="onBlur"
+        mode="onChange"
+        reValidateMode="onChange"
       >
         <SignUpFormFields isPending={isPending} />
       </Form>

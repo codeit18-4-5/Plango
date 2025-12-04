@@ -68,7 +68,7 @@ export function UserPasswordChangeModal({ isOpen, onClose }: PasswordChangeModal
       <Form<ChangePasswordSchema>
         onSubmit={handleSubmit}
         resolver={zodResolver(changePasswordSchema)}
-        mode="onBlur"
+        mode="onChange"
         reValidateMode="onChange"
         className="px-2"
       >

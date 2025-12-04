@@ -27,7 +27,7 @@ export default function Page() {
       <Form<ChangePasswordSchema>
         onSubmit={handleSubmit}
         resolver={zodResolver(changePasswordSchema)}
-        mode="onBlur"
+        mode="onChange"
         reValidateMode="onChange"
       >
         <ResetPasswordFormFields isPending={isPending} />

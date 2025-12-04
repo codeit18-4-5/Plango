@@ -29,11 +29,17 @@ type ImgUploadProps = {
 
 // 유저 프로필 수정 field
 export function ProfileField({ id, label, errorMsg, caption, children }: ProfileFieldProps) {
+  const {
+    formState: { touchedFields },
+  } = useFormContext();
+
+  const isTouched = !!touchedFields[id as keyof typeof touchedFields];
+
   return (
     <Input id={id} errorMsg={errorMsg}>
       <Input.Label label={label} caption={caption} />
       {children}
-      <Input.Error />
+      {isTouched && <Input.Error />}
     </Input>
   );
 }

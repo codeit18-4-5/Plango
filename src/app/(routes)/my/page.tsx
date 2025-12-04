@@ -62,8 +62,8 @@ export default function My() {
           onSubmit={handleSubmit}
           onServerError={nicknameErrorHandler}
           resolver={zodResolver(changeProfileSchema)}
-          mode="onBlur"
-          reValidateMode="onBlur"
+          mode="onChange"
+          reValidateMode="onChange"
           defaultValues={{
             nickname: userData?.nickname,
             image: userData?.image ?? undefined,
