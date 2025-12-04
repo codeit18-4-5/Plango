@@ -29,8 +29,8 @@ export default function AuthProvider({ children, initialUser }: AuthProviderProp
     }
     const accessTokenCookie = async () => {
       try {
-        // refreshToken이 있으면 accessToken 재발급, 없으면 401만 떨어지고 무시
-        await fetch("/api/auth/refresh", {
+        // refreshToken이 있으면 accessToken 재발급, 없으면 무시
+        await fetch("/api/auth/initial-user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
