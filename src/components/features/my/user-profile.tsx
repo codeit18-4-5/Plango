@@ -176,7 +176,7 @@ export function ProfileUpdateFormField({
 
 export function ProfileEmpty({ msg, children }: { msg: string; children?: ReactNode }) {
   return (
-    <div className="flex-1 content-center justify-items-center text-center">
+    <div className="full-scroll-h flex-1 content-center justify-items-center text-center">
       <p className="text-base text-gray-500">{msg}</p>
       {children}
     </div>
