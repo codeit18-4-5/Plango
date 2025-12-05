@@ -3,7 +3,7 @@
 import Link from "next/link";
 import IcCancel from "@/assets/icons/ic-cancel.svg";
 import IcBoard from "@/assets/icons/ic-board.svg";
-import Logo from "@/assets/icons/ic-logo.svg";
+import Logo from "@/assets/landing/logo-flat.svg";
 import { Avatar } from "@/components/ui";
 import { useQuery } from "@tanstack/react-query";
 import getUser from "@/api/user/get-user";
@@ -21,7 +21,7 @@ export function HeaderSidebar({ onClick, isLogin = false }: sidebarProps) {
       <div className="h-full w-[204px] translate-x-0 bg-gray-800">
         <div className="p-[16px]">
           <div className="flex items-center justify-between">
-            <Link href="/" className="inline-block h-[32px] w-[130px]">
+            <Link href="/" className="inline-block w-[100px]">
               <Logo />
             </Link>
             <IcCancel onClick={onClick} className="inline-block w-[24px]" />

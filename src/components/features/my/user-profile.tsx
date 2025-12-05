@@ -29,11 +29,17 @@ type ImgUploadProps = {
 
 // 유저 프로필 수정 field
 export function ProfileField({ id, label, errorMsg, caption, children }: ProfileFieldProps) {
+  const {
+    formState: { touchedFields },
+  } = useFormContext();
+
+  const isTouched = !!touchedFields[id as keyof typeof touchedFields];
+
   return (
     <Input id={id} errorMsg={errorMsg}>
       <Input.Label label={label} caption={caption} />
       {children}
-      <Input.Error />
+      {isTouched && <Input.Error />}
     </Input>
   );
 }
@@ -170,7 +176,7 @@ export function ProfileUpdateFormField({
 
 export function ProfileEmpty({ msg, children }: { msg: string; children?: ReactNode }) {
   return (
-    <div className="flex-1 content-center justify-items-center text-center">
+    <div className="full-scroll-h flex-1 content-center justify-items-center text-center">
       <p className="text-base text-gray-500">{msg}</p>
       {children}
     </div>

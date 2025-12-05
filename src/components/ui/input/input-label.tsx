@@ -28,7 +28,7 @@ export default function InputLabel({
     <label htmlFor={ctx?.id} className={cn(inputLabelStyle({ size, hidden }), className)}>
       {required && <span className="pr-1.5 text-pink-300">*</span>}
       {label}
-      {caption && <span className="pl-1 text-xs text-gray-500">{caption}</span>}
+      {caption && <span className="pl-1 text-xs text-gray-400">{caption}</span>}
       {children}
     </label>
   );

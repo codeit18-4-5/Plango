@@ -33,7 +33,7 @@ export default function Page() {
         onSubmit={handleSubmit}
         resolver={zodResolver(signInSchema)}
         onServerError={signInErrorHandler}
-        mode="onBlur"
+        mode="onChange"
         reValidateMode="onChange"
       >
         <SignInFormFields onModalOpen={setOpen} isPending={isPending} />
