@@ -28,9 +28,11 @@ export default function Header({ isLoginPage, user, isLogin = false }: HeaderPro
       <div className="sticky left-0 top-0 z-50 w-full border-b border-gray-600 bg-gray-800">
         <div className="mx-auto flex h-[60px] w-full max-w-[1248px] items-center justify-between px-4 py-3 tablet:px-6">
           <div className="flex items-center justify-between">
-            <Link href="/" scroll={false}>
-              <Logo className="h-[20px] w-[100px] tablet:mr-[32px] desktop:mr-[40px] desktop:h-[32px] desktop:w-[158px]" />
-            </Link>
+            <h1>
+              <Link href="/" scroll={false} aria-label="plango">
+                <Logo className="h-[20px] w-[100px] tablet:mr-[32px] desktop:mr-[40px] desktop:h-[32px] desktop:w-[158px]" />
+              </Link>
+            </h1>
           </div>
         </div>
       </div>
@@ -46,10 +48,12 @@ export default function Header({ isLoginPage, user, isLogin = false }: HeaderPro
             onClick={handleMenuClick(true)}
             className="mr-[16px] inline-block w-[24px] tablet:hidden"
           />
-          <Link href="/" scroll={false}>
-            <Logo className="h-[20px] w-[100px] tablet:mr-[32px] desktop:mr-[40px] desktop:h-[32px] desktop:w-[158px]" />
-          </Link>
-          <div className="hidden w-[240px] tablet:block tablet:flex tablet:items-center tablet:justify-between">
+          <h1>
+            <Link href="/" scroll={false} aria-label="plango">
+              <Logo className="h-[20px] w-[100px] tablet:mr-[32px] desktop:mr-[40px] desktop:h-[32px] desktop:w-[158px]" />
+            </Link>
+          </h1>
+          <div className="hidden w-[240px] tablet:flex tablet:items-center tablet:justify-between">
             {isLogin && <GroupDropdown isLogin={isLogin} />}
             <Link href="/article" scroll={false}>
               자유게시판

@@ -46,7 +46,7 @@ export default function My() {
 
   if (isError) {
     return (
-      <ProfileEmpty msg="히스토리를 불러오지 못했습니다.">
+      <ProfileEmpty msg="계정 정보를 불러오지 못했습니다.">
         <Button className="mt-4" size="md" onClick={() => window.location.reload()}>
           다시 시도
         </Button>
@@ -62,8 +62,8 @@ export default function My() {
           onSubmit={handleSubmit}
           onServerError={nicknameErrorHandler}
           resolver={zodResolver(changeProfileSchema)}
-          mode="onBlur"
-          reValidateMode="onBlur"
+          mode="onChange"
+          reValidateMode="onChange"
           defaultValues={{
             nickname: userData?.nickname,
             image: userData?.image ?? undefined,

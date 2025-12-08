@@ -3,6 +3,7 @@ import cn from "@/lib/cn";
 import Link from "next/link";
 import { Input, Modal } from "@/components/ui";
 import KakaoLogin from "./kakao-login";
+import { useFormContext } from "react-hook-form";
 type AuthLinkProps = {
   message: string;
   linkText: string;
@@ -46,11 +47,17 @@ export function AuthLink({ message, linkText, href }: AuthLinkProps) {
 }
 
 export function AuthField({ id, label, caption, labelHidden, errorMsg, children }: AuthFieldProps) {
+  const {
+    formState: { touchedFields },
+  } = useFormContext();
+
+  const isTouched = !!touchedFields[id as keyof typeof touchedFields];
+
   return (
     <Input id={id} errorMsg={errorMsg}>
       <Input.Label label={label} hidden={labelHidden} caption={caption} />
       {children}
-      <Input.Error />
+      {isTouched && <Input.Error />}
     </Input>
   );
 }

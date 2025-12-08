@@ -1,5 +1,7 @@
 "use server";
 
+import { devConsoleError } from "@/lib/error";
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 const getNewAccessToken = async (refreshToken?: string): Promise<string | null> => {
@@ -19,7 +21,7 @@ const getNewAccessToken = async (refreshToken?: string): Promise<string | null> 
     const data = await res.json();
     return data.accessToken ?? null;
   } catch (err) {
-    console.error(err);
+    devConsoleError(err);
     return null;
   }
 };

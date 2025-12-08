@@ -5,15 +5,14 @@ import { Form } from "@/components/ui";
 import { useResetPassword } from "@/hooks/auth/use-auth";
 import { changePasswordSchema, ChangePasswordSchema } from "@/lib/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 
 export default function Page() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const { mutate, isPending } = useResetPassword();
+  if (!token) notFound();
   const handleSubmit = async (data: ChangePasswordSchema) => {
-    if (!token) return;
-
     mutate({
       password: data.password,
       passwordConfirmation: data.passwordConfirmation,
@@ -27,7 +26,7 @@ export default function Page() {
       <Form<ChangePasswordSchema>
         onSubmit={handleSubmit}
         resolver={zodResolver(changePasswordSchema)}
-        mode="onBlur"
+        mode="onChange"
         reValidateMode="onChange"
       >
         <ResetPasswordFormFields isPending={isPending} />

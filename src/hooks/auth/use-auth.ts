@@ -5,7 +5,7 @@ import postSignIn from "@/api/auth/post-signin";
 import postSignUp from "@/api/auth/post-signup";
 import { AuthSuccessPayload, OauthProvider } from "@/types/auth";
 import { SignInSchema, SignUpSchema } from "@/lib/schema";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useToast } from "@/providers/toast-provider";
 import patchResetPassword from "@/api/user/patch-reset-password";
 import { UserResetPassword } from "@/types/user";
